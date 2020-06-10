@@ -12,6 +12,11 @@ commands:
     description: Show wiki URL.
     permission: lifecore.wiki
     usage: Syntax error! Simply type /wiki to show wiki URL.
+  website:
+    description: Show website URL.
+    aliases: [web, webpage]
+    permission: lifecore.website
+    usage: Syntax error! Simply type /website to show website URL.
 
 permissions:
   lifecore.*:
@@ -24,6 +29,9 @@ permissions:
     default: false
   lifecore.wiki:
     description: Allows you to show the wiki URL.
+    default: true
+  lifecore.website:
+    description: Allows you to show the website URL.
     default: true
   lifecore.isadmin:
     description: Indicated user is admin.

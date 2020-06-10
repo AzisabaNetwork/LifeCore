@@ -5,11 +5,10 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-public class WikiCommandExecutor implements CommandExecutor {
+public class WebsiteCommandExecutor implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
-        sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3Wikiリンク: &f&lhttps://azisabaofficial.playing.wiki/" ));
+        sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3ウェブサイトリンク: &f&lhttps://azisaba.net/" ));
 
         return true;
     }
