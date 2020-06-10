@@ -15,5 +15,6 @@ public final class LifeCore extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+        getLogger().info("LifeCore has been disabled.");
     }
 }
