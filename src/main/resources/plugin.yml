@@ -1,0 +1,45 @@
+name: LifeCore
+version: @version@
+main: com.github.mori01231.lifecore.LifeCore
+author: Mori01231
+description: Core plugin for Life Server in Azi Server Network
+
+commands:
+  switch:
+    description: Change between admin mode and user mode.
+    usage: Syntax error! Simply type /switch to change modes.
+  wiki:
+    description: Show wiki URL.
+    permission: lifecore.wiki
+    usage: Syntax error! Simply type /wiki to show wiki URL.
+
+permissions:
+  lifecore.*:
+    description: Gives access to all LifeCore commands
+    children:
+      lifecore.switch: true
+      lifecore.wiki: true
+  lifecore.switch:
+    description: Allows you to change between Admin and Member modes.
+    default: false
+  lifecore.wiki:
+    description: Allows you to show the wiki URL.
+    default: true
+  lifecore.isadmin:
+    description: Indicated user is admin.
+    default: false
+  lifecore.isdeveloper:
+    description: Indicated user is developer.
+    default: false
+  lifecore.isowner:
+    description: Indicated user is owner.
+    default: false
+  lifecore.switchadmin:
+    description: Indicated user can switch to admin.
+    default: false
+  lifecore.switchdeveloper:
+    description: Indicated user can switch to developer.
+    default: false
+  lifecore.switchowner:
+    description: Indicated user can switch to owner.
+    default: false
