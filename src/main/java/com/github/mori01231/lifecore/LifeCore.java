@@ -21,7 +21,6 @@ public final class LifeCore extends JavaPlugin {
     public void onEnable() {
         // Plugin startup logic
         getLogger().info("LifeCore has been enabled.");
-        this.getCommand("switch").setExecutor(new SwitchCommandExecutor());
         this.getCommand("wiki").setExecutor(new WikiCommandExecutor());
         this.getCommand("website").setExecutor(new WebsiteCommandExecutor());
 
