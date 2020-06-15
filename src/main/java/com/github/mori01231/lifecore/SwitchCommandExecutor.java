@@ -29,25 +29,25 @@ public class SwitchCommandExecutor implements CommandExecutor {
 
             //member to admin
             if (sender.hasPermission("lifecore.switchadmin") && !sender.hasPermission("lifecore.isadmin")){
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3Adminモードになりました。" ));
-                getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent add admin server=life");
 
+                getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent add admin server=life");
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3Adminモードになりました。" ));
                 getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent remove switchadmin");
             }
 
             //member to developer
             if (sender.hasPermission("lifecore.switchdeveloper") && !sender.hasPermission("lifecore.isdeveloper")){
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3Developerモードになりました。" ));
-                getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent add developer");
 
+                getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent add developer");
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3Developerモードになりました。" ));
                 getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent remove switchdeveloper");
             }
 
             //member to owner
             if (sender.hasPermission("lifecore.switchowner") && !sender.hasPermission("lifecore.isowner")){
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3Ownerモードになりました。" ));
-                getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent add owner");
 
+                getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent add owner");
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3Ownerモードになりました。" ));
                 getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent remove switchowner");
 
             }
@@ -59,27 +59,27 @@ public class SwitchCommandExecutor implements CommandExecutor {
 
             //admin to member
             if (sender.hasPermission("lifecore.isadmin")){
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3Memberモードになりました。" ));
-                getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent add switchadmin");
 
+                getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent add switchadmin");
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3Memberモードになりました。" ));
                 getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent remove admin server=life");
 
             }
 
             //developer to member
             if (sender.hasPermission("lifecore.isdeveloper")){
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3Memberモードになりました。" ));
-                getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent add switchdeveloper");
 
+                getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent add switchdeveloper");
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3Memberモードになりました。" ));
                 getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent remove developer");
 
             }
 
             //owner to member
             if (sender.hasPermission("lifecore.isowner")){
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3Memberモードになりました。" ));
-                getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent add switchowner");
 
+                getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent add switchowner");
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3Memberモードになりました。" ));
                 getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent remove owner");
 
             }
