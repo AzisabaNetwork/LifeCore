@@ -33,8 +33,14 @@ permissions:
   lifecore.website:
     description: Allows you to show the website URL.
     default: true
+  lifecore.ismoderator:
+    description: Indicated user is moderator.
+    default: false
   lifecore.isadmin:
     description: Indicated user is admin.
+    default: false
+  lifecore.isadminmember:
+    description: Indicated user is adminmember.
     default: false
   lifecore.isdeveloper:
     description: Indicated user is developer.
@@ -42,8 +48,14 @@ permissions:
   lifecore.isowner:
     description: Indicated user is owner.
     default: false
+  lifecore.switchmoderator:
+    description: Indicated user can switch to moderator.
+    default: false
   lifecore.switchadmin:
     description: Indicated user can switch to admin.
+    default: false
+  lifecore.switchadminmember:
+    description: Indicated user can switch to adminmember.
     default: false
   lifecore.switchdeveloper:
     description: Indicated user can switch to developer.

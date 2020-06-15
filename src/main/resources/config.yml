@@ -1,7 +1,10 @@
 #LifeCore plugin configuration file
 
+lp-server-name: Life
+
 website-url: https://azisaba.net/
 
 wiki-url: https://azisabaofficial.playing.wiki/
 
 unofficial-wiki-url: https://aziserver.playing.wiki/
+
