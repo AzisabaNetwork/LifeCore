@@ -5,9 +5,6 @@ author: Mori01231
 description: Core plugin for Life Server in Azi Server Network
 
 commands:
-  switch:
-    description: Change between admin mode and user mode.
-    usage: Syntax error! Simply type /switch to change modes.
   wiki:
     description: Show wiki URL.
     permission: lifecore.wiki
