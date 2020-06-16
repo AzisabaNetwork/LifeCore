@@ -23,6 +23,7 @@ public final class LifeCore extends JavaPlugin {
         getLogger().info("LifeCore has been enabled.");
         this.getCommand("wiki").setExecutor(new WikiCommandExecutor());
         this.getCommand("website").setExecutor(new WebsiteCommandExecutor());
+        this.getCommand("help").setExecutor(new HelpCommandExecutor());
 
         this.saveDefaultConfig();
 

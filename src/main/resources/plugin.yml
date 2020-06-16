@@ -14,6 +14,11 @@ commands:
     aliases: [web, webpage, hp, homepage]
     permission: lifecore.website
     usage: Syntax error! Simply type /website to show website URL.
+  help:
+    description: Show help page.
+    aliases: [tutorial]
+    permission: lifecore.help
+    usage: Syntax error! Simply type /help to show help page.
 
 permissions:
   lifecore.*:
@@ -26,4 +31,7 @@ permissions:
     default: true
   lifecore.website:
     description: Allows you to show the website URL.
+    default: true
+  lifecore.help:
+    description: Allows you to show help.
     default: true
