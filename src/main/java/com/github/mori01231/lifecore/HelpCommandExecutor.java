@@ -14,13 +14,17 @@ public class HelpCommandExecutor implements CommandExecutor {
 
         sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3Help Page"));
 
+        for (String line : LifeCore.getInstance().getConfig().getStringList("help.menu")) {
+            sender.sendMessage(line);
+        }
+        /*
         List<String> configcontents;
         configcontents = LifeCore.getInstance().getConfig().getStringList("help.menu");
 
         for (String temp : configcontents) {
 
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&',temp));
-        }
+        }*/
 
         return true;
     }
