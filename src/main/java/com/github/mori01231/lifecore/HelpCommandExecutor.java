@@ -16,8 +16,10 @@ public class HelpCommandExecutor implements CommandExecutor {
                     sender.sendMessage(ChatColor.translateAlternateColorCodes('&',line));
                 }
             }
-            else if (args[0].equalsIgnoreCase("official")) {
-                sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3公式Wikiリンク: &f&l" + LifeCore.getInstance().getConfig().getString("wiki-url") ));
+            else if (args[0].equalsIgnoreCase("town")) {
+                for (String line : LifeCore.getInstance().getConfig().getStringList("Help.Town")) {
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&',line));
+                }
             }
         }
 
