@@ -4,6 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,11 +13,14 @@ public class HelpCommandExecutor implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3Help Page"));
+        Player player = (Player) sender;
+        player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3Help Page"));
 
         for (String line : LifeCore.getInstance().getConfig().getStringList("help.menu")) {
-            sender.sendMessage(line);
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&',line));
+            player.sendMessage("MethodWasCalled");
         }
+
         /*
         List<String> configcontents;
         configcontents = LifeCore.getInstance().getConfig().getStringList("help.menu");
