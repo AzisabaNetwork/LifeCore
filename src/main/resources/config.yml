@@ -8,14 +8,14 @@ unofficial-wiki-url: https://aziserver.playing.wiki/
 
 Help:
   Menu:
-    - "&4&lヘルプメニュー"
-    - ""
-    - "&3ガイドブックの入手 &f&l/guide"
-    - "&3公式Wikiリンクの入手 &f&l/wiki"
-    - "&3非公式Wikiリンクの入手 &f&l/wiki unofficial"
-    - "&3ホームページリンクの入手 &f&l/web"
-    - "&3町について &f&l/help town"
-    - "&3金儲けについて &f&l/help money"
-    - "&3ランクについて &f&l/help rank"
-    - "&3ダンジョンについて &f&l/help dungeon"
+    - &4&lヘルプメニュー
+    -
+    - &3ガイドブックの入手 &f&l/guide
+    - &3公式Wikiリンクの入手 &f&l/wiki
+    - &3非公式Wikiリンクの入手 &f&l/wiki unofficial
+    - &3ホームページリンクの入手 &f&l/web
+    - &3町について &f&l/help town
+    - &3金儲けについて &f&l/help money
+    - &3ランクについて &f&l/help rank
+    - &3ダンジョンについて &f&l/help dungeon
 
