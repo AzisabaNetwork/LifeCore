@@ -61,6 +61,11 @@ public class HelpCommandExecutor implements CommandExecutor {
                     sender.sendMessage(ChatColor.translateAlternateColorCodes('&',line));
                 }
             }
+            else if (args[0].equalsIgnoreCase("vote")) {
+                for (String line : LifeCore.getInstance().getConfig().getStringList("Help.Vote")) {
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&',line));
+                }
+            }
         }
 
         else{
