@@ -41,6 +41,16 @@ public class HelpCommandExecutor implements CommandExecutor {
                     sender.sendMessage(ChatColor.translateAlternateColorCodes('&',line));
                 }
             }
+            else if (args[0].equalsIgnoreCase("pet")) {
+                for (String line : LifeCore.getInstance().getConfig().getStringList("Help.Pet")) {
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&',line));
+                }
+            }
+            else if (args[0].equalsIgnoreCase("mcmmo")) {
+                for (String line : LifeCore.getInstance().getConfig().getStringList("Help.Mcmmo")) {
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&',line));
+                }
+            }
         }
 
         else{
