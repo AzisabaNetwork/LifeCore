@@ -21,6 +21,8 @@ Help:
     - '&3ランクについて &a/help rank'
     - '&3ダンジョンについて &a/help dungeon'
     - '&3よく使うコマンドについて &a/help command'
+    - '&3ペットについて &a/help pet'
+    - '&3MCMMOについて &a/help mcmmo'
 
   Town:
     - ''
@@ -98,3 +100,16 @@ Help:
     - '&3・HP2前後のモブをリードで殴るとペットになります'
     - '&3・ペットを入手したら &a/pcst &3でスキルツリーを選びます'
     - '&3・なついたペットを呼ぶには &a/petc'
+    - '&3・詳しくはペットについてのWikiページを見てね'
+    - '&fhttps://azisabaofficial.playing.wiki/d/MyPet'
+
+  Mcmmo:
+    - ''
+    - '&b&lMCMMOについて'
+    - '&7-----------------------------'
+    - '&3・MCMMOはRPGさながらにレベルアップできるスキルがあります'
+    - '&3・スキルに応じてレベルアップのやり方が異なります'
+    - '&3・MCMMOの合計レベルが一定以上でないとランクアップできないので'
+    - '&3  MCMMOのレベルは積極的に上げましょう'
+    - '&3・詳しくはMCMMOについてのWikiページを見てね'
+    - '&fhttps://azisabaofficial.playing.wiki/d/MCMMO'
