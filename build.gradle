@@ -3,7 +3,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 apply plugin: 'java'
 
 group = 'com.github.mori01231'
-version = '0.6.5'
+version = '0.6.6'
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
@@ -30,5 +30,6 @@ dependencies {
 processResources {
     from(sourceSets.main.resources.srcDirs) {
         filter ReplaceTokens, tokens: [version: version]
+        filteringCharset = 'UTF-8'
     }
 }
