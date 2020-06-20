@@ -19,6 +19,10 @@ commands:
     aliases: [tutorial]
     permission: lifecore.help
     usage: Syntax error! Simply type /help to show help page.
+  guide:
+    description: Get guide book.
+    permission: lifecore.guide
+    usage: Syntax error! Simply type /guide to get guide book.
 
 permissions:
   lifecore.*:
@@ -34,4 +38,7 @@ permissions:
     default: true
   lifecore.help:
     description: Allows you to show help.
+    default: true
+  lifecore.guide:
+    description: Allowsyou to acquire the guidebook.
     default: true
