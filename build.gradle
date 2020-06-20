@@ -3,7 +3,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 apply plugin: 'java'
 
 group = 'com.github.mori01231'
-version = '0.6.7'
+version = '0.7.0'
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
