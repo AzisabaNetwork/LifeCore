@@ -16,7 +16,7 @@ public class TutorialCommandExecutor implements CommandExecutor {
         if (sender instanceof Player){
             Player player = (Player) sender;
             String tutorial = LifeCore.getInstance().getConfig().getString("tutorial-command");
-            getServer().dispatchCommand(getServer().getConsoleSender(), "multiverse:mv tp " + player.getName() + " " + tutorial);
+            getServer().dispatchCommand(getServer().getConsoleSender(), "mvtp " + player.getName() + " " + tutorial);
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3任意チュートリアルにテレポートしました。" ));
         }
         else{
