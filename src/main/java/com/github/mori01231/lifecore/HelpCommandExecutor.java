@@ -16,56 +16,67 @@ public class HelpCommandExecutor implements CommandExecutor {
                     sender.sendMessage(ChatColor.translateAlternateColorCodes('&',line));
                 }
             }
+
             else if (args[0].equalsIgnoreCase("town")) {
                 for (String line : LifeCore.getInstance().getConfig().getStringList("Help.Town")) {
                     sender.sendMessage(ChatColor.translateAlternateColorCodes('&',line));
                 }
             }
+
             else if (args[0].equalsIgnoreCase("money")) {
                 for (String line : LifeCore.getInstance().getConfig().getStringList("Help.Money")) {
                     sender.sendMessage(ChatColor.translateAlternateColorCodes('&',line));
                 }
             }
+
             else if (args[0].equalsIgnoreCase("rank")) {
                 for (String line : LifeCore.getInstance().getConfig().getStringList("Help.Rank")) {
                     sender.sendMessage(ChatColor.translateAlternateColorCodes('&',line));
                 }
             }
+
             else if (args[0].equalsIgnoreCase("dungeon")) {
                 for (String line : LifeCore.getInstance().getConfig().getStringList("Help.Dungeon")) {
                     sender.sendMessage(ChatColor.translateAlternateColorCodes('&',line));
                 }
             }
+
             else if (args[0].equalsIgnoreCase("command")) {
                 for (String line : LifeCore.getInstance().getConfig().getStringList("Help.Command")) {
                     sender.sendMessage(ChatColor.translateAlternateColorCodes('&',line));
                 }
             }
+
             else if (args[0].equalsIgnoreCase("pet")) {
                 for (String line : LifeCore.getInstance().getConfig().getStringList("Help.Pet")) {
                     sender.sendMessage(ChatColor.translateAlternateColorCodes('&',line));
                 }
             }
+
             else if (args[0].equalsIgnoreCase("mcmmo")) {
                 for (String line : LifeCore.getInstance().getConfig().getStringList("Help.Mcmmo")) {
                     sender.sendMessage(ChatColor.translateAlternateColorCodes('&',line));
                 }
             }
+
             else if (args[0].equalsIgnoreCase("recipe")) {
                 for (String line : LifeCore.getInstance().getConfig().getStringList("Help.Recipe")) {
                     sender.sendMessage(ChatColor.translateAlternateColorCodes('&',line));
                 }
             }
+
             else if (args[0].equalsIgnoreCase("enchant")) {
                 for (String line : LifeCore.getInstance().getConfig().getStringList("Help.Enchant")) {
                     sender.sendMessage(ChatColor.translateAlternateColorCodes('&',line));
                 }
             }
+
             else if (args[0].equalsIgnoreCase("vote")) {
                 for (String line : LifeCore.getInstance().getConfig().getStringList("Help.Vote")) {
                     sender.sendMessage(ChatColor.translateAlternateColorCodes('&',line));
                 }
             }
+
             else if (args[0].equalsIgnoreCase("basics")) {
                 for (String line : LifeCore.getInstance().getConfig().getStringList("Help.Basics")) {
                     sender.sendMessage(ChatColor.translateAlternateColorCodes('&',line));

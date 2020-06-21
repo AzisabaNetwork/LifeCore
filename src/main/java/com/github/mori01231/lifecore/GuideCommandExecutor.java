@@ -12,19 +12,27 @@ public class GuideCommandExecutor implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        if (sender instanceof Player){
-            Player player = (Player) sender;
+
+        if(args.length == 1){
 
             String guide = LifeCore.getInstance().getConfig().getString("guide");
-
-            getServer().dispatchCommand(getServer().getConsoleSender(), "minecraft:give " + player.getName() + " " + guide);
-
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3ガイドブックを入手しました。" ));
+            getServer().dispatchCommand(getServer().getConsoleSender(), "minecraft:give " + args[0] + " " + guide);
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&a&l" + args[0] +"&3にガイドブックを授与しました。" ));
         }
 
         else{
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3このコマンドはコンソールから使用できません。" ));
+            if (sender instanceof Player){
+                Player player = (Player) sender;
+                String guide = LifeCore.getInstance().getConfig().getString("guide");
+                getServer().dispatchCommand(getServer().getConsoleSender(), "minecraft:give " + player.getName() + " " + guide);
+                sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3ガイドブックを入手しました。" ));
+            }
+            else{
+                sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3このコマンドはコンソールから使用できません。" ));
+            }
+
         }
+
 
 
         return true;
