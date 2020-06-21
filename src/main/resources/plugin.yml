@@ -23,13 +23,20 @@ commands:
     description: Get guide book.
     permission: lifecore.guide
     usage: Syntax error! Simply type /guide to get guide book.
+  tutorial:
+    description: Skip to tutorial.
+    permission: lifecore.tutorial
+    usage: Syntax error! Simply type /tutorial to skip to tutorial.
 
 permissions:
   lifecore.*:
     description: Gives access to all LifeCore commands
     children:
-      lifecore.switch: true
+      lifecore.website: true
       lifecore.wiki: true
+      lifecore.help: true
+      lifecore.guide: true
+      lifecore.tutorial: true
   lifecore.wiki:
     description: Allows you to show the wiki URL.
     default: true
@@ -40,5 +47,8 @@ permissions:
     description: Allows you to show help.
     default: true
   lifecore.guide:
-    description: Allowsyou to acquire the guidebook.
+    description: Allows you to acquire the guidebook.
     default: true
+  lifecore.tutorial:
+    description: Allows you to skip to tutorial.
+    default: false
