@@ -31,6 +31,10 @@ commands:
     description: Teleport to dungeon.
     permission: lifecore.pve
     usage: Syntax error! Simply type /pve to teleport to dungeon.
+  rank:
+    description: Show rank.
+    permission: lifecore.rank
+    usage: Syntax error! Simply type /rank to show rank.
 
 permissions:
   lifecore.*:
@@ -61,4 +65,7 @@ permissions:
     default: false
   lifecore.pve:
     description: Allows you to skip tp to dungeon.
+    default: false
+  lifecore.rank:
+    description: Allows you to show your rank.
     default: false
