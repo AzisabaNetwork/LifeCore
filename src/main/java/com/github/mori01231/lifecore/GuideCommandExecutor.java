@@ -21,7 +21,7 @@ public class GuideCommandExecutor implements CommandExecutor {
                 sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&a&l" + args[0] +"&3にガイドブックを授与しました。" ));
             }
             else{
-                sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&a&l" + args[0] +"&4権限不足です" ));
+                sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&4権限不足です" ));
             }
         }
 
