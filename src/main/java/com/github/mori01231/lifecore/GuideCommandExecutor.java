@@ -14,7 +14,7 @@ public class GuideCommandExecutor implements CommandExecutor {
 
 
         if(args.length == 1){
-            if(sender.hasPermission("lifecore.guide.other")){
+            if(sender.hasPermission("lifecore.giveguide")){
 
                 String guide = LifeCore.getInstance().getConfig().getString("guide");
                 getServer().dispatchCommand(getServer().getConsoleSender(), "minecraft:give " + args[0] + " " + guide);
