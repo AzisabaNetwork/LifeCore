@@ -10,6 +10,7 @@ guide: written_book{pages:['["",{"text":" \\u0020 \\u0020 life","color":"red"},{
 
 tutorial-command: e:tutorial:-42.5,20,252:0:0
 
+
 Help:
   Menu:
     - ''
@@ -59,8 +60,7 @@ Help:
     - '&3・商店街に店を出す。 &fhttps://azisabaofficial.playing.wiki/d/%be%a6%c5%b9%b3%b9'
     - '&3・他のユーザーにお金を支払う &a/pay ユーザーネーム'
     - '&3・詳しくはお金についてのWikiページを見てね'
-    - '&fhttps://azisabaofficial.playing.wiki/d/%be%a6%c5%b9%b3%b9'
-
+    - '&fhttps://azisabaofficial.playing.wiki/d/%a4%aa%b6%e2%a4%ce%b2%d4%a4%ae%ca%fd'
   Rank:
     - ''
     - '&b&lランクについて'
@@ -74,7 +74,7 @@ Help:
     - '&3  例: &a/ar check rank1 to rank2&7'
     - '&3・ランクが上がるとできることが増え、生活が便利になっていきます'
     - '&3・詳しくはランクについてのWikiページを見てね'
-    - '&fhttps://azisabaofficial.playing.wiki/d/Towny%a4%cb%a4%c4%a4%a4%a4%c6'
+    - '&https://azisabaofficial.playing.wiki/d/rank%a5%b7%a5%b9%a5%c6%a5%e0'
 
   Dungeon:
     - ''
@@ -87,7 +87,7 @@ Help:
     - '&3・それ以降のダンジョンはだんだん難易度が上がっていきます'
     - '&3・バニラでは入手できない強い武器や装備が手に入ります'
     - '&3・詳しくはダンジョンについてのWikiページを見てね'
-    - '&fhttps://azisabaofficial.playing.wiki/d/%a5%c0%a5%f3%a5%b8%a5%e7%a5%f3%2e%c5%a8'
+    - '&fhttps://azisabaofficial.playing.wiki/d/%a5%c0%a5%f3%a5%b8%a5%e7%a5%f3.%c5%a8'
 
   Command:
     - ''
