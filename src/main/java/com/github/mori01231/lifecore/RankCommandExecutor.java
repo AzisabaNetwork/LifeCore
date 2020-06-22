@@ -13,7 +13,18 @@ public class RankCommandExecutor implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         if(args.length == 1){
-            if (args[0] == "1" || args[0] == "2" || args[0] == "3" || args[0] == "4" || args[0] == "5" || args[0] == "6" || args[0] == "7" || args[0] == "8" || args[0] == "9" || args[0] == "10"){
+            if(args[0].length() == 1){
+                if (args[0].charAt(0) < '0' || args[0].charAt(0) > '9') {
+                    for (String line : LifeCore.getInstance().getConfig().getStringList("Rank.Rank" + args[0])) {
+                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&',line));
+                    }
+                }
+                else{
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&a/rank &3の後に1~10の数字を入れてください。例：&a/rank 3"));
+                }
+            }
+
+            else if (args[0].length() == 2 && args[0].charAt(0) == '1' && args[0].charAt(0) == '0'){
                 for (String line : LifeCore.getInstance().getConfig().getStringList("Rank.Rank" + args[0])) {
                     sender.sendMessage(ChatColor.translateAlternateColorCodes('&',line));
                 }
