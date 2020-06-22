@@ -49,6 +49,9 @@ permissions:
   lifecore.guide:
     description: Allows you to acquire the guidebook.
     default: true
+  lifecore.guide.other:
+    description: Allows you to acquire the guidebook.
+    default: false
   lifecore.tutorial:
     description: Allows you to skip to tutorial.
     default: false

@@ -14,10 +14,15 @@ public class GuideCommandExecutor implements CommandExecutor {
 
 
         if(args.length == 1){
+            if(sender.hasPermission("lifecore.guide.other")){
 
-            String guide = LifeCore.getInstance().getConfig().getString("guide");
-            getServer().dispatchCommand(getServer().getConsoleSender(), "minecraft:give " + args[0] + " " + guide);
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&a&l" + args[0] +"&3にガイドブックを授与しました。" ));
+                String guide = LifeCore.getInstance().getConfig().getString("guide");
+                getServer().dispatchCommand(getServer().getConsoleSender(), "minecraft:give " + args[0] + " " + guide);
+                sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&a&l" + args[0] +"&3にガイドブックを授与しました。" ));
+            }
+            else{
+                sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&a&l" + args[0] +"&4権限不足です" ));
+            }
         }
 
         else{
