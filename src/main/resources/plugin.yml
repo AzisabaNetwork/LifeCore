@@ -27,6 +27,10 @@ commands:
     description: Skip to tutorial.
     permission: lifecore.tutorial
     usage: Syntax error! Simply type /tutorial to skip to tutorial.
+  pve:
+    description: Teleport to dungeon.
+    permission: lifecore.pve
+    usage: Syntax error! Simply type /pve to teleport to dungeon.
 
 permissions:
   lifecore.*:
@@ -54,4 +58,7 @@ permissions:
     default: false
   lifecore.tutorial:
     description: Allows you to skip to tutorial.
+    default: false
+  lifecore.pve:
+    description: Allows you to skip tp to dungeon.
     default: false
