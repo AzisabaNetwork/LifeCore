@@ -15,37 +15,59 @@ public class RankCommandExecutor implements CommandExecutor {
             Player player = (Player) sender;
 
             if(sender.hasPermission("lifecore.rank10")){
-                //Show rank and what you can do.
+                for (String line : LifeCore.getInstance().getConfig().getStringList("Rank.Rank10")) {
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&',line));
+                }
             }
             else if(sender.hasPermission("lifecore.rank9")){
-                //Show rank and what you can do.
+                for (String line : LifeCore.getInstance().getConfig().getStringList("Rank.Rank9")) {
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&',line));
+                }
             }
             else if(sender.hasPermission("lifecore.rank8")){
-                //Show rank and what you can do.
+                for (String line : LifeCore.getInstance().getConfig().getStringList("Rank.Rank8")) {
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&',line));
+                }
             }
             else if(sender.hasPermission("lifecore.rank7")){
-                //Show rank and what you can do.
+                for (String line : LifeCore.getInstance().getConfig().getStringList("Rank.Rank7")) {
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&',line));
+                }
             }
             else if(sender.hasPermission("lifecore.rank6")){
-                //Show rank and what you can do.
+                for (String line : LifeCore.getInstance().getConfig().getStringList("Rank.Rank6")) {
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&',line));
+                }
             }
             else if(sender.hasPermission("lifecore.rank5")){
-                //Show rank and what you can do.
+                for (String line : LifeCore.getInstance().getConfig().getStringList("Rank.Rank5")) {
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&',line));
+                }
             }
             else if(sender.hasPermission("lifecore.rank4")){
-                //Show rank and what you can do.
+                for (String line : LifeCore.getInstance().getConfig().getStringList("Rank.Rank4")) {
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&',line));
+                }
             }
             else if(sender.hasPermission("lifecore.rank3")){
-                //Show rank and what you can do.
+                for (String line : LifeCore.getInstance().getConfig().getStringList("Rank.Rank3")) {
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&',line));
+                }
             }
             else if(sender.hasPermission("lifecore.rank2")){
-                //Show rank and what you can do.
+                for (String line : LifeCore.getInstance().getConfig().getStringList("Rank.Rank2")) {
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&',line));
+                }
             }
             else if(sender.hasPermission("lifecore.rank1")){
-                //Show rank and what you can do.
+                for (String line : LifeCore.getInstance().getConfig().getStringList("Rank.Rank1")) {
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&',line));
+                }
             }
             else if(sender.hasPermission("lifecore.member")){
-                //Show rank and what you can do.
+                for (String line : LifeCore.getInstance().getConfig().getStringList("Rank.Member")) {
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&',line));
+                }
             }
 
 
