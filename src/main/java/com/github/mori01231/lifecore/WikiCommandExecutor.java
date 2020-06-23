@@ -20,7 +20,8 @@ public class WikiCommandExecutor implements CommandExecutor {
         }
 
         else{
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3公式Wikiリンク: &f&l" + LifeCore.getInstance().getConfig().getString("wiki-url") ));
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3非公式Wikiリンク: &f" + LifeCore.getInstance().getConfig().getString("unofficial-wiki-url") ));
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3&l公式Wikiリンク: &f&l" + LifeCore.getInstance().getConfig().getString("wiki-url") ));
         }
 
 
