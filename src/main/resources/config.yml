@@ -2,7 +2,7 @@
 
 website-url: https://azisaba.net/
 
-wiki-url: https://azisabaofficial.playing.wiki/
+wiki-url: https://azisabaofficial.playing.wiki/d/Life%c0%b8%b3%e8%bb%aa
 
 unofficial-wiki-url: https://aziserver.playing.wiki/
 
@@ -84,19 +84,22 @@ Help:
     - '&7-----------------------------'
     - '&3ガイドブックの入手 &a/guide'
     - '&3公式Wikiリンクの入手 &a/wiki'
-    - '&3非公式Wikiリンクの入手 &a/wiki unofficial'
     - '&3ホームページリンクの入手 &a/web'
+    - '&3任意チュートリアルを見なおす &a/tutorial'
+    - '&3自分の今のランクでアンロックされた機能一覧を見る &a/rank'
     - '&3町について &a/help town'
     - '&3お金について &a/help money'
     - '&3ランクについて &a/help rank'
     - '&3ダンジョンについて &a/help dungeon'
     - '&3よく使うコマンドについて &a/help command'
     - '&3ペットについて &a/help pet'
+    - '&3オークションについて &a/help auction'
     - '&3MCMMOについて &a/help mcmmo'
     - '&3追加レシピについて &a/help recipe'
     - '&3追加エンチャントについて &a/help enchant'
     - '&3投票について &a/help vote'
     - '&3Life鯖の基本について &a/help basics'
+
 
   Town:
     - ''
