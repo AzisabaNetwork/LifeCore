@@ -113,7 +113,7 @@ Help:
     - '&3  初心者相手には無料で売ってあげましょう'
     - '&3・町のプロットを購入する &a/plot claim'
     - '&3・詳しくは町についてのWikiページを見てね'
-    - '&fhttps://azisabaofficial.playing.wiki/d/Towny%a4%cb%a4%c4%a4%a4%a4%c6'
+    - '  &fhttps://azisabaofficial.playing.wiki/d/Towny%a4%cb%a4%c4%a4%a4%a4%c6'
 
   Money:
     - ''
@@ -126,7 +126,7 @@ Help:
     - '&3・商店街に店を出す。 &fhttps://azisabaofficial.playing.wiki/d/%be%a6%c5%b9%b3%b9'
     - '&3・他のユーザーにお金を支払う &a/pay ユーザーネーム'
     - '&3・詳しくはお金についてのWikiページを見てね'
-    - '&fhttps://azisabaofficial.playing.wiki/d/%a4%aa%b6%e2%a4%ce%b2%d4%a4%ae%ca%fd'
+    - '  &fhttps://azisabaofficial.playing.wiki/d/%a4%aa%b6%e2%a4%ce%b2%d4%a4%ae%ca%fd'
   Rank:
     - ''
     - '&b&lランクについて'
@@ -142,7 +142,7 @@ Help:
     - '&3・各ランクでアンロックされる機能は&a/rank ランク&3で見れます'
     - '&3  例：&a/rank 1'
     - '&3・詳しくはランクについてのWikiページを見てね'
-    - '&https://azisabaofficial.playing.wiki/d/rank%a5%b7%a5%b9%a5%c6%a5%e0'
+    - '  &https://azisabaofficial.playing.wiki/d/rank%a5%b7%a5%b9%a5%c6%a5%e0'
 
   Dungeon:
     - ''
@@ -155,7 +155,7 @@ Help:
     - '&3・それ以降のダンジョンはだんだん難易度が上がっていきます'
     - '&3・バニラでは入手できない強い武器や装備が手に入ります'
     - '&3・詳しくはダンジョンについてのWikiページを見てね'
-    - '&fhttps://azisabaofficial.playing.wiki/d/%a5%c0%a5%f3%a5%b8%a5%e7%a5%f3.%c5%a8'
+    - '  &fhttps://azisabaofficial.playing.wiki/d/%a5%c0%a5%f3%a5%b8%a5%e7%a5%f3.%c5%a8'
 
   Command:
     - ''
@@ -180,7 +180,7 @@ Help:
     - '&3・ペットを入手したら &a/pcst &3でスキルツリーを選びます'
     - '&3・なついたペットを呼ぶには &a/petc'
     - '&3・詳しくはペットについてのWikiページを見てね'
-    - '&fhttps://azisabaofficial.playing.wiki/d/MyPet'
+    - '  &fhttps://azisabaofficial.playing.wiki/d/MyPet'
 
   Mcmmo:
     - ''
@@ -191,7 +191,7 @@ Help:
     - '&3・MCMMOの合計レベルが一定以上でないとランクアップできないので'
     - '&3  MCMMOのレベルは積極的に上げましょう'
     - '&3・詳しくはMCMMOについてのWikiページを見てね'
-    - '&fhttps://azisabaofficial.playing.wiki/d/MCMMO'
+    - '  &fhttps://azisabaofficial.playing.wiki/d/MCMMO'
 
   Recipe:
     - ''
@@ -202,7 +202,7 @@ Help:
     - '&3・レシピのリストはスポーン右前方のゲートから行けるレシピワールドで確認しましょう'
     - '&3・うまく使いこなせばバニラで入手できるものよりはるかに優れたアイテムが入手できます'
     - '&3・詳しくは追加レシピについてのWikiページを見てね'
-    - '&fhttps://azisabaofficial.playing.wiki/d/%a5%a2%a5%a4%a5%c6%a5%e0%a5%ec%a5%b7%a5%d4'
+    - '  &fhttps://azisabaofficial.playing.wiki/d/%a5%a2%a5%a4%a5%c6%a5%e0%a5%ec%a5%b7%a5%d4'
 
   Enchant:
     - ''
@@ -213,7 +213,7 @@ Help:
     - '&3・GUIでエンチャントレベルを消費することにより、バニラでは入手できないエンチャント本を入手できます'
     - '&3・ダンジョンで素材となるようなアイテムはエンチャントしないようにしましょう。'
     - '&3・詳しくは追加エンチャントについてのWikiページを見てね'
-    - '&fhttps://azisabaofficial.playing.wiki/d/%c4%c9%b2%c3%a5%a8%a5%f3%a5%c1%a5%e3%a5%f3%a5%c8%2dCrazyEnchantments'
+    - '  &fhttps://azisabaofficial.playing.wiki/d/%c4%c9%b2%c3%a5%a8%a5%f3%a5%c1%a5%e3%a5%f3%a5%c8%2dCrazyEnchantments'
 
   Vote:
     - ''
@@ -239,3 +239,14 @@ Help:
     - '&3・自分がやりたいことをやりましょう'
     - '&3・わからないことがあればWikiを見ましょう &fhttps://azisabaofficial.playing.wiki/d/Life%c0%b8%b3%e8%bb%aa'
     - '&3・それではLife鯖での生活を楽しんでください！'
+
+  Auction:
+    - ''
+    - '&b&lオークションについて'
+    - '&7-----------------------------'
+    - '&3・オークションGUIを開く &a/ah'
+    - '&3・出品：売りたいものを持って &a/ah sell 値段 量'
+    - '&3・購入したアイテムや利益の回収 &a/ah collect'
+    - '&3・オークションの出品リスト &a/ah listed'
+    - '&3・詳しくはオークションについてのWikiページを見てね'
+    - '  &fhttps://azisabaofficial.playing.wiki/d/CrazyAuctions'
