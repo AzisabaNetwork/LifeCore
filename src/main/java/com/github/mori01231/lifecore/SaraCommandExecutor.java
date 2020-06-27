@@ -77,8 +77,8 @@ public class SaraCommandExecutor implements CommandExecutor {
             }
 
             //500yen
-            else if (sender.hasPermission("lifcore.500yen")){
-                if (!sender.hasPermission("lifcore.show500yen")){
+            else if (sender.hasPermission("lifecore.500yen")){
+                if (!sender.hasPermission("lifecore.show500yen")){
                     getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent add show500yen server=" + servername);
                     player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3皿表示モードに切り替えました。" ));
                 }
@@ -89,8 +89,8 @@ public class SaraCommandExecutor implements CommandExecutor {
             }
 
             //100yen
-            else if (sender.hasPermission("lifcore.100yen")){
-                if (!sender.hasPermission("lifcore.show100yen")){
+            else if (sender.hasPermission("lifecore.100yen")){
+                if (!sender.hasPermission("lifecore.show100yen")){
                     getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent add show100yen server=" + servername);
                     player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3皿表示モードに切り替えました。" ));
                 }
