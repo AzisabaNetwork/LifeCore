@@ -35,6 +35,10 @@ commands:
     description: Show rank.
     permission: lifecore.rank
     usage: Syntax error! Simply type /rank to show rank.
+  sara:
+    description: Switch between showing sara and not.
+    permission: lifecore.sara
+    usage: Syntax error! Simply type /sara to switch between showing sara and not.
 
 permissions:
   lifecore.*:
@@ -69,3 +73,6 @@ permissions:
   lifecore.rank:
     description: Allows you to show your rank.
     default: false
+  lifecore.sara:
+    description: Allows you to switch between showing sara and not.
+    default: true
