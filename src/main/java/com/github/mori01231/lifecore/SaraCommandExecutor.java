@@ -28,20 +28,56 @@ public class SaraCommandExecutor implements CommandExecutor {
 
             //CHANGE TO SHOW SARA MODE
 
-            //100yen
-            if (sender.hasPermission("lifcore.100yen")){
-                if (!sender.hasPermission("lifcore.show100yen")){
-                    getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent add show100yen server=" + servername);
+            //10000yen
+            if (sender.hasPermission("lifecore.10000yen")){
+                if (!sender.hasPermission("lifecore.show10000yen")){
+                    getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent add show10000yen server=" + servername);
                     player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3皿表示モードに切り替えました。" ));
                 }
                 else{
-                    getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent remove show100yen server=" + servername);
+                    getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent remove show10000yen server=" + servername);
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3ランク表示モードに切り替えました。" ));
+                }
+            }
+
+            //5000yen
+            else if (sender.hasPermission("lifecore.5000yen")){
+                if (!sender.hasPermission("lifecore.show5000yen")){
+                    getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent add show5000yen server=" + servername);
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3皿表示モードに切り替えました。" ));
+                }
+                else{
+                    getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent remove show5000yen server=" + servername);
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3ランク表示モードに切り替えました。" ));
+                }
+            }
+
+            //2000yen
+            else if (sender.hasPermission("lifecore.2000yen")){
+                if (!sender.hasPermission("lifecore.show2000yen")){
+                    getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent add show2000yen server=" + servername);
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3皿表示モードに切り替えました。" ));
+                }
+                else{
+                    getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent remove show2000yen server=" + servername);
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3ランク表示モードに切り替えました。" ));
+                }
+            }
+
+            //1000yen
+            else if (sender.hasPermission("lifecore.1000yen")){
+                if (!sender.hasPermission("lifecore.show1000yen")){
+                    getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent add show1000yen server=" + servername);
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3皿表示モードに切り替えました。" ));
+                }
+                else{
+                    getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent remove show1000yen server=" + servername);
                     player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3ランク表示モードに切り替えました。" ));
                 }
             }
 
             //500yen
-            if (sender.hasPermission("lifcore.500yen")){
+            else if (sender.hasPermission("lifcore.500yen")){
                 if (!sender.hasPermission("lifcore.show500yen")){
                     getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent add show500yen server=" + servername);
                     player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3皿表示モードに切り替えました。" ));
@@ -52,54 +88,21 @@ public class SaraCommandExecutor implements CommandExecutor {
                 }
             }
 
-            //1000yen
-            if (sender.hasPermission("lifcore.1000yen")){
-                if (!sender.hasPermission("lifcore.show1000yen")){
-                    getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent add show1000yen server=" + servername);
+            //100yen
+            else if (sender.hasPermission("lifcore.100yen")){
+                if (!sender.hasPermission("lifcore.show100yen")){
+                    getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent add show100yen server=" + servername);
                     player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3皿表示モードに切り替えました。" ));
                 }
                 else{
-                    getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent remove show1000yen server=" + servername);
+                    getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent remove show100yen server=" + servername);
                     player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3ランク表示モードに切り替えました。" ));
                 }
             }
 
-            //2000yen
-            if (sender.hasPermission("lifcore.2000yen")){
-                if (!sender.hasPermission("lifcore.show2000yen")){
-                    getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent add show2000yen server=" + servername);
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3皿表示モードに切り替えました。" ));
-                }
-                else{
-                    getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent remove show2000yen server=" + servername);
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3ランク表示モードに切り替えました。" ));
-                }
+            else{
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3皿が検知されませんでした。" ));
             }
-
-            //5000yen
-            if (sender.hasPermission("lifcore.5000yen")){
-                if (!sender.hasPermission("lifcore.show5000yen")){
-                    getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent add show5000yen server=" + servername);
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3皿表示モードに切り替えました。" ));
-                }
-                else{
-                    getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent remove show5000yen server=" + servername);
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3ランク表示モードに切り替えました。" ));
-                }
-            }
-
-            //10000yen
-            if (sender.hasPermission("lifcore.10000yen")){
-                if (!sender.hasPermission("lifcore.show10000yen")){
-                    getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent add show10000yen server=" + servername);
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3皿表示モードに切り替えました。" ));
-                }
-                else{
-                    getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + player.getName() + " parent remove show10000yen server=" + servername);
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3ランク表示モードに切り替えました。" ));
-                }
-            }
-
 
         }
         else{
