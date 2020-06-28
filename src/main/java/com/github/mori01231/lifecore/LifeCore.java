@@ -1,7 +1,6 @@
 package com.github.mori01231.lifecore;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class LifeCore extends JavaPlugin {
@@ -15,6 +14,8 @@ public final class LifeCore extends JavaPlugin {
     public static LifeCore getInstance() {
         return instance;
     }
+
+
 
 
     @Override
@@ -32,6 +33,8 @@ public final class LifeCore extends JavaPlugin {
 
         this.saveDefaultConfig();
 
+        registerEvents();
+
     }
 
 
@@ -40,5 +43,12 @@ public final class LifeCore extends JavaPlugin {
     public void onDisable() {
         // Plugin shutdown logic
         getLogger().info("LifeCore has been disabled.");
+    }
+
+    public void registerEvents(){
+
+        PluginManager pm = getServer().getPluginManager();
+
+        pm.registerEvents(new CreatureSpawnEventListener(this),  this);
     }
 }
