@@ -39,6 +39,10 @@ commands:
     description: Switch between showing sara and not.
     permission: lifecore.sara
     usage: Syntax error! Simply type /sara to switch between showing sara and not.
+  trash:
+    description: Open trash.
+    permission: lifecore.trash
+    usage: Syntax error! Simply type /trash to open trash.
 
 permissions:
   lifecore.*:
@@ -49,6 +53,10 @@ permissions:
       lifecore.help: true
       lifecore.guide: true
       lifecore.tutorial: true
+      lifecore.pve: true
+      lifecore.rank: true
+      lifecore.sara: true
+      lifecore.trash: true
   lifecore.wiki:
     description: Allows you to show the wiki URL.
     default: true
@@ -75,4 +83,7 @@ permissions:
     default: false
   lifecore.sara:
     description: Allows you to switch between showing sara and not.
+    default: true
+  lifecore.trash:
+    description: Allows you to open trash.
     default: true
