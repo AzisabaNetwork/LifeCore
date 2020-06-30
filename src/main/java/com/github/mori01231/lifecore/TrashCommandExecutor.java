@@ -18,7 +18,7 @@ public class TrashCommandExecutor implements CommandExecutor {
             Player p = (Player)sender;
 
             // Here we create our named help "inventory"
-            Inventory trash = Bukkit.getServer().createInventory(p, 9, "Help");
+            Inventory trash = Bukkit.getServer().createInventory(p, 54, "ゴミ箱");
 
             //Here opens the inventory
             p.openInventory(trash);
