@@ -51,5 +51,6 @@ public final class LifeCore extends JavaPlugin {
         PluginManager pm = getServer().getPluginManager();
 
         pm.registerEvents(new CreatureSpawnEventListener(this),  this);
+        pm.registerEvents(new TrashListener(this),  this);
     }
 }

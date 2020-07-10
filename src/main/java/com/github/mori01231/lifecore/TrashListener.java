@@ -7,7 +7,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import static org.bukkit.Bukkit.getLogger;
@@ -17,7 +16,7 @@ import static org.bukkit.Bukkit.getServer;
 public class TrashListener implements Listener {
 
     private LifeCore plugin;
-    public TrashListener(LifeCore plugin, Inventory inv){
+    public TrashListener(LifeCore plugin){
         this.plugin = plugin;
     }
 
