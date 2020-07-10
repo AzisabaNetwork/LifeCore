@@ -25,10 +25,10 @@ public class TrashListener implements Listener {
     public void onInventoryClose(InventoryCloseEvent event) {
         Player player = (Player)event.getPlayer();
         String PlayerName = player.getName();
-        player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3ゴミ箱を開きました" ));
+
+        Integer TrashMoneyPerItem = Integer.valueOf(LifeCore.getInstance().getConfig().getString("TrashMoneyPerItem"));
 
         if (event.getView().getTopInventory().getHolder() instanceof TrashInventory) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3Got inventory" ));
 
             int MoneyCounter = 0;
             for (ItemStack item: event.getInventory().getContents()) {
@@ -41,7 +41,8 @@ public class TrashListener implements Listener {
                 }catch (Exception e){
                 }
             }
-            getServer().dispatchCommand(getServer().getConsoleSender(), "eco give " + PlayerName + " " + MoneyCounter);
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3ゴミ箱に" + MoneyCounter + "個のアイテムを捨てました。" ));
+            getServer().dispatchCommand(getServer().getConsoleSender(), "eco give " + PlayerName + " " + MoneyCounter * TrashMoneyPerItem);
         }
     }
 }
