@@ -7,9 +7,9 @@ import org.bukkit.inventory.InventoryHolder;
 
 public class TrashInventory implements InventoryHolder {
 
-    public Inventory getInventory(){
-        Inventory trash = Server.createInventory(this, 54, "ゴミ箱");
-        return(trash);
+    @Override
+    public Inventory getInventory() {
+        return null;
     }
 
 }
