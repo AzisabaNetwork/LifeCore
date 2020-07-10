@@ -1,9 +1,13 @@
 package com.github.mori01231.lifecore;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import static org.bukkit.Bukkit.getServer;
@@ -12,15 +16,27 @@ import static org.bukkit.Bukkit.getServer;
 public class TrashListener implements Listener {
 
     private LifeCore plugin;
-    public TrashListener(LifeCore plugin){
+    public TrashListener(LifeCore plugin, Inventory inv){
         this.plugin = plugin;
+    }
+
+    public Inventory inv;
+
+    public static Inventory TrashGUI(Player player) {
+        // Create a new inventory, with no owner (as this isn't a real inventory), a size of nine, called example
+        inv = Bukkit.createInventory(player, 9, "Example");
+        return inv;
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onInventoryClose(InventoryCloseEvent event) {
         String PlayerName = event.getPlayer().getName();
 
-        if (event.getView().getTitle().equals("ゴミ箱")) {
+        //event.getInventory().getTitle
+
+        if (event.getView().getTopInventory().getHolder() instanceof TrashInventory) {
+            event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&',"&3Got inventory" ));
+
             int MoneyCounter = 0;
             for (ItemStack item: event.getInventory().getContents()) {
                 try{

@@ -7,9 +7,12 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 
 
 public class TrashCommandExecutor implements CommandExecutor {
+
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
@@ -18,7 +21,8 @@ public class TrashCommandExecutor implements CommandExecutor {
             Player p = (Player)sender;
 
             // Here we create our named help "inventory"
-            Inventory trash = Bukkit.getServer().createInventory(p, 54, "ゴミ箱");
+
+            Inventory trash = TrashListener.TrashGUI(player);
 
             //Here opens the inventory
             p.openInventory(trash);
