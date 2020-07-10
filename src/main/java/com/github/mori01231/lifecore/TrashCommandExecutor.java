@@ -21,7 +21,7 @@ public class TrashCommandExecutor implements CommandExecutor {
             Player p = (Player)sender;
 
             //Create inventory with TrashInventory holder
-            Inventory trash = Bukkit.createInventory(new TrashInventory(), 9, "Example");
+            Inventory trash = Bukkit.createInventory(new TrashInventory(), 54, "ゴミ箱");
 
             //Here opens the inventory
             p.openInventory(trash);

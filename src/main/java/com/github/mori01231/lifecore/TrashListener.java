@@ -10,6 +10,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import static org.bukkit.Bukkit.getLogger;
 import static org.bukkit.Bukkit.getServer;
 
 
@@ -23,11 +24,13 @@ public class TrashListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onInventoryClose(InventoryCloseEvent event) {
-        String PlayerName = event.getPlayer().getName();
-
+        Player player = (Player)event.getPlayer();
+        String PlayerName = player.getName();
+        player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3イベント発火！" ));
+        getLogger().info(ChatColor.translateAlternateColorCodes('&',"&3イベント発火！" ));
 
         if (event.getView().getTopInventory().getHolder() instanceof TrashInventory) {
-            event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&',"&3Got inventory" ));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3Got inventory" ));
 
             int MoneyCounter = 0;
             for (ItemStack item: event.getInventory().getContents()) {
@@ -41,6 +44,8 @@ public class TrashListener implements Listener {
                 }
             }
             getServer().dispatchCommand(getServer().getConsoleSender(), "eco give " + PlayerName + " " + MoneyCounter);
+        }else{
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3Not trash inventory" ));
         }
     }
 
