@@ -25,8 +25,7 @@ public class TrashListener implements Listener {
     public void onInventoryClose(InventoryCloseEvent event) {
         Player player = (Player)event.getPlayer();
         String PlayerName = player.getName();
-        player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3イベント発火！" ));
-        getLogger().info(ChatColor.translateAlternateColorCodes('&',"&3イベント発火！" ));
+        player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3ゴミ箱を開きました" ));
 
         if (event.getView().getTopInventory().getHolder() instanceof TrashInventory) {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3Got inventory" ));
@@ -43,9 +42,6 @@ public class TrashListener implements Listener {
                 }
             }
             getServer().dispatchCommand(getServer().getConsoleSender(), "eco give " + PlayerName + " " + MoneyCounter);
-        }else{
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3Not trash inventory" ));
         }
     }
-
 }
