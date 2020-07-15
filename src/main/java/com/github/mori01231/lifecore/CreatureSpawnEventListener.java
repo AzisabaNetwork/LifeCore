@@ -22,9 +22,8 @@ public class CreatureSpawnEventListener implements Listener{
     public void onCreatureSpawn(CreatureSpawnEvent event) {
         if(event.getEntityType().equals(EntityType.BEE)){
             String origin = event.getEntity().getOrigin().toString();
-            String location = event.getEntity().getLocation().toString();
             event.getEntity().remove();
-            getLogger().info("Bee has been removed. Origin: " + origin + " Location: " + location);
+            getLogger().info("ハチが湧いてきやがった、、、ふざけんな！この座標に巣があるので消しておいてくれ： " + origin);
         }
 
     }
