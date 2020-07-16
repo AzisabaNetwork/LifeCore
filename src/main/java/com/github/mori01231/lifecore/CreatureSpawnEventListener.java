@@ -1,6 +1,7 @@
 package com.github.mori01231.lifecore;
 
 
+import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -21,12 +22,24 @@ public class CreatureSpawnEventListener implements Listener{
     @EventHandler(priority = EventPriority.NORMAL)
     public void onCreatureSpawn(CreatureSpawnEvent event) {
         if(event.getEntityType().equals(EntityType.BEE)){
-            int originX = event.getEntity().getOrigin().getBlock().getX();
-            int originY = event.getEntity().getOrigin().getBlock().getY();
-            int originZ = event.getEntity().getOrigin().getBlock().getZ();
-            String originWorld = event.getEntity().getOrigin().getWorld().getName().toString();
+
+            // Get the coordinates of the bee spawn
+            Block originBlock = event.getEntity().getOrigin().getBlock();
+            int originX = originBlock.getX();
+            int originY = originBlock.getY();
+            int originZ = originBlock.getZ();
+
+            // Combine the coordinates into one string
+            String originLocation = " x: " + originX + " y: " + originY + " z: " + originZ + " ";
+
+            // Get the world name of the bee spawn
+            String originWorld = event.getEntity().getOrigin().getWorld().getName();
+
+            // Remove the bee
             event.getEntity().remove();
-            getLogger().info("ハチが湧いてきやがった、、、ふざけんな！" + originWorld + "ワールドの x: " + originX + " y: " + originY + " z: " + originZ + "に巣があるので消しておいてくれ");
+
+            // Log the location of the beehive
+            getLogger().info("ハチが湧いてきやがった、、、ふざけんな！" + originWorld + "ワールドの" + originLocation + "に巣があるので消しておいてくれ");
         }
 
     }
