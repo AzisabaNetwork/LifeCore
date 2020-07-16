@@ -21,9 +21,12 @@ public class CreatureSpawnEventListener implements Listener{
     @EventHandler(priority = EventPriority.NORMAL)
     public void onCreatureSpawn(CreatureSpawnEvent event) {
         if(event.getEntityType().equals(EntityType.BEE)){
-            String origin = event.getEntity().getOrigin().toString();
+            int originX = event.getEntity().getOrigin().getBlock().getX();
+            int originY = event.getEntity().getOrigin().getBlock().getY();
+            int originZ = event.getEntity().getOrigin().getBlock().getZ();
+            String originWorld = event.getEntity().getOrigin().getWorld().getName().toString();
             event.getEntity().remove();
-            getLogger().info("ハチが湧いてきやがった、、、ふざけんな！この座標に巣があるので消しておいてくれ： " + origin);
+            getLogger().info("ハチが湧いてきやがった、、、ふざけんな！" + originWorld + "ワールドの x: " + originX + " y: " + originY + " z: " + originZ + "に巣があるので消しておいてくれ");
         }
 
     }
