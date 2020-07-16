@@ -9,6 +9,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.Listener;
 
 
+import java.util.Objects;
 
 import static org.bukkit.Bukkit.getLogger;
 
@@ -23,14 +24,8 @@ public class CreatureSpawnEventListener implements Listener{
     public void onCreatureSpawn(CreatureSpawnEvent event) {
         if(event.getEntityType().equals(EntityType.BEE)){
 
-            // Get the coordinates of the bee spawn
-            Block originBlock = event.getEntity().getOrigin().getBlock();
-            int originX = originBlock.getX();
-            int originY = originBlock.getY();
-            int originZ = originBlock.getZ();
-
             // Combine the coordinates into one string
-            String originLocation = " x: " + originX + " y: " + originY + " z: " + originZ + " ";
+            String originLocation = " x: " + Objects.requireNonNull(event.getEntity().getOrigin()).getX() + " y: " + Objects.requireNonNull(event.getEntity().getOrigin()).getY() + " z: " + Objects.requireNonNull(event.getEntity().getOrigin()).getZ() + " ";
 
             // Get the world name of the bee spawn
             String originWorld = event.getEntity().getOrigin().getWorld().getName();
