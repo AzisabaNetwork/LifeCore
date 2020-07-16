@@ -23,7 +23,7 @@ public class CreatureSpawnEventListener implements Listener{
         if(event.getEntityType().equals(EntityType.BEE)){
 
             // Combine the coordinates into one string
-            String originLocation = " x: " + Objects.requireNonNull(event.getEntity().getOrigin()).getX() + " y: " + Objects.requireNonNull(event.getEntity().getOrigin()).getY() + " z: " + Objects.requireNonNull(event.getEntity().getOrigin()).getZ() + " ";
+            String originLocation = " x: " + (int)Math.round(Objects.requireNonNull(event.getEntity().getOrigin()).getX()) + " y: " + (int)Math.round(Objects.requireNonNull(event.getEntity().getOrigin()).getY()) + " z: " + (int)Math.round(Objects.requireNonNull(event.getEntity().getOrigin()).getZ()) + " ";
 
             // Get the world name of the bee spawn
             String originWorld = event.getEntity().getOrigin().getWorld().getName();
