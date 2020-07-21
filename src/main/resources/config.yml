@@ -16,7 +16,9 @@ tutorial-teleport: e:tutorial:-42.5,20,252:0:0
 
 pve-teleport: e:pve:2.5,33.0,197.5:0.0:-180.0
 
-TrashMoneyPerItem: 3
+TrashMoneyPerItem: 1
+
+TrashMoneyPerSpecialItem: 5
 
 Rank:
   Rank1:

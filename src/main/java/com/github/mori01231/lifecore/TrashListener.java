@@ -31,10 +31,18 @@ public class TrashListener implements Listener {
         if (event.getView().getTopInventory().getHolder() instanceof TrashInventory) {
 
             int MoneyCounter = 0;
+            int moneyMultiplier = TrashMoneyPerItem;
             for (ItemStack item: event.getInventory().getContents()) {
                 try{
                     if(item.getAmount() > 0){
-                        MoneyCounter += item.getAmount();
+
+                        for (String line : LifeCore.getInstance().getConfig().getStringList("Trash.Items")) {
+                            if(item.getItemMeta().getDisplayName().equals(line)){
+                                moneyMultiplier = LifeCore.getInstance().getConfig().getInt("TrashMoneyPerSpecialItem");
+                            }
+                        }
+
+                        MoneyCounter += item.getAmount() * moneyMultiplier;
                         item.setAmount(0);
                     }
 
@@ -42,7 +50,7 @@ public class TrashListener implements Listener {
                 }
             }
             player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3ゴミ箱に" + MoneyCounter + "個のアイテムを捨てました。" ));
-            getServer().dispatchCommand(getServer().getConsoleSender(), "eco give " + PlayerName + " " + MoneyCounter * TrashMoneyPerItem);
+            getServer().dispatchCommand(getServer().getConsoleSender(), "eco give " + PlayerName + " " + MoneyCounter);
         }
     }
 }
