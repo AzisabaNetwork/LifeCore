@@ -41,6 +41,7 @@ commands:
     usage: Syntax error! Simply type /sara to switch between showing sara and not.
   trash:
     description: Open trash.
+    aliases: [gomi]
     permission: lifecore.trash
     usage: Syntax error! Simply type /trash to open trash.
 
