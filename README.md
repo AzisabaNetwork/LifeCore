@@ -13,41 +13,32 @@ The core plugin for Life server in Azisaba Network
 # Commands
 
 - ``/wiki``:
-    description: Show wiki URL.
-    permission: lifecore.wiki
-    usage: Syntax error! Simply type /wiki to show wiki URL.
+    Show wiki URL.
+    必要パーミッション: lifecore.wiki
 - ``/website``:
-    description: Show website URL.
+    Show website URL.
     aliases: [web, webpage, hp, homepage]
-    permission: lifecore.website
-    usage: Syntax error! Simply type /website to show website URL.
+    必要パーミッション: lifecore.website
 - ``/help``:
-    description: Show help page.
+    Show help page.
     aliases: [tutorial]
-    permission: lifecore.help
-    usage: Syntax error! Simply type /help to show help page.
+    必要パーミッション: lifecore.help
 - ``/guide``:
-    description: Get guide book.
-    permission: lifecore.guide
-    usage: Syntax error! Simply type /guide to get guide book.
+    Get guide book.
+    必要パーミッション: lifecore.guide
 - ``/tutorial``:
-    description: Skip to tutorial.
-    permission: lifecore.tutorial
-    usage: Syntax error! Simply type /tutorial to skip to tutorial.
+    Skip to tutorial.
+    必要パーミッション: lifecore.tutorial
 - ``/pve``:
-    description: Teleport to dungeon.
-    permission: lifecore.pve
-    usage: Syntax error! Simply type /pve to teleport to dungeon.
+    Teleport to dungeon.
+    必要パーミッション: lifecore.pve
 - ``/rank``:
-    description: Show rank.
-    permission: lifecore.rank
-    usage: Syntax error! Simply type /rank to show rank.
+    Show rank.
+    必要パーミッション: lifecore.rank
 - ``/sara``:
-    description: Switch between showing sara and not.
-    permission: lifecore.sara
-    usage: Syntax error! Simply type /sara to switch between showing sara and not.
+    Switch between showing sara and not.
+    必要パーミッション: lifecore.sara
 - ``/trash``:
-    description: Open trash.
+    Open trash.
     aliases: [gomi]
-    permission: lifecore.trash
-    usage: Syntax error! Simply type /trash to open trash.
+    必要パーミッション: lifecore.trash
