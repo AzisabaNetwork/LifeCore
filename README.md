@@ -13,32 +13,31 @@ The core plugin for Life server in Azisaba Network
 # Commands
 
 - ``/wiki``:
-    Show wiki URL.
+    Show wiki URL.  
     必要パーミッション: lifecore.wiki
-- ``/website``:
-    Show website URL.
-    aliases: [web, webpage, hp, homepage]
-    必要パーミッション: lifecore.website
-- ``/help``:
-    Show help page.
-    aliases: [tutorial]
+- ``/website``: Show website URL.  
+    省略形: ``/web``, ``/webpage``, ``/hp``, ``/homepage`` 
+    必要パーミッション: ``lifecore.website``
+- ``/help``: Show help page.  
+    省略形: ``/tutorial``  
     必要パーミッション: lifecore.help
 - ``/guide``:
-    Get guide book.
+    Get guide book.  
     必要パーミッション: lifecore.guide
 - ``/tutorial``:
-    Skip to tutorial.
+    Skip to tutorial.  
     必要パーミッション: lifecore.tutorial
 - ``/pve``:
-    Teleport to dungeon.
+    Teleport to dungeon.  
     必要パーミッション: lifecore.pve
 - ``/rank``:
-    Show rank.
+    Show rank.  
     必要パーミッション: lifecore.rank
 - ``/sara``:
-    Switch between showing sara and not.
+    Switch between showing sara and not.  
     必要パーミッション: lifecore.sara
 - ``/trash``:
-    Open trash.
-    aliases: [gomi]
+    Open trash.  
+    省略形: ``/gomi``  
     必要パーミッション: lifecore.trash
+
