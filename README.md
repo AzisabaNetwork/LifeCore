@@ -10,3 +10,7 @@ The core plugin for Life server in Azisaba Network
 # Contributors
 - [Mori01231](https://github.com/Mori01231)
 
+# Commands
+
+###/sara\
+- 寄付特典の皿がある人限定。皿表示モードとランク表示モードを切り替える。
