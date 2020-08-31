@@ -12,30 +12,23 @@ The core plugin for Life server in Azisaba Network
 
 # Commands
 
-- ``/wiki``:
-    Wikiページのリンクを表示する。  
+- ``/wiki``: Wikiページのリンクを表示する。  
     必要パーミッション: lifecore.wiki
 - ``/website``: 公式ホームページのリンクを表示する。  
     省略形: ``/web``, ``/webpage``, ``/hp``, ``/homepage``  
     必要パーミッション: ``lifecore.website``
 - ``/help``: ヘルプページを表示する。より細かいヘルプコマンドへの解説が乗っています。  
-    必要パーミッション: lifecore.help
-- ``/guide``:
-    ガイドブックを入手する。  
-    必要パーミッション: lifecore.guide
-- ``/tutorial``:
-    ルール説明をスキップしてチュートリアルへテレポートする。  
-    必要パーミッション: lifecore.tutorial
-- ``/pve``:
-    ダンジョンロビーへテレポートする。  
-    必要パーミッション: lifecore.pve
-- ``/rank``:
-    自分自身のランクに関する情報を表示する。  
-    必要パーミッション: lifecore.rank
-- ``/sara``:
-    皿表示状態とランク表示状態を切り替える。デフォルトではランクが表示されます。  
-    必要パーミッション: lifecore.sara
-- ``/trash``:
-    ゴミ箱を開く。ゴミ箱に突っ込んだアイテムは一つ一円で買取されます。  
+    必要パーミッション: ``lifecore.help``
+- ``/guide``: ガイドブックを入手する。  
+    必要パーミッション: ``lifecore.guide``
+- ``/tutorial``: ルール説明をスキップしてチュートリアルへテレポートする。  
+    必要パーミッション: ``lifecore.tutorial``
+- ``/pve``: ダンジョンロビーへテレポートする。  
+    必要パーミッション: ``lifecore.pve``
+- ``/rank``: 自分自身のランクに関する情報を表示する。  
+    必要パーミッション: ``lifecore.rank``
+- ``/sara``: 皿表示状態とランク表示状態を切り替える。デフォルトではランクが表示されます。  
+    必要パーミッション: ``lifecore.sara``
+- ``/trash``: ゴミ箱を開く。ゴミ箱に突っ込んだアイテムは一つ一円で買取されます。  
     省略形: ``/gomi``  
-    必要パーミッション: lifecore.trash
+    必要パーミッション: ``lifecore.trash``
