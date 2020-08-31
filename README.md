@@ -13,31 +13,29 @@ The core plugin for Life server in Azisaba Network
 # Commands
 
 - ``/wiki``:
-    Show wiki URL.  
+    Wikiページのリンクを表示する。  
     必要パーミッション: lifecore.wiki
-- ``/website``: Show website URL.  
+- ``/website``: 公式ホームページのリンクを表示する。  
     省略形: ``/web``, ``/webpage``, ``/hp``, ``/homepage``  
     必要パーミッション: ``lifecore.website``
-- ``/help``: Show help page.  
-    省略形: ``/tutorial``  
+- ``/help``: ヘルプページを表示する。より細かいヘルプコマンドへの解説が乗っています。  
     必要パーミッション: lifecore.help
 - ``/guide``:
-    Get guide book.  
+    ガイドブックを入手する。  
     必要パーミッション: lifecore.guide
 - ``/tutorial``:
-    Skip to tutorial.  
+    ルール説明をスキップしてチュートリアルへテレポートする。  
     必要パーミッション: lifecore.tutorial
 - ``/pve``:
-    Teleport to dungeon.  
+    ダンジョンロビーへテレポートする。  
     必要パーミッション: lifecore.pve
 - ``/rank``:
-    Show rank.  
+    自分自身のランクに関する情報を表示する。  
     必要パーミッション: lifecore.rank
 - ``/sara``:
-    Switch between showing sara and not.  
+    皿表示状態とランク表示状態を切り替える。デフォルトではランクが表示されます。  
     必要パーミッション: lifecore.sara
 - ``/trash``:
-    Open trash.  
+    ゴミ箱を開く。ゴミ箱に突っ込んだアイテムは一つ一円で買取されます。  
     省略形: ``/gomi``  
     必要パーミッション: lifecore.trash
-
