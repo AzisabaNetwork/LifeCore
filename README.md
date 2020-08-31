@@ -16,7 +16,7 @@ The core plugin for Life server in Azisaba Network
     Show wiki URL.  
     必要パーミッション: lifecore.wiki
 - ``/website``: Show website URL.  
-    省略形: ``/web``, ``/webpage``, ``/hp``, ``/homepage`` 
+    省略形: ``/web``, ``/webpage``, ``/hp``, ``/homepage``  
     必要パーミッション: ``lifecore.website``
 - ``/help``: Show help page.  
     省略形: ``/tutorial``  
