@@ -12,5 +12,5 @@ The core plugin for Life server in Azisaba Network
 
 # Commands
 
-###/sara\
+### /sara\
 - 寄付特典の皿がある人限定。皿表示モードとランク表示モードを切り替える。
