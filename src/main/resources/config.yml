@@ -20,6 +20,9 @@ TrashMoneyPerItem: 1
 
 TrashMoneyPerSpecialItem: 5
 
+NonEndermanWorlds:
+  - 'resource_the_end'
+
 Trash:
   Items:
     - '§6硬貨'

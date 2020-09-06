@@ -21,8 +21,11 @@ public class CreatureSpawnEventListener implements Listener{
         }
 
         if(event.getEntityType().equals(EntityType.ENDERMAN)){
-            // Remove the Enderman
-            event.getEntity().remove();
+
+            if(LifeCore.getInstance().getConfig().getStringList("NonEndermanWorlds").contains(event.getLocation().getWorld().getName())){
+                // Remove the Enderman
+                event.getEntity().remove();
+            }
         }
 
     }
