@@ -20,5 +20,10 @@ public class CreatureSpawnEventListener implements Listener{
             event.getEntity().remove();
         }
 
+        if(event.getEntityType().equals(EntityType.ENDERMAN)){
+            // Remove the Enderman
+            event.getEntity().remove();
+        }
+
     }
 }
