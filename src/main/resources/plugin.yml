@@ -44,6 +44,10 @@ commands:
     aliases: [gomi]
     permission: lifecore.trash
     usage: Syntax error! Simply type /trash to open trash.
+  pack:
+    description: Load resource pack.
+    permission: lifecore.pack
+    usage: Syntax error! Simply type /pack to load resource pack.
 
 permissions:
   lifecore.*:
@@ -58,6 +62,7 @@ permissions:
       lifecore.rank: true
       lifecore.sara: true
       lifecore.trash: true
+      lifecore.pack: true
   lifecore.wiki:
     description: Allows you to show the wiki URL.
     default: true
@@ -87,4 +92,7 @@ permissions:
     default: true
   lifecore.trash:
     description: Allows you to open trash.
+    default: true
+  lifecore.pack:
+    description: Allows you to load the resource pack.
     default: true
