@@ -48,6 +48,10 @@ commands:
     description: Load resource pack.
     permission: lifecore.pack
     usage: Syntax error! Simply type /pack to load resource pack.
+  kiai:
+    description: Kiai
+    permission: lifecore.kiai
+    usage: Syntax error! Simply type /kiai to kiai.
 
 permissions:
   lifecore.*:
@@ -63,6 +67,7 @@ permissions:
       lifecore.sara: true
       lifecore.trash: true
       lifecore.pack: true
+      lifecore.kiai: true
   lifecore.wiki:
     description: Allows you to show the wiki URL.
     default: true
@@ -95,4 +100,7 @@ permissions:
     default: true
   lifecore.pack:
     description: Allows you to load the resource pack.
+    default: true
+  lifecore.kiai:
+    description: Allows you to kiai.
     default: true

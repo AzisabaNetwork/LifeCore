@@ -32,6 +32,7 @@ public final class LifeCore extends JavaPlugin {
         this.getCommand("sara").setExecutor(new SaraCommandExecutor());
         this.getCommand("trash").setExecutor(new TrashCommandExecutor());
         this.getCommand("pack").setExecutor(new PackCommandExecutor());
+        this.getCommand("kiai").setExecutor(new KiaiCommandExecutor());
 
         this.saveDefaultConfig();
 
