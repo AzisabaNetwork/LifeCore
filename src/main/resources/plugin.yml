@@ -52,6 +52,9 @@ commands:
     description: Kiai
     permission: lifecore.kiai
     usage: Syntax error! Simply type /kiai to kiai.
+  noob:
+    description: noob to life server
+    usage: Syntax error! Simply type /noob to noob.
 
 permissions:
   lifecore.*:
@@ -68,6 +71,7 @@ permissions:
       lifecore.trash: true
       lifecore.pack: true
       lifecore.kiai: true
+      lifecore.noob: false
   lifecore.wiki:
     description: Allows you to show the wiki URL.
     default: true
@@ -104,3 +108,6 @@ permissions:
   lifecore.kiai:
     description: Allows you to kiai.
     default: true
+  lifecore.noob:
+    description: Allows you to broadcast noob join message
+    default: false
