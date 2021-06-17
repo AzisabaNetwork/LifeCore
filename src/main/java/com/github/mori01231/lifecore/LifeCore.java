@@ -28,6 +28,7 @@ public final class LifeCore extends JavaPlugin {
         this.getCommand("guide").setExecutor(new GuideCommandExecutor());
         this.getCommand("tutorial").setExecutor(new TutorialCommandExecutor());
         this.getCommand("pve").setExecutor(new PveCommandExecutor());
+        this.getCommand("life").setExecutor(new LifeCommandExecutor());
         this.getCommand("rank").setExecutor(new RankCommandExecutor());
         this.getCommand("sara").setExecutor(new SaraCommandExecutor());
         this.getCommand("trash").setExecutor(new TrashCommandExecutor());
