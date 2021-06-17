@@ -19,19 +19,26 @@ public class PveCommandExecutor implements CommandExecutor {
 
         if (sender instanceof Player){
             Player player = (Player) sender;
-            String pve = LifeCore.getInstance().getConfig().getString("pve-teleport");
-            getServer().dispatchCommand(getServer().getConsoleSender(), "mvtp " + player.getName() + " " + pve);
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3ダンジョンロビーにテレポートしました。" ));
+            String playerName = player.getName();
 
-            // create bytearray for sending player to server
-            ByteArrayOutputStream b = new ByteArrayOutputStream();
-            DataOutputStream out = new DataOutputStream(b);
-            try {
-                out.writeUTF("Connect");
-                out.writeUTF("pve");
-            } catch (IOException e) {
-                // never happens
+            if(LifeCore.getInstance().getConfig().getBoolean("use-pve-command-as-teleport")){
+                String pve = LifeCore.getInstance().getConfig().getString("pve-teleport");
+                getServer().dispatchCommand(getServer().getConsoleSender(), "mvtp " + playerName + " " + pve);
+                sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3ダンジョンロビーにテレポートしました。" ));
+
+            }else{
+                // create bytearray for sending player to server
+                ByteArrayOutputStream b = new ByteArrayOutputStream();
+                DataOutputStream out = new DataOutputStream(b);
+                try {
+                    out.writeUTF("Connect");
+                    out.writeUTF("lifepve");
+                } catch (IOException e) {
+                    // never happens
+                }
+                player.sendPluginMessage(LifeCore.getInstance(), "BungeeCord", b.toByteArray());
             }
+
         }
         else{
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3このコマンドはコンソールから使用できません。" ));

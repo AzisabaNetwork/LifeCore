@@ -37,6 +37,8 @@ public final class LifeCore extends JavaPlugin {
 
         this.saveDefaultConfig();
 
+        getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+
         registerEvents();
 
     }

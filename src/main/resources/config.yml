@@ -2,6 +2,8 @@
 
 lp-server-name: life
 
+use-pve-command-as-teleport: true
+
 website-url: https://azisaba.net/
 
 wiki-url: https://azisabaofficial.playing.wiki/d/Life%c0%b8%b3%e8%bb%aa
