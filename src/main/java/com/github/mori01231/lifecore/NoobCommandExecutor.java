@@ -24,7 +24,7 @@ public class NoobCommandExecutor implements CommandExecutor {
             }
 
             getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + playerName + " parent add rank1 server=life");
-            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',"&d" + playerName + "&dさんが初参加しました！ ようこそ&b&lLife鯖&dへ！"));
+            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',"&d" + playerName + "&dさんがチュートリアルを完了しました！ ようこそ&b&lLife鯖&dへ！"));
             return true;
         }
 
