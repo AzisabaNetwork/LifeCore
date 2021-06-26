@@ -43,10 +43,6 @@ commands:
     description: Teleport to dungeon.
     permission: lifecore.pve
     usage: Syntax error! Simply type /pve2 to teleport to dungeon.
-  pve3:
-    description: Teleport to dungeon.
-    permission: lifecore.pve
-    usage: Syntax error! Simply type /pve3 to teleport to dungeon.
   life:
     description: Teleport to Life server.
     permission: lifecore.life

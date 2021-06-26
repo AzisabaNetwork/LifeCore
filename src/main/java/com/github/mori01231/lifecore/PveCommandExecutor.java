@@ -9,6 +9,8 @@ import org.bukkit.entity.Player;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Random;
 
 import static org.bukkit.Bukkit.getLogger;
 import static org.bukkit.Bukkit.getServer;
@@ -27,12 +29,24 @@ public class PveCommandExecutor implements CommandExecutor {
                 sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3ダンジョンロビーにテレポートしました。" ));
 
             }else{
+                // create list of servers
+                ArrayList<String> servers = new ArrayList<String>();
+                servers.add("lifepve");
+                servers.add("lifepve1");
+                servers.add("lifepve2");
+                //servers.add("lifepve3");
+
+                // create random index to select from servers
+                Random random = new Random();
+                int index = random.nextInt(servers.size());
+
                 // create bytearray for sending player to server
                 ByteArrayOutputStream b = new ByteArrayOutputStream();
                 DataOutputStream out = new DataOutputStream(b);
                 try {
+                    // send player to random server
                     out.writeUTF("Connect");
-                    out.writeUTF("lifepve");
+                    out.writeUTF(servers.get(index));
                 } catch (IOException e) {
                     // never happens
                 }
