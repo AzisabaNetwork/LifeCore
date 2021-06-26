@@ -10,39 +10,26 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import static org.bukkit.Bukkit.getServer;
-
 public class Pve1CommandExecutor  implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
         if (sender instanceof Player){
             Player player = (Player) sender;
-            String playerName = player.getName();
 
-            if(LifeCore.getInstance().getConfig().getBoolean("use-pve-command-as-teleport")){
-                String pve = LifeCore.getInstance().getConfig().getString("pve-teleport");
-                getServer().dispatchCommand(getServer().getConsoleSender(), "mvtp " + playerName + " " + pve);
-                sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3ダンジョンロビーにテレポートしました。" ));
-
-            }else{
-                // create bytearray for sending player to server
-                ByteArrayOutputStream b = new ByteArrayOutputStream();
-                DataOutputStream out = new DataOutputStream(b);
-                try {
-                    out.writeUTF("Connect");
-                    out.writeUTF("lifepve1");
-                } catch (IOException e) {
-                    // never happens
-                }
-                player.sendPluginMessage(LifeCore.getInstance(), "BungeeCord", b.toByteArray());
+            // create bytearray for sending player to server
+            ByteArrayOutputStream b = new ByteArrayOutputStream();
+            DataOutputStream out = new DataOutputStream(b);
+            try {
+                out.writeUTF("Connect");
+                out.writeUTF("lifepve1");
+            } catch (IOException e) {
+                // never happens
             }
-
+            player.sendPluginMessage(LifeCore.getInstance(), "BungeeCord", b.toByteArray());
         }
         else{
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3このコマンドはコンソールから使用できません。" ));
         }
-
 
         return true;
     }
