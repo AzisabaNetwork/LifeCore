@@ -47,6 +47,10 @@ commands:
     description: Teleport to Life server.
     permission: lifecore.life
     usage: Syntax error! Simply type /life to teleport to Life server.
+  resource:
+    description: Teleport to LifeResource server.
+    permission: lifecore.resource
+    usage: Syntax error! Simply type /resource to teleport to LifeResource server.
   rank:
     description: Show rank.
     permission: lifecore.rank
@@ -83,6 +87,7 @@ permissions:
       lifecore.tutorial: true
       lifecore.pve: true
       lifecore.life: true
+      lifecore.resource: true
       lifecore.rank: true
       lifecore.sara: true
       lifecore.trash: true
@@ -112,6 +117,9 @@ permissions:
     default: false
   lifecore.life:
     description: Allows you to go to life server.
+    default: true
+  lifecore.resource:
+    description: Allows you to go to liferesource server.
     default: true
   lifecore.rank:
     description: Allows you to show your rank.
