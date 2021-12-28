@@ -51,6 +51,10 @@ commands:
     description: Teleport to LifeResource server.
     permission: lifecore.resource
     usage: Syntax error! Simply type /resource to teleport to LifeResource server.
+  event:
+    description: Teleport to LifeEvent server.
+    permission: lifecore.event
+    usage: Syntax error! Simply type /event to teleport to LifeEvent server.
   rank:
     description: Show rank.
     permission: lifecore.rank
@@ -88,6 +92,7 @@ permissions:
       lifecore.pve: true
       lifecore.life: true
       lifecore.resource: true
+      lifecore.event: true
       lifecore.rank: true
       lifecore.sara: true
       lifecore.trash: true
@@ -120,6 +125,9 @@ permissions:
     default: true
   lifecore.resource:
     description: Allows you to go to liferesource server.
+    default: true
+  lifecore.event:
+    description: Allows you to go to event server.
     default: true
   lifecore.rank:
     description: Allows you to show your rank.
