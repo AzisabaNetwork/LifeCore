@@ -31,7 +31,7 @@ public class PveCommandExecutor implements CommandExecutor {
             }else{
                 // create list of servers
                 ArrayList<String> servers = new ArrayList<String>();
-                servers.add("lifepve");
+                //servers.add("lifepve");
                 servers.add("lifepve1");
                 servers.add("lifepve2");
                 //servers.add("lifepve3");
