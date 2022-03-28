@@ -269,3 +269,5 @@ Help:
     - '&3・オークションの出品リスト &a/ah listed'
     - '&3・詳しくはオークションについてのWikiページを見てね'
     - '  &fhttps://azisabaofficial.playing.wiki/d/CrazyAuctions'
+
+adminSwordNotifyWebhookURL: null

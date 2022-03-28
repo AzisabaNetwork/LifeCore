@@ -79,6 +79,10 @@ commands:
   noob:
     description: noob to life server
     usage: Syntax error! Simply type /noob to noob.
+  killnonadmin:
+    description: Kill non-admin players who has admin sword in their inventory.
+    permission: lifecore.killnonadmin
+    usage: Syntax error! Simple type /killnonadmin to kill non-admin players who has admin sword in their inventory.
 
 permissions:
   lifecore.*:
@@ -99,6 +103,8 @@ permissions:
       lifecore.pack: true
       lifecore.kiai: true
       lifecore.noob: false
+      lifecore.killnonadmin: true
+      lifecore.canuseadminsword: true
   lifecore.wiki:
     description: Allows you to show the wiki URL.
     default: true
@@ -146,4 +152,10 @@ permissions:
     default: true
   lifecore.noob:
     description: Allows you to broadcast noob join message
+    default: false
+  lifecore.killnonadmin:
+    description: Allows you to kill non-admin players who has admin sword in their inventory.
+    default: false
+  lifecore.canuseadminsword:
+    description: Allows you to use admin sword.
     default: false

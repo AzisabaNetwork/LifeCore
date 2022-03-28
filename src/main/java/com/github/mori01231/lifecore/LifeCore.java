@@ -40,6 +40,7 @@ public final class LifeCore extends JavaPlugin {
         this.getCommand("pack").setExecutor(new PackCommandExecutor());
         this.getCommand("kiai").setExecutor(new KiaiCommandExecutor());
         this.getCommand("noob").setExecutor(new NoobCommandExecutor());
+        this.getCommand("killnonadmin").setExecutor(new KillNonAdminCommandExecutor());
 
         this.saveDefaultConfig();
 
@@ -63,5 +64,6 @@ public final class LifeCore extends JavaPlugin {
 
         pm.registerEvents(new CreatureSpawnEventListener(this),  this);
         pm.registerEvents(new TrashListener(this),  this);
+        pm.registerEvents(new UseAdminSwordListener(),  this);
     }
 }
