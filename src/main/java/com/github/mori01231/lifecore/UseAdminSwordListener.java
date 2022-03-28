@@ -23,7 +23,7 @@ public class UseAdminSwordListener implements Listener {
             e.setCancelled(true);
             WebhookUtil.sendDiscordWebhook(
                     "adminSwordNotifyWebhookURL",
-                    null,
+                    LifeCore.getInstance().getConfig().getString("adminSwordNotifyWebhookUsername"),
                     e.getPlayer().getName() + " tried to use an item with >= 9999 generic.attack_damage\n" +
                             "Display name: `" + e.getItem().getItemMeta().getDisplayName() + "`\n" +
                             "Location: " + e.getPlayer().getLocation());
@@ -37,7 +37,7 @@ public class UseAdminSwordListener implements Listener {
             e.setCancelled(true);
             WebhookUtil.sendDiscordWebhook(
                     "adminSwordNotifyWebhookURL",
-                    null,
+                    LifeCore.getInstance().getConfig().getString("adminSwordNotifyWebhookUsername"),
                     e.getPlayer().getName() + " tried to drop an item with >= 9999 generic.attack_damage\n" +
                             "Display name: `" + e.getItemDrop().getItemStack().getItemMeta().getDisplayName() + "`\n" +
                             "Location: " + e.getPlayer().getLocation());
@@ -50,7 +50,7 @@ public class UseAdminSwordListener implements Listener {
             e.setCancelled(true);
             WebhookUtil.sendDiscordWebhook(
                     "adminSwordNotifyWebhookURL",
-                    null,
+                    LifeCore.getInstance().getConfig().getString("adminSwordNotifyWebhookUsername"),
                     e.getPlayer().getName() + " tried to pick up an item with >= 9999 generic.attack_damage\n" +
                             "Display name: `" + e.getItem().getItemStack().getItemMeta().getDisplayName() + "`\n" +
                             "Location: " + e.getPlayer().getLocation());
