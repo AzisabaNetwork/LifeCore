@@ -3,6 +3,8 @@ version: @version@
 main: com.github.mori01231.lifecore.LifeCore
 author: Mori01231
 description: Core plugin for Life Server in Azi Server Network
+depend:
+  - AziPluginMessaging
 
 commands:
   wiki:

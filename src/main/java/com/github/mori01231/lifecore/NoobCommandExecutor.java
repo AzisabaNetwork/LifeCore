@@ -1,13 +1,15 @@
 package com.github.mori01231.lifecore;
 
+import net.azisaba.azipluginmessaging.api.AziPluginMessaging;
+import net.azisaba.azipluginmessaging.api.AziPluginMessagingProvider;
+import net.azisaba.azipluginmessaging.api.protocol.Protocol;
+import net.azisaba.azipluginmessaging.api.protocol.message.ProxyboundSetRankMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import static org.bukkit.Bukkit.getServer;
 
 public class NoobCommandExecutor implements CommandExecutor {
     @Override
@@ -23,7 +25,10 @@ public class NoobCommandExecutor implements CommandExecutor {
                 return true;
             }
 
-            getServer().dispatchCommand(getServer().getConsoleSender(), "lp u " + playerName + " parent add rank1 server=life");
+            AziPluginMessaging api = AziPluginMessagingProvider.get();
+            Protocol.P_SET_RANK.sendPacket(
+                    api.getServer().getPacketSender(),
+                    new ProxyboundSetRankMessage("rank1", api.getPlayerAdapter(Player.class).get(player)));
             Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',"&d" + playerName + "&dさんがチュートリアルを完了しました！ ようこそ&b&lLife鯖&dへ！"));
             return true;
         }

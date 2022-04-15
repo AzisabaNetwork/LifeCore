@@ -3,7 +3,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 apply plugin: 'java'
 
 group = 'com.github.mori01231'
-version = '1.1.0'
+version = '1.1.1'
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
@@ -21,9 +21,14 @@ repositories {
         name = 'sonatype'
         url = 'https://oss.sonatype.org/content/groups/public/'
     }
+    maven {
+        name = 'jitpack'
+        url = 'https://jitpack.io'
+    }
 }
 
 dependencies {
+    compileOnly 'com.github.AzisabaNetwork.AziPluginMessaging:api:90d6bf73d3'
     compileOnly 'com.destroystokyo.paper:paper-api:1.15.2-R0.1-SNAPSHOT'
 }
 
