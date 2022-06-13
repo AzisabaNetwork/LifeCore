@@ -65,5 +65,6 @@ public final class LifeCore extends JavaPlugin {
         pm.registerEvents(new CreatureSpawnEventListener(this),  this);
         pm.registerEvents(new TrashListener(this),  this);
         pm.registerEvents(new UseAdminSwordListener(),  this);
+        pm.registerEvents(new NoItemFrameObstructionListener(),  this);
     }
 }
