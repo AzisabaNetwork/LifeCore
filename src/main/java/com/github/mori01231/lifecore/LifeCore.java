@@ -1,13 +1,44 @@
 package com.github.mori01231.lifecore;
 
+import com.github.mori01231.lifecore.command.DebtCommand;
+import com.github.mori01231.lifecore.command.EventCommand;
+import com.github.mori01231.lifecore.command.GuideCommand;
+import com.github.mori01231.lifecore.command.HelpCommand;
+import com.github.mori01231.lifecore.command.KiaiCommand;
+import com.github.mori01231.lifecore.command.KillNonAdminCommand;
+import com.github.mori01231.lifecore.command.LifeCommand;
+import com.github.mori01231.lifecore.command.MMIDCommand;
+import com.github.mori01231.lifecore.command.NoobCommand;
+import com.github.mori01231.lifecore.command.PackCommand;
+import com.github.mori01231.lifecore.command.Pve0Command;
+import com.github.mori01231.lifecore.command.Pve1Command;
+import com.github.mori01231.lifecore.command.Pve2Command;
+import com.github.mori01231.lifecore.command.PveCommand;
+import com.github.mori01231.lifecore.command.RankCommand;
+import com.github.mori01231.lifecore.command.ResourceCommand;
+import com.github.mori01231.lifecore.command.SaraCommand;
+import com.github.mori01231.lifecore.command.TrashCommand;
+import com.github.mori01231.lifecore.command.TravelCommand;
+import com.github.mori01231.lifecore.command.TutorialCommand;
+import com.github.mori01231.lifecore.command.WebsiteCommand;
+import com.github.mori01231.lifecore.command.WikiCommand;
+import com.github.mori01231.lifecore.listener.CreatureSpawnEventListener;
+import com.github.mori01231.lifecore.listener.NoItemFrameObstructionListener;
+import com.github.mori01231.lifecore.listener.TrashListener;
+import com.github.mori01231.lifecore.listener.UseAdminSwordListener;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 public final class LifeCore extends JavaPlugin {
 
     private static LifeCore instance;
+    private DatabaseConfig databaseConfig;
 
-    public LifeCore (){
+    public LifeCore(){
         instance = this;
     }
 
@@ -15,33 +46,36 @@ public final class LifeCore extends JavaPlugin {
         return instance;
     }
 
-
-
-
     @Override
     public void onEnable() {
         // Plugin startup logic
+
+        databaseConfig = new DatabaseConfig(Objects.requireNonNull(getConfig().getConfigurationSection("database"), "database section is missing"));
+
         getLogger().info("LifeCore has been enabled.");
-        this.getCommand("wiki").setExecutor(new WikiCommandExecutor());
-        this.getCommand("website").setExecutor(new WebsiteCommandExecutor());
-        this.getCommand("help").setExecutor(new HelpCommandExecutor());
-        this.getCommand("guide").setExecutor(new GuideCommandExecutor());
-        this.getCommand("tutorial").setExecutor(new TutorialCommandExecutor());
-        this.getCommand("travel").setExecutor(new TravelCommandExecutor());
-        this.getCommand("pve").setExecutor(new PveCommandExecutor());
-        this.getCommand("pve0").setExecutor(new Pve0CommandExecutor());
-        this.getCommand("pve1").setExecutor(new Pve1CommandExecutor());
-        this.getCommand("pve2").setExecutor(new Pve2CommandExecutor());
-        this.getCommand("life").setExecutor(new LifeCommandExecutor());
-        this.getCommand("resource").setExecutor(new ResourceCommandExecutor());
-        this.getCommand("event").setExecutor(new EventCommandExecutor());
-        this.getCommand("rank").setExecutor(new RankCommandExecutor());
-        this.getCommand("sara").setExecutor(new SaraCommandExecutor());
-        this.getCommand("trash").setExecutor(new TrashCommandExecutor());
-        this.getCommand("pack").setExecutor(new PackCommandExecutor());
-        this.getCommand("kiai").setExecutor(new KiaiCommandExecutor());
-        this.getCommand("noob").setExecutor(new NoobCommandExecutor());
-        this.getCommand("killnonadmin").setExecutor(new KillNonAdminCommandExecutor());
+
+        registerCommand("wiki", new WikiCommand());
+        registerCommand("website", new WebsiteCommand());
+        registerCommand("help", new HelpCommand());
+        registerCommand("guide", new GuideCommand());
+        registerCommand("tutorial", new TutorialCommand());
+        registerCommand("travel", new TravelCommand());
+        registerCommand("pve", new PveCommand());
+        registerCommand("pve0", new Pve0Command());
+        registerCommand("pve1", new Pve1Command());
+        registerCommand("pve2", new Pve2Command());
+        registerCommand("life", new LifeCommand());
+        registerCommand("resource", new ResourceCommand());
+        registerCommand("event", new EventCommand());
+        registerCommand("rank", new RankCommand());
+        registerCommand("sara", new SaraCommand());
+        registerCommand("trash", new TrashCommand());
+        registerCommand("pack", new PackCommand());
+        registerCommand("kiai", new KiaiCommand());
+        registerCommand("noob", new NoobCommand());
+        registerCommand("killnonadmin", new KillNonAdminCommand());
+        registerCommand("mmid", new MMIDCommand());
+        registerCommand("debt", new DebtCommand());
 
         this.saveDefaultConfig();
 
@@ -49,6 +83,16 @@ public final class LifeCore extends JavaPlugin {
 
         registerEvents();
 
+        try {
+            DBConnector.init();
+        } catch (Exception e) {
+            getLogger().severe("Failed to connect to database.");
+            e.printStackTrace();
+        }
+    }
+    
+    private void registerCommand(@NotNull String name, @NotNull CommandExecutor executor) {
+        Objects.requireNonNull(getCommand(name), name + " is not registered in plugin.yml").setExecutor(executor);
     }
 
 
@@ -56,16 +100,22 @@ public final class LifeCore extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+        DBConnector.close();
         getLogger().info("LifeCore has been disabled.");
     }
 
-    public void registerEvents(){
+    public void registerEvents() {
 
         PluginManager pm = getServer().getPluginManager();
 
-        pm.registerEvents(new CreatureSpawnEventListener(this),  this);
-        pm.registerEvents(new TrashListener(this),  this);
+        pm.registerEvents(new CreatureSpawnEventListener(),  this);
+        pm.registerEvents(new TrashListener(),  this);
         pm.registerEvents(new UseAdminSwordListener(),  this);
         pm.registerEvents(new NoItemFrameObstructionListener(),  this);
+    }
+
+    @NotNull
+    public DatabaseConfig getDatabaseConfig() {
+        return Objects.requireNonNull(databaseConfig, "databaseConfig is null");
     }
 }

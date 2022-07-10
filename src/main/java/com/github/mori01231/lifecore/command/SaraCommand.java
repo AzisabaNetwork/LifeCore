@@ -1,4 +1,4 @@
-package com.github.mori01231.lifecore;
+package com.github.mori01231.lifecore.command;
 
 import net.azisaba.azipluginmessaging.api.AziPluginMessaging;
 import net.azisaba.azipluginmessaging.api.AziPluginMessagingProvider;
@@ -10,7 +10,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class SaraCommandExecutor implements CommandExecutor {
+public class SaraCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {

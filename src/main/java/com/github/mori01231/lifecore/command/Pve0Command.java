@@ -1,5 +1,6 @@
-package com.github.mori01231.lifecore;
+package com.github.mori01231.lifecore.command;
 
+import com.github.mori01231.lifecore.LifeCore;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -10,7 +11,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class Pve2CommandExecutor  implements CommandExecutor {
+public class Pve0Command implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player){
@@ -21,13 +22,12 @@ public class Pve2CommandExecutor  implements CommandExecutor {
             DataOutputStream out = new DataOutputStream(b);
             try {
                 out.writeUTF("Connect");
-                out.writeUTF("lifepve2");
+                out.writeUTF("lifepve");
             } catch (IOException e) {
                 // never happens
             }
             player.sendPluginMessage(LifeCore.getInstance(), "BungeeCord", b.toByteArray());
-        }
-        else{
+        } else {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3このコマンドはコンソールから使用できません。" ));
         }
 

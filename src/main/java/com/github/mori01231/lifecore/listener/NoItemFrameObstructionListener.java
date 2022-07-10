@@ -1,4 +1,4 @@
-package com.github.mori01231.lifecore;
+package com.github.mori01231.lifecore.listener;
 
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.event.EventHandler;

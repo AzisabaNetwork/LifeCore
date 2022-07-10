@@ -89,6 +89,15 @@ commands:
     description: Kill non-admin players who has admin sword in their inventory.
     permission: lifecore.killnonadmin
     usage: Syntax error! Simple type /killnonadmin to kill non-admin players who has admin sword in their inventory.
+  mmid:
+    description: Shows MYTHIC_TYPE of the item.
+    permission: lifecore.mmid
+    aliases: ["mythictype"]
+    usage: /mmid [player]
+  debt:
+    description: Shows debt of the player.
+    permission: lifecore.debt
+    usage: /debt [uuid]
 
 permissions:
   lifecore.*:
@@ -112,6 +121,9 @@ permissions:
       lifecore.noob: false
       lifecore.killnonadmin: true
       lifecore.canuseadminsword: true
+      lifecore.mmid: true
+      lifecore.debt: true
+      lifecore.debt.others: true
   lifecore.wiki:
     description: Allows you to show the wiki URL.
     default: true
@@ -168,4 +180,13 @@ permissions:
     default: false
   lifecore.canuseadminsword:
     description: Allows you to use admin sword.
+    default: false
+  lifecore.mmid:
+    description: Allows you to get mythic type for the item in main hand.
+    default: false
+  lifecore.debt:
+    description: Allows you to get debt of the player.
+    default: true
+  lifecore.debt.others:
+    description: Allows you to get debt of other players.
     default: false

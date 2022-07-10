@@ -1,4 +1,4 @@
-package com.github.mori01231.lifecore;
+package com.github.mori01231.lifecore.command;
 
 import net.azisaba.azipluginmessaging.api.AziPluginMessaging;
 import net.azisaba.azipluginmessaging.api.AziPluginMessagingProvider;
@@ -11,17 +11,17 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class NoobCommandExecutor implements CommandExecutor {
+public class NoobCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        if(sender instanceof Player){
+        if (sender instanceof Player) {
             Player player = (Player) sender;
 
             String playerName = player.getName();
 
             // if the player has already finished the tutorial once, don't execute the command
-            if(player.hasPermission("lifecore.noob") == false){
+            if (!player.hasPermission("lifecore.noob")) {
                 return true;
             }
 

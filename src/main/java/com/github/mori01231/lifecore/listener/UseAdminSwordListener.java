@@ -1,5 +1,6 @@
-package com.github.mori01231.lifecore;
+package com.github.mori01231.lifecore.listener;
 
+import com.github.mori01231.lifecore.LifeCore;
 import com.github.mori01231.lifecore.util.ItemUtil;
 import com.github.mori01231.lifecore.util.WebhookUtil;
 import org.bukkit.event.EventHandler;

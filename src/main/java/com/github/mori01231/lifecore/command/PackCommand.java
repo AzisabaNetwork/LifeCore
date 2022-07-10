@@ -1,4 +1,4 @@
-package com.github.mori01231.lifecore;
+package com.github.mori01231.lifecore.command;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 
 import java.text.MessageFormat;
 
-public class PackCommandExecutor implements CommandExecutor {
+public class PackCommand implements CommandExecutor {
 
     // server.propertiesの値を取得するメソッドが見つからなかったため
     private static final String URL = "https://packs.azisaba.net/life.zip";
@@ -18,7 +18,7 @@ public class PackCommandExecutor implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        if ( !(sender instanceof Player) ) {
+        if (!(sender instanceof Player)) {
             sender.sendMessage(chat("&cこのコマンドはプレイヤーのみ有効です"));
             return true;
         }
