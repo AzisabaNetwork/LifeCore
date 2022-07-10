@@ -1,6 +1,8 @@
 package com.github.mori01231.lifecore.command;
 
 import com.github.mori01231.lifecore.DBConnector;
+import com.github.mori01231.lifecore.LifeCore;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -30,41 +32,46 @@ public class DebtCommand implements CommandExecutor {
             }
             target = args[0];
         }
-        double money;
-        double offlineMoney;
-        try {
-            Map.Entry<Double, Double> entry = DBConnector.getPrepareStatement("SELECT `money`, `offline_money` FROM `mpdb_economy` WHERE `player_uuid` = ? OR LOWER(`player_name`) = LOWER(?)", ps -> {
-                ps.setString(1, target);
-                ps.setString(2, target);
-                ResultSet rs = ps.executeQuery();
-                if (!rs.next()) {
-                    return null;
+        Bukkit.getScheduler().runTaskAsynchronously(LifeCore.getInstance(), () -> {
+            double money;
+            double offlineMoney;
+            try {
+                Map.Entry<Double, Double> entry = DBConnector.getPrepareStatement("SELECT `money`, `offline_money` FROM `mpdb_economy` WHERE `player_uuid` = ? OR LOWER(`player_name`) = LOWER(?)", ps -> {
+                    ps.setString(1, target);
+                    ps.setString(2, target);
+                    ResultSet rs = ps.executeQuery();
+                    if (!rs.next()) {
+                        return null;
+                    }
+                    return new AbstractMap.SimpleImmutableEntry<>(
+                            rs.getDouble("money"),
+                            rs.getDouble("offline_money")
+                    );
+                });
+                if (entry == null) {
+                    Bukkit.getScheduler().runTask(LifeCore.getInstance(), () -> sender.sendMessage(ChatColor.RED + "プレイヤーが見つかりませんでした。"));
+                    return;
+                } else {
+                    money = entry.getKey();
+                    offlineMoney = entry.getValue();
                 }
-                return new AbstractMap.SimpleImmutableEntry<>(
-                        rs.getDouble("money"),
-                        rs.getDouble("offline_money")
-                );
-            });
-            if (entry == null) {
-                sender.sendMessage(ChatColor.RED + "プレイヤーが見つかりませんでした。");
-                return true;
-            } else {
-                money = entry.getKey();
-                offlineMoney = entry.getValue();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        double debt = Math.max(0.0, -(money + offlineMoney));
-        if (debt == -0.0) {
-            debt = 0.0;
-        }
-        String details = ChatColor.GRAY + "(" + money + " + " + offlineMoney + ")";
-        if (args.length == 0) {
-            sender.sendMessage(ChatColor.GREEN + "現在の借金は" + ChatColor.RED + debt + ChatColor.GREEN + "円です。" + details);
-        } else {
-            sender.sendMessage(ChatColor.GREEN + target + "の現在の借金は" + ChatColor.RED + debt + ChatColor.GREEN + "円です。" + details);
-        }
+            double varDebt = Math.max(0.0, -(money + offlineMoney));
+            if (varDebt == -0.0) {
+                varDebt = 0.0;
+            }
+            double debt = varDebt;
+            String details = ChatColor.GRAY + "(" + money + " + " + offlineMoney + ")";
+            Bukkit.getScheduler().runTask(LifeCore.getInstance(), () -> {
+                if (args.length == 0) {
+                    sender.sendMessage(ChatColor.GREEN + "現在の借金は" + ChatColor.RED + debt + ChatColor.GREEN + "円です。" + details);
+                } else {
+                    sender.sendMessage(ChatColor.GREEN + target + "の現在の借金は" + ChatColor.RED + debt + ChatColor.GREEN + "円です。" + details);
+                }
+            });
+        });
         return true;
     }
 }
