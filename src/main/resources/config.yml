@@ -273,6 +273,8 @@ Help:
 adminSwordNotifyWebhookURL: null
 adminSwordNotifyWebhookUsername: null
 
+spawnOnJoin: false
+
 database:
   # (scheme)://(host):(port)/(database)
   # Keep the line commented out unless you get an obvious error message indicating that the driver was not found.

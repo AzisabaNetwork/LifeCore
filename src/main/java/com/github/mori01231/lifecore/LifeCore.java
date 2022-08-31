@@ -24,6 +24,7 @@ import com.github.mori01231.lifecore.command.WebsiteCommand;
 import com.github.mori01231.lifecore.command.WikiCommand;
 import com.github.mori01231.lifecore.listener.CreatureSpawnEventListener;
 import com.github.mori01231.lifecore.listener.NoItemFrameObstructionListener;
+import com.github.mori01231.lifecore.listener.SpawnOnJoinListener;
 import com.github.mori01231.lifecore.listener.TrashListener;
 import com.github.mori01231.lifecore.listener.UseAdminSwordListener;
 import org.bukkit.command.CommandExecutor;
@@ -112,6 +113,7 @@ public final class LifeCore extends JavaPlugin {
         pm.registerEvents(new TrashListener(),  this);
         pm.registerEvents(new UseAdminSwordListener(),  this);
         pm.registerEvents(new NoItemFrameObstructionListener(),  this);
+        pm.registerEvents(new SpawnOnJoinListener(),  this);
     }
 
     @NotNull

@@ -19,9 +19,9 @@ public class UseAdminSwordListener implements Listener {
     // sendDiscordWebhook with config path "adminSwordNotifyWebhookURL" if player uses an item with > 10000 damage attribute modifier
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
-        if (checkCooldown(e.getPlayer().getUniqueId())) return;
         if (ItemUtil.isProbablyAdminSword(e.getItem()) && !e.getPlayer().hasPermission("lifecore.canuseadminsword")) {
             e.setCancelled(true);
+            if (checkCooldown(e.getPlayer().getUniqueId())) return;
             WebhookUtil.sendDiscordWebhook(
                     "adminSwordNotifyWebhookURL",
                     LifeCore.getInstance().getConfig().getString("adminSwordNotifyWebhookUsername"),
@@ -33,9 +33,9 @@ public class UseAdminSwordListener implements Listener {
 
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent e) {
-        if (checkCooldown(e.getPlayer().getUniqueId())) return;
         if (ItemUtil.isProbablyAdminSword(e.getItemDrop().getItemStack())) {
             e.setCancelled(true);
+            if (checkCooldown(e.getPlayer().getUniqueId())) return;
             WebhookUtil.sendDiscordWebhook(
                     "adminSwordNotifyWebhookURL",
                     LifeCore.getInstance().getConfig().getString("adminSwordNotifyWebhookUsername"),
@@ -47,8 +47,9 @@ public class UseAdminSwordListener implements Listener {
 
     @EventHandler
     public void onPlayerAttemptPickupItem(PlayerAttemptPickupItemEvent e) {
-        if (ItemUtil.isProbablyAdminSword(e.getItem().getItemStack())) {
+        if (ItemUtil.isProbablyAdminSword(e.getItem().getItemStack()) && !e.getPlayer().hasPermission("lifecore.canuseadminsword")) {
             e.setCancelled(true);
+            if (checkCooldown(e.getPlayer().getUniqueId())) return;
             WebhookUtil.sendDiscordWebhook(
                     "adminSwordNotifyWebhookURL",
                     LifeCore.getInstance().getConfig().getString("adminSwordNotifyWebhookUsername"),
