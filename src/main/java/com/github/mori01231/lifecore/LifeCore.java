@@ -27,6 +27,7 @@ import com.github.mori01231.lifecore.listener.NoItemFrameObstructionListener;
 import com.github.mori01231.lifecore.listener.SpawnOnJoinListener;
 import com.github.mori01231.lifecore.listener.TrashListener;
 import com.github.mori01231.lifecore.listener.UseAdminSwordListener;
+import com.github.mori01231.lifecore.listener.VoteListener;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -50,6 +51,8 @@ public final class LifeCore extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
+
+        VotesFile.load(this);
 
         databaseConfig = new DatabaseConfig(Objects.requireNonNull(getConfig().getConfigurationSection("database"), "database section is missing"));
 
@@ -101,6 +104,8 @@ public final class LifeCore extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+
+        VotesFile.save(this);
         DBConnector.close();
         getLogger().info("LifeCore has been disabled.");
     }
@@ -114,6 +119,7 @@ public final class LifeCore extends JavaPlugin {
         pm.registerEvents(new UseAdminSwordListener(),  this);
         pm.registerEvents(new NoItemFrameObstructionListener(),  this);
         pm.registerEvents(new SpawnOnJoinListener(),  this);
+        pm.registerEvents(new VoteListener(),  this);
     }
 
     @NotNull

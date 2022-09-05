@@ -21,7 +21,7 @@ public interface PlayerTabExecutor extends TabExecutor {
         }
     }
 
-    boolean execute(@NotNull Player player, @NotNull String @NotNull [] args);
+    boolean execute(@NotNull Player player, @NotNull String [] args);
 
     @Override
     default @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {

@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class MMIDCommand implements PlayerTabExecutor {
     @Override
-    public boolean execute(@NotNull Player player, @NotNull String @NotNull [] args) {
+    public boolean execute(@NotNull Player player, @NotNull String [] args) {
         Player target;
         if (args.length == 0) {
             target = player;

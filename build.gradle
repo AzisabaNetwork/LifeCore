@@ -14,7 +14,7 @@ apply plugin: 'java'
 apply plugin: 'com.github.johnrengelman.shadow'
 
 group = 'com.github.mori01231'
-version = '2.0.2'
+version = '2.1.0'
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
@@ -47,14 +47,21 @@ repositories {
         name = 'jitpack'
         url = 'https://jitpack.io'
     }
+    maven {
+        name = 'lumine'
+        url = 'https://mvn.lumine.io/repository/maven-public/'
+    }
 }
 
 dependencies {
     implementation 'com.zaxxer:HikariCP:4.0.3'
     implementation 'org.mariadb.jdbc:mariadb-java-client:3.0.6'
+    compileOnly 'com.vexsoftware:nuvotifier-universal:2.6.0'
     compileOnly 'com.github.AzisabaNetwork.AziPluginMessaging:api:90d6bf73d3'
     compileOnly 'com.destroystokyo.paper:paper-api:1.15.2-R0.1-SNAPSHOT'
     compileOnly 'org.spigotmc:spigot:1.15.2-R0.1-SNAPSHOT'
+    compileOnly 'io.lumine:Mythic-Dist:4.13.0'
+    compileOnly 'com.github.MilkBowl:VaultAPI:1.7'
 }
 
 processResources {
