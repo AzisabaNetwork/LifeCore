@@ -2,6 +2,7 @@ package com.github.mori01231.lifecore.command;
 
 import com.github.mori01231.lifecore.DBConnector;
 import com.github.mori01231.lifecore.LifeCore;
+import com.github.mori01231.lifecore.TableKey;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -36,7 +37,8 @@ public class DebtCommand implements CommandExecutor {
             double money;
             double offlineMoney;
             try {
-                Map.Entry<Double, Double> entry = DBConnector.getPrepareStatement("SELECT `money`, `offline_money` FROM `mpdb_economy` WHERE `player_uuid` = ? OR LOWER(`player_name`) = LOWER(?)", ps -> {
+                String dbName = LifeCore.getInstance().getDatabaseConfig().getDatabaseName(TableKey.MPDB);
+                Map.Entry<Double, Double> entry = DBConnector.getPrepareStatement("SELECT `money`, `offline_money` FROM `" + dbName + "`.`mpdb_economy` WHERE `player_uuid` = ? OR LOWER(`player_name`) = LOWER(?)", ps -> {
                     ps.setString(1, target);
                     ps.setString(2, target);
                     ResultSet rs = ps.executeQuery();

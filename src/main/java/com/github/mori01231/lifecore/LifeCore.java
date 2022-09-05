@@ -28,16 +28,19 @@ import com.github.mori01231.lifecore.listener.SpawnOnJoinListener;
 import com.github.mori01231.lifecore.listener.TrashListener;
 import com.github.mori01231.lifecore.listener.UseAdminSwordListener;
 import com.github.mori01231.lifecore.listener.VoteListener;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+import java.util.concurrent.Executor;
 
 public final class LifeCore extends JavaPlugin {
 
     private static LifeCore instance;
+    public final Executor asyncExecutor = r -> Bukkit.getScheduler().runTaskAsynchronously(this, r);
     private DatabaseConfig databaseConfig;
 
     public LifeCore(){

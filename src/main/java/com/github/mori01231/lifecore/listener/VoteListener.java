@@ -2,6 +2,7 @@ package com.github.mori01231.lifecore.listener;
 
 import com.github.mori01231.lifecore.LifeCore;
 import com.github.mori01231.lifecore.VotesFile;
+import com.github.mori01231.lifecore.util.PlayerUtil;
 import com.vexsoftware.votifier.model.Vote;
 import com.vexsoftware.votifier.model.VotifierEvent;
 import io.lumine.xikage.mythicmobs.MythicMobs;
@@ -25,19 +26,24 @@ public class VoteListener implements Listener {
         String username = vote.getUsername();
         Player player = Bukkit.getPlayerExact(username);
         if (player == null) {
-            VotesFile.increase(username);
-            LifeCore.getInstance().getLogger().info("Queued vote from " + username);
+            PlayerUtil.resolveUUIDAsync(username).thenAcceptAsync(uuid -> {
+                if (uuid == null) {
+                    return;
+                }
+                VotesFile.increase(uuid.toString());
+                LifeCore.getInstance().getSLF4JLogger().info("Queued vote from {} (UUID: {})", username, uuid);
+            }, LifeCore.getInstance().asyncExecutor);
             return;
         }
-        long count = VotesFile.getVotes(username) + 1;
-        VotesFile.setVotes(username, 0);
+        long count = VotesFile.getVotes(player.getUniqueId().toString()) + 1;
+        VotesFile.setVotes(player.getUniqueId().toString(), 0);
         processVotes(player, count);
     }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
-        long count = VotesFile.getVotes(e.getPlayer().getName());
-        VotesFile.setVotes(e.getPlayer().getName(), 0);
+        long count = VotesFile.getVotes(e.getPlayer().getUniqueId().toString());
+        VotesFile.setVotes(e.getPlayer().getUniqueId().toString(), 0);
         if (count > 0) {
             Bukkit.getScheduler().runTaskLater(LifeCore.getInstance(), () -> processVotes(e.getPlayer(), count), 1);
         }

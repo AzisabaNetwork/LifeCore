@@ -5,6 +5,9 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 
@@ -17,6 +20,7 @@ public final class DatabaseConfig {
     private final String username;
     private final String password;
     private final Properties properties;
+    private final Map<String, String> databaseNames;
 
     public DatabaseConfig(@NotNull ConfigurationSection section) {
         String driver = section.getString("driver");
@@ -39,6 +43,12 @@ public final class DatabaseConfig {
         this.username = username;
         this.password = password;
         this.properties = properties;
+        this.databaseNames = new HashMap<>();
+
+        ConfigurationSection names = section.getConfigurationSection("names");
+        if (names != null) {
+            names.getValues(true).forEach((key, value) -> this.databaseNames.put(key.toLowerCase(Locale.ROOT), String.valueOf(value)));
+        }
     }
 
     @Contract(pure = true)
@@ -86,6 +96,12 @@ public final class DatabaseConfig {
     @NotNull
     public Properties properties() {
         return properties;
+    }
+
+    @Contract(pure = true)
+    @NotNull
+    public String getDatabaseName(@NotNull TableKey key) {
+        return databaseNames.getOrDefault(key.lowercase(), key.lowercase());
     }
 
     @Contract(pure = true)
