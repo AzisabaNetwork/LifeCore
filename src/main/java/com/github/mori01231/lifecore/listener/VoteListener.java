@@ -8,6 +8,7 @@ import com.vexsoftware.votifier.model.VotifierEvent;
 import io.lumine.xikage.mythicmobs.MythicMobs;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -25,16 +26,20 @@ public class VoteListener implements Listener {
         Vote vote = e.getVote();
         String username = vote.getUsername();
         Player player = Bukkit.getPlayerExact(username);
+        Bukkit.broadcastMessage(ChatColor.GOLD + "[" + ChatColor.DARK_RED + "Broadcast" + ChatColor.GOLD + "] " +
+                ChatColor.DARK_GREEN + "Thanks " + ChatColor.RED + username +
+                ChatColor.DARK_GREEN + " for voting on " + vote.getServiceName());
         if (player == null) {
             PlayerUtil.resolveUUIDAsync(username).thenAcceptAsync(uuid -> {
                 if (uuid == null) {
                     return;
                 }
                 VotesFile.increase(uuid.toString());
-                LifeCore.getInstance().getSLF4JLogger().info("Queued vote from {} (UUID: {})", username, uuid);
+                LifeCore.getInstance().getSLF4JLogger().info("Queued vote from {} (UUID: {}, service name: {})", username, uuid, vote.getServiceName());
             }, LifeCore.getInstance().asyncExecutor);
             return;
         }
+        player.sendMessage(ChatColor.GREEN + vote.getServiceName() + "で投票していただきありがとうございます！");
         long count = VotesFile.getVotes(player.getUniqueId().toString()) + 1;
         VotesFile.setVotes(player.getUniqueId().toString(), 0);
         processVotes(player, count);
