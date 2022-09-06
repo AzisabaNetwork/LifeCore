@@ -50,7 +50,7 @@ public class VoteListener implements Listener {
         long count = VotesFile.getVotes(e.getPlayer().getUniqueId().toString());
         VotesFile.setVotes(e.getPlayer().getUniqueId().toString(), 0);
         if (count > 0) {
-            Bukkit.getScheduler().runTaskLater(LifeCore.getInstance(), () -> processVotes(e.getPlayer(), count), 1);
+            Bukkit.getScheduler().runTaskLater(LifeCore.getInstance(), () -> processVotes(e.getPlayer(), count), 20 * 10);
         }
     }
 
