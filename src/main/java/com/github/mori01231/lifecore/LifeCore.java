@@ -20,6 +20,7 @@ import com.github.mori01231.lifecore.command.SaraCommand;
 import com.github.mori01231.lifecore.command.TrashCommand;
 import com.github.mori01231.lifecore.command.TravelCommand;
 import com.github.mori01231.lifecore.command.TutorialCommand;
+import com.github.mori01231.lifecore.command.VoteCommand;
 import com.github.mori01231.lifecore.command.WebsiteCommand;
 import com.github.mori01231.lifecore.command.WikiCommand;
 import com.github.mori01231.lifecore.listener.CreatureSpawnEventListener;
@@ -83,6 +84,7 @@ public final class LifeCore extends JavaPlugin {
         registerCommand("killnonadmin", new KillNonAdminCommand());
         registerCommand("mmid", new MMIDCommand());
         registerCommand("debt", new DebtCommand());
+        registerCommand("vote", new VoteCommand());
 
         this.saveDefaultConfig();
 

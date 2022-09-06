@@ -98,6 +98,10 @@ commands:
     description: Shows debt of the player.
     permission: lifecore.debt
     usage: /debt [uuid]
+  vote:
+    description: Shows vote URL.
+    permission: lifecore.vote
+    usage: Syntax error! Simply type /vote to show vote URL.
 
 permissions:
   lifecore.*:
@@ -124,6 +128,7 @@ permissions:
       lifecore.mmid: true
       lifecore.debt: true
       lifecore.debt.others: true
+      lifecore.vote: true
   lifecore.wiki:
     description: Allows you to show the wiki URL.
     default: true
@@ -190,3 +195,6 @@ permissions:
   lifecore.debt.others:
     description: Allows you to get debt of other players.
     default: false
+  lifecore.vote:
+    description: Allows you to show vote URL.
+    default: true
