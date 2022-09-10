@@ -5,6 +5,8 @@ author: Mori01231
 description: Core plugin for Life Server in Azi Server Network
 depend:
   - AziPluginMessaging
+softdepend:
+  - Votifier
 
 commands:
   wiki:

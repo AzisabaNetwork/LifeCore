@@ -117,12 +117,15 @@ public final class LifeCore extends JavaPlugin {
 
         PluginManager pm = getServer().getPluginManager();
 
-        pm.registerEvents(new CreatureSpawnEventListener(),  this);
-        pm.registerEvents(new TrashListener(),  this);
-        pm.registerEvents(new UseAdminSwordListener(),  this);
-        pm.registerEvents(new NoItemFrameObstructionListener(),  this);
-        pm.registerEvents(new SpawnOnJoinListener(),  this);
-        pm.registerEvents(new VoteListener(),  this);
+        pm.registerEvents(new CreatureSpawnEventListener(), this);
+        pm.registerEvents(new TrashListener(), this);
+        pm.registerEvents(new UseAdminSwordListener(), this);
+        pm.registerEvents(new NoItemFrameObstructionListener(), this);
+        pm.registerEvents(new SpawnOnJoinListener(), this);
+        try {
+            Class.forName("com.vexsoftware.votifier.model.VotifierEvent");
+            pm.registerEvents(new VoteListener(), this);
+        } catch (Exception | NoClassDefFoundError ignore) {}
     }
 
     @NotNull
