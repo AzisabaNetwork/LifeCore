@@ -16,7 +16,6 @@ import com.github.mori01231.lifecore.command.Pve2Command;
 import com.github.mori01231.lifecore.command.PveCommand;
 import com.github.mori01231.lifecore.command.RankCommand;
 import com.github.mori01231.lifecore.command.ResourceCommand;
-import com.github.mori01231.lifecore.command.SaraCommand;
 import com.github.mori01231.lifecore.command.TrashCommand;
 import com.github.mori01231.lifecore.command.TravelCommand;
 import com.github.mori01231.lifecore.command.TutorialCommand;
@@ -76,7 +75,6 @@ public final class LifeCore extends JavaPlugin {
         registerCommand("resource", new ResourceCommand());
         registerCommand("event", new EventCommand());
         registerCommand("rank", new RankCommand());
-        registerCommand("sara", new SaraCommand());
         registerCommand("trash", new TrashCommand());
         registerCommand("pack", new PackCommand());
         registerCommand("kiai", new KiaiCommand());

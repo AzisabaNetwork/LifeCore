@@ -47,11 +47,11 @@ public class VoteListener implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
-        long count = VotesFile.getVotes(e.getPlayer().getUniqueId().toString());
-        VotesFile.setVotes(e.getPlayer().getUniqueId().toString(), 0);
-        if (count > 0) {
-            Bukkit.getScheduler().runTaskLater(LifeCore.getInstance(), () -> processVotes(e.getPlayer(), count), 20 * 10);
-        }
+        Bukkit.getScheduler().runTaskLater(LifeCore.getInstance(), () -> {
+            long count = VotesFile.getVotes(e.getPlayer().getUniqueId().toString());
+            VotesFile.setVotes(e.getPlayer().getUniqueId().toString(), 0);
+            processVotes(e.getPlayer(), count);
+        }, 20 * 10);
     }
 
     private void processVotes(@NotNull Player player, long count) {
