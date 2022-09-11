@@ -1,6 +1,7 @@
 package com.github.mori01231.lifecore;
 
 import com.github.mori01231.lifecore.command.DebtCommand;
+import com.github.mori01231.lifecore.command.DebugVoteCommand;
 import com.github.mori01231.lifecore.command.EventCommand;
 import com.github.mori01231.lifecore.command.GuideCommand;
 import com.github.mori01231.lifecore.command.HelpCommand;
@@ -83,6 +84,7 @@ public final class LifeCore extends JavaPlugin {
         registerCommand("mmid", new MMIDCommand());
         registerCommand("debt", new DebtCommand());
         registerCommand("vote", new VoteCommand());
+        registerCommand("debugvote", new DebugVoteCommand());
 
         this.saveDefaultConfig();
 
@@ -125,7 +127,9 @@ public final class LifeCore extends JavaPlugin {
         try {
             Class.forName("com.vexsoftware.votifier.model.VotifierEvent");
             pm.registerEvents(new VoteListener(), this);
-        } catch (Exception | NoClassDefFoundError ignore) {}
+        } catch (Exception | NoClassDefFoundError e) {
+            getSLF4JLogger().warn("Votifier not detected, not registering VoteListener.", e);
+        }
     }
 
     @NotNull
