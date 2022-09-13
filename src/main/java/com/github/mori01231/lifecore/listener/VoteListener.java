@@ -25,7 +25,7 @@ public class VoteListener implements Listener {
         processVotePacket(e.getVote().getUsername(), e.getVote().getServiceName());
     }
 
-    public static void processVotePacket(@NotNull String username, @NotNull String serviceName) {
+    public static synchronized void processVotePacket(@NotNull String username, @NotNull String serviceName) {
         Player player = Bukkit.getPlayerExact(username);
         Bukkit.broadcastMessage(ChatColor.GOLD + "[" + ChatColor.DARK_RED + "Broadcast" + ChatColor.GOLD + "] " +
             ChatColor.DARK_GREEN + "Thanks " + ChatColor.RED + username +
