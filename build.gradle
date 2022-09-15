@@ -14,7 +14,7 @@ apply plugin: 'java'
 apply plugin: 'com.github.johnrengelman.shadow'
 
 group = 'com.github.mori01231'
-version = '3.1.1'
+version = '3.1.2'
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
@@ -54,10 +54,12 @@ repositories {
 }
 
 dependencies {
+    //noinspection GradlePackageUpdate
     implementation 'com.zaxxer:HikariCP:4.0.3'
     implementation 'org.mariadb.jdbc:mariadb-java-client:3.0.6'
     compileOnly 'com.vexsoftware:nuvotifier-universal:2.6.0'
-    compileOnly 'com.github.AzisabaNetwork.AziPluginMessaging:api:90d6bf73d3'
+    compileOnly 'com.github.AzisabaNetwork.AziPluginMessaging:api:4.0.0'
+    //noinspection VulnerableLibrariesLocal
     compileOnly 'com.destroystokyo.paper:paper-api:1.15.2-R0.1-SNAPSHOT'
     compileOnly 'org.spigotmc:spigot:1.15.2-R0.1-SNAPSHOT'
     compileOnly 'io.lumine:Mythic-Dist:4.13.0'
