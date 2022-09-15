@@ -36,7 +36,7 @@ public class VotesFile {
 
     public static void save(@NotNull Plugin plugin) {
         try {
-            String content = new Yaml().dumpAsMap(VotesFile.votes);
+            String content = new Yaml().dumpAsMap(votes);
             try (FileWriter writer = new FileWriter(new File(plugin.getDataFolder(), "votes.yml"))) {
                 writer.write(content);
             }
@@ -46,15 +46,21 @@ public class VotesFile {
     }
 
     public static long getVotes(@NotNull String key) {
-        return votes.getOrDefault(key, 0L);
+        synchronized (votes) {
+            return votes.getOrDefault(key, 0L);
+        }
     }
 
-    public static void setVotes(@NotNull String key, long votes) {
-        VotesFile.votes.put(key, votes);
+    public static void setVotes(@NotNull String key, long count) {
+        synchronized (votes) {
+            votes.put(key, count);
+        }
     }
 
     public static void increase(@NotNull String key) {
-        setVotes(key, getVotes(key) + 1);
+        synchronized (votes) {
+            setVotes(key, getVotes(key) + 1);
+        }
     }
 
     private static long toLong(@NotNull Object o) {
