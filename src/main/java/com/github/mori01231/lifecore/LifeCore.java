@@ -24,6 +24,7 @@ import com.github.mori01231.lifecore.command.VoteCommand;
 import com.github.mori01231.lifecore.command.WebsiteCommand;
 import com.github.mori01231.lifecore.command.WikiCommand;
 import com.github.mori01231.lifecore.listener.CreatureSpawnEventListener;
+import com.github.mori01231.lifecore.listener.DestroyExperienceOrbListener;
 import com.github.mori01231.lifecore.listener.NoItemFrameObstructionListener;
 import com.github.mori01231.lifecore.listener.SpawnOnJoinListener;
 import com.github.mori01231.lifecore.listener.TrashListener;
@@ -124,6 +125,11 @@ public final class LifeCore extends JavaPlugin {
         pm.registerEvents(new UseAdminSwordListener(), this);
         pm.registerEvents(new NoItemFrameObstructionListener(), this);
         pm.registerEvents(new SpawnOnJoinListener(), this);
+
+        if (getConfig().getBoolean("destroy-experience-orb-on-chunk-load", false)) {
+            pm.registerEvents(new DestroyExperienceOrbListener(), this);
+        }
+
         try {
             Class.forName("com.vexsoftware.votifier.model.VotifierEvent");
             pm.registerEvents(new VoteListener(), this);
