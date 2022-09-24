@@ -34,7 +34,7 @@ public class PveCommand implements CommandExecutor {
                 //servers.add("lifepve");
                 servers.add("lifepve1");
                 servers.add("lifepve2");
-                //servers.add("lifepve3");
+                servers.add("lifepve3");
 
                 // create random index to select from servers
                 Random random = new Random();
