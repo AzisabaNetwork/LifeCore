@@ -28,6 +28,26 @@ TrashMoneyPerSpecialItem: 5
 
 destroy-experience-orb-on-chunk-load: false
 
+enable-gc-detector: false
+
+gc-threshold-max-minutes-between: 5
+
+gc-threshold-count: 10
+
+# This command is run once the count exceeds the threshold
+gc-triggered-command:
+  - broadcast このサーバーは10分後に再起動されます。
+  - @delay 6000 broadcast このサーバーは5分後に再起動されます。
+  - @delay 8400 broadcast このサーバーは3分後に再起動されます。
+  - @delay 9600 broadcast このサーバーは2分後に再起動されます。
+  - @delay 9600 whitelist on
+  - @delay 10800 broadcast このサーバーは1分後に再起動されます。
+  - @delay 11400 broadcast このサーバーは30秒後に再起動されます。
+  - @delay 11800 broadcast このサーバーは10秒後に再起動されます。
+  - @delay 12000 mpdb saveAndKick
+  - @delay 14398 whitelist off
+  - @delay 14400 stop
+
 NonEndermanWorlds:
   - 'resource_the_end'
   - 'world_the_end'

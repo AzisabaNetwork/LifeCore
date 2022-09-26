@@ -32,6 +32,7 @@ import com.github.mori01231.lifecore.listener.SpawnOnJoinListener;
 import com.github.mori01231.lifecore.listener.TrashListener;
 import com.github.mori01231.lifecore.listener.UseAdminSwordListener;
 import com.github.mori01231.lifecore.listener.VoteListener;
+import com.github.mori01231.lifecore.util.GCListener;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.plugin.PluginManager;
@@ -44,6 +45,7 @@ import java.util.concurrent.Executor;
 public final class LifeCore extends JavaPlugin {
 
     private static LifeCore instance;
+    private final GCListener gcListener = new GCListener();
     public final Executor asyncExecutor = r -> Bukkit.getScheduler().runTaskAsynchronously(this, r);
     private DatabaseConfig databaseConfig;
 
@@ -58,6 +60,10 @@ public final class LifeCore extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
+
+        if (getConfig().getBoolean("enable-gc-detector", false)) {
+            gcListener.register();
+        }
 
         VotesFile.load(this);
 
@@ -108,19 +114,17 @@ public final class LifeCore extends JavaPlugin {
         Objects.requireNonNull(getCommand(name), name + " is not registered in plugin.yml").setExecutor(executor);
     }
 
-
-
     @Override
     public void onDisable() {
         // Plugin shutdown logic
 
         VotesFile.save(this);
         DBConnector.close();
+        gcListener.unregister();
         getLogger().info("LifeCore has been disabled.");
     }
 
     public void registerEvents() {
-
         PluginManager pm = getServer().getPluginManager();
 
         pm.registerEvents(new CreatureSpawnEventListener(), this);
@@ -145,5 +149,10 @@ public final class LifeCore extends JavaPlugin {
     @NotNull
     public DatabaseConfig getDatabaseConfig() {
         return Objects.requireNonNull(databaseConfig, "databaseConfig is null");
+    }
+
+    @NotNull
+    public GCListener getGcListener() {
+        return gcListener;
     }
 }
