@@ -21,7 +21,11 @@ public class GCListener implements NotificationListener {
     public void handleNotification(Notification notification, Object handback) {
         if (Objects.equals(notification.getType(), GarbageCollectionNotificationInfo.GARBAGE_COLLECTION_NOTIFICATION)) {
             GarbageCollectionNotificationInfo gcInfo = GarbageCollectionNotificationInfo.from((CompositeData) notification.getUserData());
-            if (gcInfo.getGcName().equals("G1 Old Generation") && gcInfo.getGcCause().equals("G1 Evacuation Pause")) {
+            if (!gcInfo.getGcName().equals("G1 Young Generation")) {
+                LifeCore.getInstance().getLogger().info("GC Name: " + gcInfo.getGcName());
+                LifeCore.getInstance().getLogger().info("GC Cause: " + gcInfo.getGcCause());
+            }
+            if (gcInfo.getGcName().equals("G1 Old Generation")) {
                 handleGc();
             }
         }
