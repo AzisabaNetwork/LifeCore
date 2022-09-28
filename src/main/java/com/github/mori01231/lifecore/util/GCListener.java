@@ -63,19 +63,26 @@ public class GCListener implements NotificationListener {
         if (count >= LifeCore.getInstance().getConfig().getInt("gc-threshold-count", 10)) {
             count = -1;
             for (String command : LifeCore.getInstance().getConfig().getStringList("gc-triggered-command")) {
-                if (command.startsWith("@delay ")) {
-                    try {
-                        int delayTicks = Integer.parseInt(command.substring(7, command.indexOf(' ', 7)));
-                        String actualCommand = command.substring(command.indexOf(' ', 7) + 1);
-                        Bukkit.getScheduler().runTaskLater(
-                                LifeCore.getInstance(),
-                                () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), actualCommand),
-                                delayTicks);
-                    } catch (IllegalArgumentException e) {
-                        LifeCore.getInstance().getLogger().warning("Invalid @delay: " + command);
+                try {
+                    if (command.startsWith("@delay ")) {
+                        try {
+                            int delayTicks = Integer.parseInt(command.substring(7, command.indexOf(' ', 7)));
+                            String actualCommand = command.substring(command.indexOf(' ', 7) + 1);
+                            Bukkit.getScheduler().runTaskLater(
+                                    LifeCore.getInstance(),
+                                    () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), actualCommand),
+                                    delayTicks);
+                        } catch (IllegalArgumentException e) {
+                            LifeCore.getInstance().getLogger().warning("Invalid @delay: " + command);
+                            e.printStackTrace();
+                        }
+                    } else {
+                        Bukkit.getScheduler().runTask(LifeCore.getInstance(), () ->
+                                Bukkit.dispatchCommand(LifeCore.getInstance().getServer().getConsoleSender(), command));
                     }
-                } else {
-                    LifeCore.getInstance().getServer().dispatchCommand(LifeCore.getInstance().getServer().getConsoleSender(), command);
+                } catch (Exception e) {
+                    LifeCore.getInstance().getLogger().warning("Failed to process command: " + command);
+                    e.printStackTrace();
                 }
             }
         }
