@@ -131,6 +131,7 @@ permissions:
       lifecore.killnonadmin: true
       lifecore.canuseadminsword: true
       lifecore.mmid: true
+      lifecore.mmid.others: true
       lifecore.debt: true
       lifecore.debt.others: true
       lifecore.vote: true
@@ -191,6 +192,9 @@ permissions:
     default: false
   lifecore.mmid:
     description: Allows you to get mythic type for the item in main hand.
+    default: false
+  lifecore.mmid.others:
+    description: Allows you to get mythic type for the item in main hand of other players.
     default: false
   lifecore.debt:
     description: Allows you to get debt of the player.

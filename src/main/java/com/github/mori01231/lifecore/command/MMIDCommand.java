@@ -14,10 +14,8 @@ import org.jetbrains.annotations.NotNull;
 public class MMIDCommand implements PlayerTabExecutor {
     @Override
     public boolean execute(@NotNull Player player, @NotNull String [] args) {
-        Player target;
-        if (args.length == 0) {
-            target = player;
-        } else {
+        Player target = player;
+        if (args.length > 0 && player.hasPermission("lifecore.mmid.others")) {
             target = Bukkit.getPlayerExact(args[0]);
         }
         if (target == null) {
