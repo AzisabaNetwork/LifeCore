@@ -166,17 +166,23 @@ public final class LifeCore extends JavaPlugin {
         pm.registerEvents(new NoItemFrameObstructionListener(), this);
         pm.registerEvents(new PlayerJoinListener(), this);
         pm.registerEvents(new CancelJoinAfterStartupListener(), this);
-        pm.registerEvents(new CancelPetClickListener(), this);
 
         if (getConfig().getBoolean("destroy-experience-orb-on-chunk-load", false)) {
             pm.registerEvents(new DestroyExperienceOrbListener(), this);
         }
 
         try {
+            Class.forName("de.Keyle.MyPet.MyPetApi");
+            pm.registerEvents(new CancelPetClickListener(), this);
+        } catch (Exception | NoClassDefFoundError e) {
+            getSLF4JLogger().warn("MyPet not detected, skipping pet click listener registration", e);
+        }
+
+        try {
             Class.forName("com.vexsoftware.votifier.model.VotifierEvent");
             pm.registerEvents(new VoteListener(), this);
         } catch (Exception | NoClassDefFoundError e) {
-            getSLF4JLogger().warn("Votifier not detected, not registering VoteListener.", e);
+            getSLF4JLogger().warn("Votifier not detected, skipping vote listener registration", e);
         }
     }
 
