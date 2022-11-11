@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class MMIDCommand implements PlayerTabExecutor {
+public class MMIDCommand extends PlayerTabExecutor {
     @Override
     public boolean execute(@NotNull Player player, @NotNull String [] args) {
         Player target = player;

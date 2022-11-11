@@ -9,9 +9,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public interface PlayerTabExecutor extends TabExecutor {
+public abstract class PlayerTabExecutor implements TabExecutor {
     @Override
-    default boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public final boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             return execute(player, args);
@@ -21,10 +21,10 @@ public interface PlayerTabExecutor extends TabExecutor {
         }
     }
 
-    boolean execute(@NotNull Player player, @NotNull String [] args);
+    public abstract boolean execute(@NotNull Player player, @NotNull String[] args);
 
     @Override
-    default @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
         return null;
     }
 }

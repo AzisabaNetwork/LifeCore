@@ -11,6 +11,7 @@ import com.github.mori01231.lifecore.command.LifeCommand;
 import com.github.mori01231.lifecore.command.MMIDCommand;
 import com.github.mori01231.lifecore.command.NoobCommand;
 import com.github.mori01231.lifecore.command.PackCommand;
+import com.github.mori01231.lifecore.command.PetClickCommand;
 import com.github.mori01231.lifecore.command.Pve0Command;
 import com.github.mori01231.lifecore.command.Pve1Command;
 import com.github.mori01231.lifecore.command.Pve2Command;
@@ -24,21 +25,29 @@ import com.github.mori01231.lifecore.command.TutorialCommand;
 import com.github.mori01231.lifecore.command.VoteCommand;
 import com.github.mori01231.lifecore.command.WebsiteCommand;
 import com.github.mori01231.lifecore.command.WikiCommand;
-import com.github.mori01231.lifecore.listener.CancelJoinAfterStartup;
+import com.github.mori01231.lifecore.config.PetClickFile;
+import com.github.mori01231.lifecore.config.VotesFile;
+import com.github.mori01231.lifecore.listener.CancelJoinAfterStartupListener;
+import com.github.mori01231.lifecore.listener.CancelPetClickListener;
 import com.github.mori01231.lifecore.listener.CreatureSpawnEventListener;
 import com.github.mori01231.lifecore.listener.DestroyExperienceOrbListener;
 import com.github.mori01231.lifecore.listener.NoItemFrameObstructionListener;
-import com.github.mori01231.lifecore.listener.SpawnOnJoinListener;
+import com.github.mori01231.lifecore.listener.PlayerJoinListener;
 import com.github.mori01231.lifecore.listener.TrashListener;
 import com.github.mori01231.lifecore.listener.UseAdminSwordListener;
 import com.github.mori01231.lifecore.listener.VoteListener;
+import com.github.mori01231.lifecore.network.PacketHandler;
 import com.github.mori01231.lifecore.util.GCListener;
+import com.github.mori01231.lifecore.util.PlayerUtil;
+import io.netty.channel.ChannelPipeline;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.concurrent.Executor;
 
@@ -66,6 +75,7 @@ public final class LifeCore extends JavaPlugin {
         }
 
         VotesFile.load(this);
+        PetClickFile.load(this);
 
         databaseConfig = new DatabaseConfig(Objects.requireNonNull(getConfig().getConfigurationSection("database"), "database section is missing"));
 
@@ -95,6 +105,7 @@ public final class LifeCore extends JavaPlugin {
         registerCommand("debt", new DebtCommand());
         registerCommand("vote", new VoteCommand());
         registerCommand("debugvote", new DebugVoteCommand());
+        registerCommand("petclick", new PetClickCommand());
 
         this.saveDefaultConfig();
 
@@ -108,6 +119,16 @@ public final class LifeCore extends JavaPlugin {
             getLogger().severe("Failed to connect to database.");
             e.printStackTrace();
         }
+
+        // register channel handler
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            try {
+                PlayerUtil.getChannel(player).pipeline()
+                        .addBefore("packet_handler", "lifecore", new PacketHandler(player));
+            } catch (Exception e) {
+                getSLF4JLogger().warn("Failed to inject channel handler to player " + player.getName(), e);
+            }
+        }
     }
     
     private void registerCommand(@NotNull String name, @NotNull CommandExecutor executor) {
@@ -119,8 +140,20 @@ public final class LifeCore extends JavaPlugin {
         // Plugin shutdown logic
 
         VotesFile.save(this);
+        PetClickFile.save(this);
         DBConnector.close();
         gcListener.unregister();
+
+        // unregister all channel handlers
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            ChannelPipeline pipeline = PlayerUtil.getChannel(player).pipeline();
+            try {
+                if (pipeline.get("lifecore") != null) {
+                    pipeline.remove("lifecore");
+                }
+            } catch (NoSuchElementException ignored) {}
+        }
+
         getLogger().info("LifeCore has been disabled.");
     }
 
@@ -131,8 +164,9 @@ public final class LifeCore extends JavaPlugin {
         pm.registerEvents(new TrashListener(), this);
         pm.registerEvents(new UseAdminSwordListener(), this);
         pm.registerEvents(new NoItemFrameObstructionListener(), this);
-        pm.registerEvents(new SpawnOnJoinListener(), this);
-        pm.registerEvents(new CancelJoinAfterStartup(), this);
+        pm.registerEvents(new PlayerJoinListener(), this);
+        pm.registerEvents(new CancelJoinAfterStartupListener(), this);
+        pm.registerEvents(new CancelPetClickListener(), this);
 
         if (getConfig().getBoolean("destroy-experience-orb-on-chunk-load", false)) {
             pm.registerEvents(new DestroyExperienceOrbListener(), this);

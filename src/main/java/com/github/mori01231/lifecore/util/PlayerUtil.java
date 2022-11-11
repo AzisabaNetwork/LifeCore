@@ -3,7 +3,9 @@ package com.github.mori01231.lifecore.util;
 import com.github.mori01231.lifecore.DBConnector;
 import com.github.mori01231.lifecore.LifeCore;
 import com.github.mori01231.lifecore.TableKey;
+import io.netty.channel.Channel;
 import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -12,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -63,5 +66,11 @@ public class PlayerUtil {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @NotNull
+    public static Channel getChannel(@NotNull Player player) {
+        // channel field is set to non-null value after #channelActive is called
+        return Objects.requireNonNull(((CraftPlayer) player).getHandle().playerConnection.networkManager.channel, "inactive channel");
     }
 }

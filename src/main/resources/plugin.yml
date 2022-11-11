@@ -5,6 +5,7 @@ author: Mori01231
 description: Core plugin for Life Server in Azi Server Network
 depend:
   - AziPluginMessaging
+  - MyPet
 softdepend:
   - Votifier
 
@@ -108,6 +109,11 @@ commands:
     description: Debug vote.
     permission: lifecore.debugvote
     usage: "/debugvote <player> [service]"
+  petclick:
+    description: "prevent shift-right-clicking on the pet"
+    permission: lifecore.petclick
+    usage: "/petclick"
+    aliases: ["migikuristopman"]
 
 permissions:
   lifecore.*:
@@ -136,6 +142,7 @@ permissions:
       lifecore.debt.others: true
       lifecore.vote: true
       lifecore.debugvote: true
+      lifecore.petclick: true
   lifecore.wiki:
     description: Allows you to show the wiki URL.
     default: true
@@ -208,3 +215,6 @@ permissions:
   lifecore.debugvote:
     description: Allows you to debug vote.
     default: false
+  lifecore.petclick:
+    description: "Allows you to prevent shift-right-clicking on the pet"
+    default: true

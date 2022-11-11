@@ -14,7 +14,7 @@ apply plugin: 'java'
 apply plugin: 'com.github.johnrengelman.shadow'
 
 group = 'com.github.mori01231'
-version = '3.5.1'
+version = '4.0.0'
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
@@ -51,6 +51,14 @@ repositories {
         name = 'lumine'
         url = 'https://mvn.lumine.io/repository/maven-public/'
     }
+    maven {
+        name = 'acrylic-repo'
+        url = 'https://repo.acrylicstyle.xyz/repository/maven-public/'
+    }
+    maven {
+        name = 'mypet'
+        url = 'https://repo.mypet-plugin.de/'
+    }
 }
 
 dependencies {
@@ -64,6 +72,8 @@ dependencies {
     compileOnly 'org.spigotmc:spigot:1.15.2-R0.1-SNAPSHOT'
     compileOnly 'io.lumine:Mythic-Dist:4.13.0'
     compileOnly 'com.github.MilkBowl:VaultAPI:1.7'
+    compileOnly 'com.github.MyPetORG.MyPet:mypet-api:5c8ceeac6a'
+    compileOnly 'de.keyle:knbt:0.0.5'
 }
 
 processResources {

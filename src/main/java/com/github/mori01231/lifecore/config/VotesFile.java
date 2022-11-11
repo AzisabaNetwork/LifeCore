@@ -1,4 +1,4 @@
-package com.github.mori01231.lifecore;
+package com.github.mori01231.lifecore.config;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -35,14 +35,7 @@ public class VotesFile {
     }
 
     public static void save(@NotNull Plugin plugin) {
-        try {
-            String content = new Yaml().dumpAsMap(votes);
-            try (FileWriter writer = new FileWriter(new File(plugin.getDataFolder(), "votes.yml"))) {
-                writer.write(content);
-            }
-        } catch (IOException e) {
-            plugin.getSLF4JLogger().warn("Failed to save votes.yml", e);
-        }
+        ConfigFile.save(plugin, "votes.yml", votes);
     }
 
     public static long getVotes(@NotNull String key) {

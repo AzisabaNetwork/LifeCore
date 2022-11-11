@@ -1,7 +1,7 @@
 package com.github.mori01231.lifecore.listener;
 
 import com.github.mori01231.lifecore.LifeCore;
-import com.github.mori01231.lifecore.VotesFile;
+import com.github.mori01231.lifecore.config.VotesFile;
 import com.github.mori01231.lifecore.util.PlayerUtil;
 import com.vexsoftware.votifier.model.VotifierEvent;
 import io.lumine.xikage.mythicmobs.MythicMobs;
