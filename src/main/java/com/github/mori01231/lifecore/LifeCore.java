@@ -30,6 +30,7 @@ import com.github.mori01231.lifecore.config.VotesFile;
 import com.github.mori01231.lifecore.listener.CancelJoinAfterStartupListener;
 import com.github.mori01231.lifecore.listener.CancelPetClickListener;
 import com.github.mori01231.lifecore.listener.CreatureSpawnEventListener;
+import com.github.mori01231.lifecore.listener.DeathLoopListener;
 import com.github.mori01231.lifecore.listener.DestroyExperienceOrbListener;
 import com.github.mori01231.lifecore.listener.NoItemFrameObstructionListener;
 import com.github.mori01231.lifecore.listener.PlayerJoinListener;
@@ -129,6 +130,13 @@ public final class LifeCore extends JavaPlugin {
                 getSLF4JLogger().warn("Failed to inject channel handler to player " + player.getName(), e);
             }
         }
+
+        // check for negative max health
+        Bukkit.getScheduler().runTaskTimer(this, () -> {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                DeathLoopListener.checkAttribute(player);
+            }
+        }, 100, 100);
     }
     
     private void registerCommand(@NotNull String name, @NotNull CommandExecutor executor) {
@@ -166,6 +174,7 @@ public final class LifeCore extends JavaPlugin {
         pm.registerEvents(new NoItemFrameObstructionListener(), this);
         pm.registerEvents(new PlayerJoinListener(), this);
         pm.registerEvents(new CancelJoinAfterStartupListener(), this);
+        pm.registerEvents(new DeathLoopListener(), this);
 
         if (getConfig().getBoolean("destroy-experience-orb-on-chunk-load", false)) {
             pm.registerEvents(new DestroyExperienceOrbListener(), this);
