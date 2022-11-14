@@ -37,7 +37,8 @@ public class DeathLoopListener implements Listener {
             return false;
         }
         for (AttributeModifier modifier : attr.getModifiers()) {
-            if (modifier.getName().equals("lifecore.temp_health_boost")) {
+            if (modifier.getName().equals("lifecore.temp_health_boost_scalar") ||
+                    modifier.getName().equals("lifecore.temp_health_boost_number")) {
                 return true;
             }
         }
@@ -54,20 +55,31 @@ public class DeathLoopListener implements Listener {
             return;
         }
         for (AttributeModifier modifier : attr.getModifiers()) {
-            if (modifier.getName().equals("lifecore.temp_health_boost")) {
+            if (modifier.getName().equals("lifecore.temp_health_boost_scalar") ||
+                    modifier.getName().equals("lifecore.temp_health_boost_number")) {
                 attr.removeModifier(modifier);
             }
         }
         if (attr.getValue() <= 0) {
-            double amount = 0;
+            double amountScalar = 0;
+            double amountNumber = 0;
             for (AttributeModifier modifier : attr.getModifiers()) {
                 if (modifier.getOperation() == AttributeModifier.Operation.ADD_SCALAR) {
                     if (modifier.getAmount() < 0) {
-                        amount -= modifier.getAmount();
+                        amountScalar -= modifier.getAmount();
+                    }
+                } else if (modifier.getOperation() == AttributeModifier.Operation.ADD_NUMBER) {
+                    if (modifier.getAmount() < 0) {
+                        amountNumber -= modifier.getAmount();
                     }
                 }
             }
-            attr.addModifier(new AttributeModifier("lifecore.temp_health_boost", amount, AttributeModifier.Operation.ADD_SCALAR));
+            if (amountScalar != 0) {
+                attr.addModifier(new AttributeModifier("lifecore.temp_health_boost_scalar", amountScalar, AttributeModifier.Operation.ADD_SCALAR));
+            }
+            if (amountNumber != 0) {
+                attr.addModifier(new AttributeModifier("lifecore.temp_health_boost_number", amountNumber, AttributeModifier.Operation.ADD_NUMBER));
+            }
             entity.sendMessage(ChatColor.RED + "不可能な装備の組み合わせです。最大体力が0以下になっています。");
         }
     }
