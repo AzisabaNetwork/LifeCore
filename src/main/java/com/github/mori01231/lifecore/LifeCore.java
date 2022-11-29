@@ -2,6 +2,7 @@ package com.github.mori01231.lifecore;
 
 import com.github.mori01231.lifecore.command.DebtCommand;
 import com.github.mori01231.lifecore.command.DebugVoteCommand;
+import com.github.mori01231.lifecore.command.DropProtectCommand;
 import com.github.mori01231.lifecore.command.EventCommand;
 import com.github.mori01231.lifecore.command.GuideCommand;
 import com.github.mori01231.lifecore.command.HelpCommand;
@@ -25,6 +26,7 @@ import com.github.mori01231.lifecore.command.TutorialCommand;
 import com.github.mori01231.lifecore.command.VoteCommand;
 import com.github.mori01231.lifecore.command.WebsiteCommand;
 import com.github.mori01231.lifecore.command.WikiCommand;
+import com.github.mori01231.lifecore.config.DropProtectFile;
 import com.github.mori01231.lifecore.config.PetClickFile;
 import com.github.mori01231.lifecore.config.VotesFile;
 import com.github.mori01231.lifecore.listener.CancelJoinAfterStartupListener;
@@ -49,10 +51,8 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.Set;
 import java.util.concurrent.Executor;
 
 public final class LifeCore extends JavaPlugin {
@@ -61,7 +61,6 @@ public final class LifeCore extends JavaPlugin {
     private final GCListener gcListener = new GCListener();
     public final Executor asyncExecutor = r -> Bukkit.getScheduler().runTaskAsynchronously(this, r);
     private DatabaseConfig databaseConfig;
-    private final Set<String> dropProtect = new HashSet<>();
 
     public LifeCore(){
         instance = this;
@@ -81,6 +80,7 @@ public final class LifeCore extends JavaPlugin {
 
         VotesFile.load(this);
         PetClickFile.load(this);
+        DropProtectFile.load(this);
 
         databaseConfig = new DatabaseConfig(Objects.requireNonNull(getConfig().getConfigurationSection("database"), "database section is missing"));
 
@@ -111,9 +111,9 @@ public final class LifeCore extends JavaPlugin {
         registerCommand("vote", new VoteCommand());
         registerCommand("debugvote", new DebugVoteCommand());
         registerCommand("petclick", new PetClickCommand());
+        registerCommand("dropprotect", new DropProtectCommand(this));
 
         this.saveDefaultConfig();
-        dropProtect.addAll(getConfig().getStringList("drop-protect"));
 
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
@@ -180,7 +180,7 @@ public final class LifeCore extends JavaPlugin {
         pm.registerEvents(new PlayerJoinListener(), this);
         pm.registerEvents(new CancelJoinAfterStartupListener(), this);
         pm.registerEvents(new DeathLoopListener(), this);
-        pm.registerEvents(new DropProtectListener(this), this);
+        pm.registerEvents(new DropProtectListener(), this);
 
         if (getConfig().getBoolean("destroy-experience-orb-on-chunk-load", false)) {
             pm.registerEvents(new DestroyExperienceOrbListener(), this);
@@ -209,9 +209,5 @@ public final class LifeCore extends JavaPlugin {
     @NotNull
     public GCListener getGcListener() {
         return gcListener;
-    }
-
-    public @NotNull Set<String> getDropProtect() {
-        return dropProtect;
     }
 }

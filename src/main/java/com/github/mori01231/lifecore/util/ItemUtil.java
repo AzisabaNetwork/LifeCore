@@ -23,7 +23,7 @@ public class ItemUtil {
     }
 
     @Contract("null -> null")
-    public static String getMythicType(@Nullable ItemStack stack) {
+    public static @Nullable String getMythicType(@Nullable ItemStack stack) {
         if (stack == null || stack.getType().isAir()) return null;
         NBTTagCompound tag = CraftItemStack.asNMSCopy(stack).getTag();
         if (tag == null) return null;

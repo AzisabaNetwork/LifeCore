@@ -114,6 +114,10 @@ commands:
     permission: lifecore.petclick
     usage: "/petclick"
     aliases: ["migikuristopman"]
+  dropprotect:
+    description: "protects items from being dropped"
+    permission: lifecore.dropprotect
+    usage: "/dropprotect (add|remove) (mythic type)"
 
 permissions:
   lifecore.*:
@@ -143,6 +147,7 @@ permissions:
       lifecore.vote: true
       lifecore.debugvote: true
       lifecore.petclick: true
+      lifecore.dropprotect: true
   lifecore.wiki:
     description: Allows you to show the wiki URL.
     default: true
@@ -218,3 +223,6 @@ permissions:
   lifecore.petclick:
     description: "Allows you to prevent shift-right-clicking on the pet"
     default: true
+  lifecore.dropprotect:
+    description: "Allows you to protect items from being dropped"
+    default: false
