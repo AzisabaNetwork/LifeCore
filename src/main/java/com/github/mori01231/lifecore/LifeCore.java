@@ -32,6 +32,7 @@ import com.github.mori01231.lifecore.listener.CancelPetClickListener;
 import com.github.mori01231.lifecore.listener.CreatureSpawnEventListener;
 import com.github.mori01231.lifecore.listener.DeathLoopListener;
 import com.github.mori01231.lifecore.listener.DestroyExperienceOrbListener;
+import com.github.mori01231.lifecore.listener.DropProtectListener;
 import com.github.mori01231.lifecore.listener.NoItemFrameObstructionListener;
 import com.github.mori01231.lifecore.listener.PlayerJoinListener;
 import com.github.mori01231.lifecore.listener.TrashListener;
@@ -48,8 +49,10 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.Executor;
 
 public final class LifeCore extends JavaPlugin {
@@ -58,6 +61,7 @@ public final class LifeCore extends JavaPlugin {
     private final GCListener gcListener = new GCListener();
     public final Executor asyncExecutor = r -> Bukkit.getScheduler().runTaskAsynchronously(this, r);
     private DatabaseConfig databaseConfig;
+    private final Set<String> dropProtect = new HashSet<>();
 
     public LifeCore(){
         instance = this;
@@ -109,6 +113,7 @@ public final class LifeCore extends JavaPlugin {
         registerCommand("petclick", new PetClickCommand());
 
         this.saveDefaultConfig();
+        dropProtect.addAll(getConfig().getStringList("drop-protect"));
 
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
@@ -175,6 +180,7 @@ public final class LifeCore extends JavaPlugin {
         pm.registerEvents(new PlayerJoinListener(), this);
         pm.registerEvents(new CancelJoinAfterStartupListener(), this);
         pm.registerEvents(new DeathLoopListener(), this);
+        pm.registerEvents(new DropProtectListener(this), this);
 
         if (getConfig().getBoolean("destroy-experience-orb-on-chunk-load", false)) {
             pm.registerEvents(new DestroyExperienceOrbListener(), this);
@@ -203,5 +209,9 @@ public final class LifeCore extends JavaPlugin {
     @NotNull
     public GCListener getGcListener() {
         return gcListener;
+    }
+
+    public @NotNull Set<String> getDropProtect() {
+        return dropProtect;
     }
 }
