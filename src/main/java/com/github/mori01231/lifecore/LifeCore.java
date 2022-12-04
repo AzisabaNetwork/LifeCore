@@ -37,6 +37,7 @@ import com.github.mori01231.lifecore.listener.DestroyExperienceOrbListener;
 import com.github.mori01231.lifecore.listener.DropProtectListener;
 import com.github.mori01231.lifecore.listener.NoItemFrameObstructionListener;
 import com.github.mori01231.lifecore.listener.PlayerJoinListener;
+import com.github.mori01231.lifecore.listener.PreventBlockPlaceInAirListener;
 import com.github.mori01231.lifecore.listener.TrashListener;
 import com.github.mori01231.lifecore.listener.UseAdminSwordListener;
 import com.github.mori01231.lifecore.listener.VoteListener;
@@ -181,6 +182,7 @@ public final class LifeCore extends JavaPlugin {
         pm.registerEvents(new CancelJoinAfterStartupListener(), this);
         pm.registerEvents(new DeathLoopListener(), this);
         pm.registerEvents(new DropProtectListener(), this);
+        pm.registerEvents(new PreventBlockPlaceInAirListener(this), this);
 
         if (getConfig().getBoolean("destroy-experience-orb-on-chunk-load", false)) {
             pm.registerEvents(new DestroyExperienceOrbListener(), this);
