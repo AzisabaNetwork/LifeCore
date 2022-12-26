@@ -52,7 +52,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-import xyz.acrylicstyle.util.reflector.Reflector;
 
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -76,7 +75,6 @@ public final class LifeCore extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
-        Reflector.classLoader = getClassLoader();
 
         if (getConfig().getBoolean("enable-gc-detector", false)) {
             gcListener.register();
