@@ -8,6 +8,7 @@ depend:
 softdepend:
   - Votifier
   - MyPet
+  - Towny
 api-version: 1.13
 
 commands:

@@ -14,7 +14,7 @@ apply plugin: 'java'
 apply plugin: 'com.github.johnrengelman.shadow'
 
 group = 'com.github.mori01231'
-version = '4.3.1'
+version = '4.3.2'
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
@@ -30,6 +30,7 @@ shadowJar {
 
     relocate("org.mariadb", "com.github.mori01231.lifecore.lib.mariadb")
     relocate("com.zaxxer.hikari", "com.github.mori01231.lifecore.lib.hikari")
+    relocate("xyz.acrylicstyle.util", "com.github.mori01231.lifecore.lib.xyz.acrylicstyle.util")
 }
 
 repositories {
@@ -65,6 +66,7 @@ dependencies {
     //noinspection GradlePackageUpdate
     implementation 'com.zaxxer:HikariCP:4.0.3'
     implementation 'org.mariadb.jdbc:mariadb-java-client:3.0.6'
+    implementation 'xyz.acrylicstyle.java-util:reflector:1.2.0-SNAPSHOT'
     compileOnly 'com.vexsoftware:nuvotifier-universal:2.6.0'
     compileOnly 'com.github.AzisabaNetwork.AziPluginMessaging:api:4.0.0'
     //noinspection VulnerableLibrariesLocal

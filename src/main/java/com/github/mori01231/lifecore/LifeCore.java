@@ -38,6 +38,7 @@ import com.github.mori01231.lifecore.listener.DropProtectListener;
 import com.github.mori01231.lifecore.listener.NoItemFrameObstructionListener;
 import com.github.mori01231.lifecore.listener.PlayerJoinListener;
 import com.github.mori01231.lifecore.listener.PreventBlockPlaceInAirListener;
+import com.github.mori01231.lifecore.listener.TownyOutlawListener;
 import com.github.mori01231.lifecore.listener.TrashListener;
 import com.github.mori01231.lifecore.listener.UseAdminSwordListener;
 import com.github.mori01231.lifecore.listener.VoteListener;
@@ -51,6 +52,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import xyz.acrylicstyle.util.reflector.Reflector;
 
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -74,6 +76,7 @@ public final class LifeCore extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
+        Reflector.classLoader = getClassLoader();
 
         if (getConfig().getBoolean("enable-gc-detector", false)) {
             gcListener.register();
@@ -192,14 +195,21 @@ public final class LifeCore extends JavaPlugin {
             Class.forName("de.Keyle.MyPet.MyPetApi");
             pm.registerEvents(new CancelPetClickListener(), this);
         } catch (Exception | NoClassDefFoundError e) {
-            getSLF4JLogger().warn("MyPet not detected, skipping pet click listener registration", e);
+            getSLF4JLogger().warn("MyPet not detected, skipping event listener registration");
         }
 
         try {
             Class.forName("com.vexsoftware.votifier.model.VotifierEvent");
             pm.registerEvents(new VoteListener(), this);
         } catch (Exception | NoClassDefFoundError e) {
-            getSLF4JLogger().warn("Votifier not detected, skipping vote listener registration", e);
+            getSLF4JLogger().warn("Votifier not detected, skipping event listener registration");
+        }
+
+        try {
+            Class.forName("com.palmergames.bukkit.towny.TownyAPI");
+            pm.registerEvents(new TownyOutlawListener(), this);
+        } catch (Exception | NoClassDefFoundError e) {
+            getSLF4JLogger().warn("Towny not detected, skipping event listener registration");
         }
     }
 
