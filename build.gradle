@@ -14,7 +14,7 @@ apply plugin: 'java'
 apply plugin: 'com.github.johnrengelman.shadow'
 
 group = 'com.github.mori01231'
-version = '4.3.5'
+version = '4.4.0'
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
@@ -52,8 +52,8 @@ repositories {
         url = 'https://mvn.lumine.io/repository/maven-public/'
     }
     maven {
-        name = 'acrylic-repo'
-        url = 'https://repo.acrylicstyle.xyz/repository/maven-public/'
+        name = 'azisaba-repo'
+        url = 'https://repo.azisaba.net/repository/maven-public/'
     }
     maven {
         name = 'mypet'
@@ -66,7 +66,8 @@ dependencies {
     implementation 'com.zaxxer:HikariCP:4.0.3'
     implementation 'org.mariadb.jdbc:mariadb-java-client:3.0.6'
     compileOnly 'com.vexsoftware:nuvotifier-universal:2.6.0'
-    compileOnly 'com.github.AzisabaNetwork.AziPluginMessaging:api:4.0.0'
+    compileOnly 'net.azisaba.azipluginmessaging:api:4.0.3'
+    compileOnly 'net.azisaba:RyuZUPluginChat:4.2.0'
     //noinspection VulnerableLibrariesLocal
     compileOnly 'com.destroystokyo.paper:paper-api:1.15.2-R0.1-SNAPSHOT'
     compileOnly 'org.spigotmc:spigot:1.15.2-R0.1-SNAPSHOT'

@@ -5,10 +5,12 @@ author: Mori01231
 description: Core plugin for Life Server in Azi Server Network
 depend:
   - AziPluginMessaging
+  - RyuZUPluginChat
 softdepend:
   - Votifier
   - MyPet
   - Towny
+  - MythicMobs
 api-version: 1.13
 
 commands:
@@ -120,6 +122,8 @@ commands:
     description: "protects items from being dropped"
     permission: lifecore.dropprotect
     usage: "/dropprotect (add|remove) (mythic type)"
+  ngword:
+    permission: lifecore.ngword
 
 permissions:
   lifecore.*:
@@ -150,6 +154,7 @@ permissions:
       lifecore.debugvote: true
       lifecore.petclick: true
       lifecore.dropprotect: true
+      lifecore.ngword: true
   lifecore.wiki:
     description: Allows you to show the wiki URL.
     default: true
@@ -228,3 +233,5 @@ permissions:
   lifecore.dropprotect:
     description: "Allows you to protect items from being dropped"
     default: false
+  lifecore.ngword:
+    default: true

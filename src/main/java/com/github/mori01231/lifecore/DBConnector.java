@@ -33,8 +33,15 @@ public class DBConnector {
         config.setPassword(LifeCore.getInstance().getDatabaseConfig().password());
         config.setDataSourceProperties(LifeCore.getInstance().getDatabaseConfig().properties());
         dataSource = new HikariDataSource(config);
-        // test connection
-        use(connection -> {});
+        // create table
+        use(connection -> {
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS `ng_words` (" +
+                    "  `id` VARCHAR(36) NOT NULL," +
+                    "  `word` VARCHAR(255) NOT NULL," +
+                    "  UNIQUE KEY `id_word` (`id`, `word`)" +
+                    ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+        });
     }
 
     /**

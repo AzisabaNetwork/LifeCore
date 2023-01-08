@@ -10,6 +10,7 @@ import com.github.mori01231.lifecore.command.KiaiCommand;
 import com.github.mori01231.lifecore.command.KillNonAdminCommand;
 import com.github.mori01231.lifecore.command.LifeCommand;
 import com.github.mori01231.lifecore.command.MMIDCommand;
+import com.github.mori01231.lifecore.command.NgWordCommand;
 import com.github.mori01231.lifecore.command.NoobCommand;
 import com.github.mori01231.lifecore.command.PackCommand;
 import com.github.mori01231.lifecore.command.PetClickCommand;
@@ -35,6 +36,7 @@ import com.github.mori01231.lifecore.listener.CreatureSpawnEventListener;
 import com.github.mori01231.lifecore.listener.DeathLoopListener;
 import com.github.mori01231.lifecore.listener.DestroyExperienceOrbListener;
 import com.github.mori01231.lifecore.listener.DropProtectListener;
+import com.github.mori01231.lifecore.listener.FilterNgWordsListener;
 import com.github.mori01231.lifecore.listener.OreOnlyListener;
 import com.github.mori01231.lifecore.listener.PlayerJoinListener;
 import com.github.mori01231.lifecore.listener.TownyOutlawListener;
@@ -43,6 +45,7 @@ import com.github.mori01231.lifecore.listener.UseAdminSwordListener;
 import com.github.mori01231.lifecore.listener.VoteListener;
 import com.github.mori01231.lifecore.network.PacketHandler;
 import com.github.mori01231.lifecore.util.GCListener;
+import com.github.mori01231.lifecore.util.NGWordsCache;
 import com.github.mori01231.lifecore.util.PlayerUtil;
 import io.netty.channel.ChannelPipeline;
 import org.bukkit.Bukkit;
@@ -60,6 +63,7 @@ public final class LifeCore extends JavaPlugin {
 
     private static LifeCore instance;
     private final GCListener gcListener = new GCListener();
+    private final NGWordsCache ngWordsCache = new NGWordsCache();
     public final Executor asyncExecutor = r -> Bukkit.getScheduler().runTaskAsynchronously(this, r);
     private DatabaseConfig databaseConfig;
 
@@ -113,6 +117,7 @@ public final class LifeCore extends JavaPlugin {
         registerCommand("debugvote", new DebugVoteCommand());
         registerCommand("petclick", new PetClickCommand());
         registerCommand("dropprotect", new DropProtectCommand(this));
+        registerCommand("ngword", new NgWordCommand(this));
 
         this.saveDefaultConfig();
 
@@ -130,6 +135,7 @@ public final class LifeCore extends JavaPlugin {
         // register channel handler
         for (Player player : Bukkit.getOnlinePlayers()) {
             try {
+                ngWordsCache.loadAsync(player.getUniqueId());
                 PlayerUtil.getChannel(player).pipeline()
                         .addBefore("packet_handler", "lifecore", new PacketHandler(player));
             } catch (Exception e) {
@@ -177,7 +183,7 @@ public final class LifeCore extends JavaPlugin {
         pm.registerEvents(new CreatureSpawnEventListener(), this);
         pm.registerEvents(new TrashListener(), this);
         pm.registerEvents(new UseAdminSwordListener(), this);
-        pm.registerEvents(new PlayerJoinListener(), this);
+        pm.registerEvents(new PlayerJoinListener(this), this);
         pm.registerEvents(new CancelJoinAfterStartupListener(), this);
         pm.registerEvents(new DeathLoopListener(), this);
         pm.registerEvents(new DropProtectListener(), this);
@@ -207,6 +213,13 @@ public final class LifeCore extends JavaPlugin {
         } catch (Exception | NoClassDefFoundError e) {
             getSLF4JLogger().warn("Towny not detected, skipping event listener registration");
         }
+
+        try {
+            Class.forName("net.azisaba.ryuzupluginchat.event.AsyncGlobalMessageEvent");
+            pm.registerEvents(new FilterNgWordsListener(this), this);
+        } catch (Exception | NoClassDefFoundError e) {
+            getSLF4JLogger().warn("RyuZUPluginChat not detected, skipping event listener registration");
+        }
     }
 
     @NotNull
@@ -217,5 +230,9 @@ public final class LifeCore extends JavaPlugin {
     @NotNull
     public GCListener getGcListener() {
         return gcListener;
+    }
+
+    public @NotNull NGWordsCache getNgWordsCache() {
+        return ngWordsCache;
     }
 }
