@@ -11,18 +11,54 @@ buildscript {
 }
 
 apply plugin: 'java'
+apply plugin: 'maven-publish'
 apply plugin: 'com.github.johnrengelman.shadow'
 
-group = 'com.github.mori01231'
-version = '4.4.0'
+group = 'net.azisaba'
+version = '4.4.1'
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
-tasks.withType(AbstractCompile)*.options*.encoding = tasks.withType(GroovyCompile)*.groovyOptions*.encoding = 'UTF-8'
+tasks.withType(Javadoc)*.options*.encoding =
+        tasks.withType(JavaCompile)*.options*.encoding =
+                tasks.withType(GroovyCompile)*.groovyOptions*.encoding =
+                        'UTF-8'
+
 
 processResources {
     setDuplicatesStrategy(DuplicatesStrategy.INCLUDE)
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+def javaComponent = components.named('java').get() as org.gradle.api.component.AdhocComponentWithVariants
+javaComponent.withVariantsFromConfiguration(configurations.named('sourcesElements').get()) {
+    skip()
+}
+
+publishing {
+    repositories {
+        maven {
+            name = 'repo'
+            credentials(org.gradle.api.artifacts.repositories.PasswordCredentials.class)
+            if (project.version.toString().endsWith('SNAPSHOT')) {
+                url = uri(project.findProperty('deploySnapshotURL') ?: System.getProperty('deploySnapshotURL', 'https://repo.azisaba.net/repository/maven-snapshots/'))
+            } else {
+                url = uri(project.findProperty('deployReleasesURL') ?: System.getProperty('deployReleasesURL', 'https://repo.azisaba.net/repository/maven-releases/'))
+            }
+        }
+    }
+
+    publications {
+        create("mavenJava", MavenPublication.class) {
+            from javaComponent
+            artifact sourcesJar
+        }
+    }
 }
 
 shadowJar {

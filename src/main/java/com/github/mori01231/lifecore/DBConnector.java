@@ -19,9 +19,6 @@ import java.util.Objects;
 public class DBConnector {
     private static @Nullable HikariDataSource dataSource;
 
-    /**
-     * Initializes the data source and pool.
-     */
     public static void init() throws SQLException {
         new Driver();
         HikariConfig config = new HikariConfig();
