@@ -84,12 +84,12 @@ repositories {
         url = 'https://jitpack.io'
     }
     maven {
-        name = 'lumine'
-        url = 'https://mvn.lumine.io/repository/maven-public/'
-    }
-    maven {
         name = 'azisaba-repo'
         url = 'https://repo.azisaba.net/repository/maven-public/'
+    }
+    maven {
+        name = 'lumine'
+        url = 'https://mvn.lumine.io/repository/maven-public/'
     }
     maven {
         name = 'mypet'
@@ -101,7 +101,7 @@ dependencies {
     //noinspection GradlePackageUpdate
     implementation 'com.zaxxer:HikariCP:4.0.3'
     implementation 'org.mariadb.jdbc:mariadb-java-client:3.0.6'
-    compileOnly 'com.vexsoftware:nuvotifier-universal:2.6.0'
+    compileOnly 'net.azisaba.ballotbox:receiver:1.0.1'
     compileOnly 'net.azisaba.azipluginmessaging:api:4.0.3'
     compileOnly 'net.azisaba:RyuZUPluginChat:4.2.0'
     //noinspection VulnerableLibrariesLocal
