@@ -1,4 +1,4 @@
-package com.github.mori01231.lifecore.listener;
+package com.github.mori01231.lifecore.listener.item;
 
 import com.github.mori01231.lifecore.util.ItemUtil;
 import org.bukkit.Material;
@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class OreOnlyListener implements Listener {
+public class OreOnlyItemListener implements Listener {
     private static final String ITEM_ID = "3f7cec47-aaec-41b3-a47e-c3f87e16932a";
     private static final Set<Material> EXCEPTION_TYPES;
 
