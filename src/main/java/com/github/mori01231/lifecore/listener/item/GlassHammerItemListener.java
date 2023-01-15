@@ -20,7 +20,7 @@ public class GlassHammerItemListener implements Listener {
             // return if the player is not in survival mode or if the player is not left-clicking a block
             return;
         }
-        if (Objects.requireNonNull(e.getClickedBlock()).getType().name().contains("GLASS")) {
+        if (!Objects.requireNonNull(e.getClickedBlock()).getType().name().contains("GLASS")) {
             // return if the player is not left-clicking a glass block
             return;
         }
