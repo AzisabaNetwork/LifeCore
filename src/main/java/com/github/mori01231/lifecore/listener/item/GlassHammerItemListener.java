@@ -2,6 +2,7 @@ package com.github.mori01231.lifecore.listener.item;
 
 import com.github.mori01231.lifecore.util.ItemUtil;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -20,7 +21,8 @@ public class GlassHammerItemListener implements Listener {
             // return if the player is not in survival mode or if the player is not left-clicking a block
             return;
         }
-        if (!Objects.requireNonNull(e.getClickedBlock()).getType().name().contains("GLASS")) {
+        Material type = Objects.requireNonNull(e.getClickedBlock()).getType();
+        if (!type.name().contains("GLASS") && type != Material.GLOWSTONE && type != Material.SEA_LANTERN) {
             // return if the player is not left-clicking a glass block
             return;
         }
