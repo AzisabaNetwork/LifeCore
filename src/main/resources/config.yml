@@ -301,6 +301,11 @@ adminSwordNotifyWebhookUsername: null
 
 spawnOnJoin: false
 
+http-server:
+  enabled: false
+  port: 8080
+  token: "this-should-be-a-random-string"
+
 database:
   # (scheme)://(host):(port)/(database)
   # Keep the line commented out unless you get an obvious error message indicating that the driver was not found.

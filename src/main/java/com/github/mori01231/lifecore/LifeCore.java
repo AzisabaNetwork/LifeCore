@@ -48,6 +48,7 @@ import com.github.mori01231.lifecore.network.PacketHandler;
 import com.github.mori01231.lifecore.util.GCListener;
 import com.github.mori01231.lifecore.util.NGWordsCache;
 import com.github.mori01231.lifecore.util.PlayerUtil;
+import com.sun.net.httpserver.HttpServer;
 import io.netty.channel.ChannelPipeline;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
@@ -56,15 +57,19 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public final class LifeCore extends JavaPlugin {
-
     private static LifeCore instance;
     private final GCListener gcListener = new GCListener();
     private final NGWordsCache ngWordsCache = new NGWordsCache();
+    private final ExecutorService executorService = Executors.newFixedThreadPool(2);
     public final Executor asyncExecutor = r -> Bukkit.getScheduler().runTaskAsynchronously(this, r);
     private DatabaseConfig databaseConfig;
 
@@ -89,6 +94,14 @@ public final class LifeCore extends JavaPlugin {
         DropProtectFile.load(this);
 
         databaseConfig = new DatabaseConfig(Objects.requireNonNull(getConfig().getConfigurationSection("database"), "database section is missing"));
+
+        if (getConfig().getBoolean("http-server.enabled", false)) {
+            String token = getConfig().getString("http-server.token", "this-should-be-a-random-string");
+            if (token == null || "this-should-be-a-random-string".equals(token)) {
+                getLogger().warning("Token is not set. Please set a random string to http-server.token in config.yml");
+            }
+            startHttpServer(getConfig().getInt("http-server.port", 8080));
+        }
 
         getLogger().info("LifeCore has been enabled.");
 
@@ -151,6 +164,18 @@ public final class LifeCore extends JavaPlugin {
             }
         }, 100, 100);
     }
+
+    private void startHttpServer(int port) {
+        HttpServer server;
+        try {
+            server = HttpServer.create(new InetSocketAddress("0.0.0.0", port), 0);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        server.createContext("/accept-rules", new RequestHandler(this));
+        server.setExecutor(executorService);
+        server.start();
+    }
     
     private void registerCommand(@NotNull String name, @NotNull CommandExecutor executor) {
         Objects.requireNonNull(getCommand(name), name + " is not registered in plugin.yml").setExecutor(executor);
@@ -163,6 +188,7 @@ public final class LifeCore extends JavaPlugin {
         VotesFile.save(this);
         PetClickFile.save(this);
         DBConnector.close();
+        executorService.shutdownNow();
         gcListener.unregister();
 
         // unregister all channel handlers
