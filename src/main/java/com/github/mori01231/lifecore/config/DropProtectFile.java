@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,7 +33,7 @@ public class DropProtectFile {
 
     public static void save(@NotNull Plugin plugin) {
         Map<String, Object> map = new HashMap<>();
-        map.put("items", dropProtect);
+        map.put("items", new ArrayList<>(dropProtect));
         ConfigFile.save(plugin, FILENAME, map);
     }
 
