@@ -72,6 +72,7 @@ public final class LifeCore extends JavaPlugin {
     private final ExecutorService executorService = Executors.newFixedThreadPool(2);
     public final Executor asyncExecutor = r -> Bukkit.getScheduler().runTaskAsynchronously(this, r);
     private DatabaseConfig databaseConfig;
+    private HttpServer httpServer;
 
     public LifeCore(){
         instance = this;
@@ -166,15 +167,14 @@ public final class LifeCore extends JavaPlugin {
     }
 
     private void startHttpServer(int port) {
-        HttpServer server;
         try {
-            server = HttpServer.create(new InetSocketAddress("0.0.0.0", port), 0);
+            httpServer = HttpServer.create(new InetSocketAddress("0.0.0.0", port), 0);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        server.createContext("/accept-rules", new RequestHandler(this));
-        server.setExecutor(executorService);
-        server.start();
+        httpServer.createContext("/accept-rules", new RequestHandler(this));
+        httpServer.setExecutor(executorService);
+        httpServer.start();
     }
     
     private void registerCommand(@NotNull String name, @NotNull CommandExecutor executor) {
@@ -189,6 +189,7 @@ public final class LifeCore extends JavaPlugin {
         PetClickFile.save(this);
         DBConnector.close();
         executorService.shutdownNow();
+        httpServer.stop(500);
         gcListener.unregister();
 
         // unregister all channel handlers
