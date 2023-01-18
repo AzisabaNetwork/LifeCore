@@ -70,6 +70,7 @@ public class RequestHandler implements HttpHandler {
                 api.getServer().getPacketSender(),
                 new ProxyboundSetRankMessage("rank1", api.getPlayerAdapter(Player.class).get(player)));
         Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&d" + playerName + "&dさんがチュートリアルを完了しました！ ようこそ&b&lLife鯖&dへ！"));
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "warp lifecore_onsubmit " + playerName);
         exchange.sendResponseHeaders(204, 0);
         exchange.getResponseBody().close();
     }
