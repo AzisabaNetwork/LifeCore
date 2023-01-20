@@ -15,9 +15,11 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 public class RequestHandler implements HttpHandler {
+    private final LifeCore plugin;
     private final String token;
 
     public RequestHandler(LifeCore plugin){
+        this.plugin = plugin;
         this.token = plugin.getConfig().getString("http-server.token", "this-should-be-a-random-string");
     }
 
@@ -70,7 +72,7 @@ public class RequestHandler implements HttpHandler {
                 api.getServer().getPacketSender(),
                 new ProxyboundSetRankMessage("rank1", api.getPlayerAdapter(Player.class).get(player)));
         Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&d" + playerName + "&dさんがチュートリアルを完了しました！ ようこそ&b&lLife鯖&dへ！"));
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "warp lifecore_onsubmit " + playerName);
+        Bukkit.getScheduler().runTask(plugin, () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "warp lifecore_onsubmit " + playerName));
         exchange.sendResponseHeaders(204, 0);
         exchange.getResponseBody().close();
     }
