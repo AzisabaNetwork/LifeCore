@@ -124,6 +124,10 @@ commands:
     usage: "/dropprotect (add|remove) (mythic type)"
   ngword:
     permission: lifecore.ngword
+  dropnotify:
+    description: "notify when items are dropped"
+    permission: lifecore.dropnotify
+    usage: "/dropnotify"
 
 permissions:
   lifecore.*:
@@ -234,4 +238,6 @@ permissions:
     description: "Allows you to protect items from being dropped"
     default: false
   lifecore.ngword:
+    default: true
+  lifecore.dropnotify:
     default: true

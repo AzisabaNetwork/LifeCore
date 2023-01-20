@@ -2,6 +2,7 @@ package com.github.mori01231.lifecore;
 
 import com.github.mori01231.lifecore.command.DebtCommand;
 import com.github.mori01231.lifecore.command.DebugVoteCommand;
+import com.github.mori01231.lifecore.command.DropNotifyCommand;
 import com.github.mori01231.lifecore.command.DropProtectCommand;
 import com.github.mori01231.lifecore.command.EventCommand;
 import com.github.mori01231.lifecore.command.GuideCommand;
@@ -27,6 +28,7 @@ import com.github.mori01231.lifecore.command.TutorialCommand;
 import com.github.mori01231.lifecore.command.VoteCommand;
 import com.github.mori01231.lifecore.command.WebsiteCommand;
 import com.github.mori01231.lifecore.command.WikiCommand;
+import com.github.mori01231.lifecore.config.DropNotifyFile;
 import com.github.mori01231.lifecore.config.DropProtectFile;
 import com.github.mori01231.lifecore.config.PetClickFile;
 import com.github.mori01231.lifecore.config.VotesFile;
@@ -37,6 +39,7 @@ import com.github.mori01231.lifecore.listener.DeathLoopListener;
 import com.github.mori01231.lifecore.listener.DestroyExperienceOrbListener;
 import com.github.mori01231.lifecore.listener.DropProtectListener;
 import com.github.mori01231.lifecore.listener.FilterNgWordsListener;
+import com.github.mori01231.lifecore.listener.DropNotifyListener;
 import com.github.mori01231.lifecore.listener.item.GlassHammerItemListener;
 import com.github.mori01231.lifecore.listener.item.OreOnlyItemListener;
 import com.github.mori01231.lifecore.listener.PlayerJoinListener;
@@ -93,6 +96,7 @@ public final class LifeCore extends JavaPlugin {
         VotesFile.load(this);
         PetClickFile.load(this);
         DropProtectFile.load(this);
+        DropNotifyFile.load(this);
 
         databaseConfig = new DatabaseConfig(Objects.requireNonNull(getConfig().getConfigurationSection("database"), "database section is missing"));
 
@@ -133,6 +137,7 @@ public final class LifeCore extends JavaPlugin {
         registerCommand("petclick", new PetClickCommand());
         registerCommand("dropprotect", new DropProtectCommand(this));
         registerCommand("ngword", new NgWordCommand(this));
+        registerCommand("dropnotify", new DropNotifyCommand());
 
         this.saveDefaultConfig();
 
@@ -187,6 +192,8 @@ public final class LifeCore extends JavaPlugin {
 
         VotesFile.save(this);
         PetClickFile.save(this);
+        DropProtectFile.save(this);
+        DropNotifyFile.save(this);
         DBConnector.close();
         executorService.shutdownNow();
         httpServer.stop(1);
@@ -215,6 +222,7 @@ public final class LifeCore extends JavaPlugin {
         pm.registerEvents(new CancelJoinAfterStartupListener(), this);
         pm.registerEvents(new DeathLoopListener(), this);
         pm.registerEvents(new DropProtectListener(), this);
+        pm.registerEvents(new DropNotifyListener(), this);
 
         // Items
         pm.registerEvents(new OreOnlyItemListener(), this);
