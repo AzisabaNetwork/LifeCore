@@ -189,7 +189,7 @@ public final class LifeCore extends JavaPlugin {
         PetClickFile.save(this);
         DBConnector.close();
         executorService.shutdownNow();
-        httpServer.stop(500);
+        httpServer.stop(1);
         gcListener.unregister();
 
         // unregister all channel handlers
