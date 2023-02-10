@@ -145,7 +145,6 @@ permissions:
       lifecore.event: true
       lifecore.rank: true
       lifecore.trash: true
-      lifecore.pack: true
       lifecore.kiai: true
       lifecore.noob: false
       lifecore.killnonadmin: true
@@ -197,9 +196,6 @@ permissions:
     default: false
   lifecore.trash:
     description: Allows you to open trash.
-    default: true
-  lifecore.pack:
-    description: Allows you to load the resource pack.
     default: true
   lifecore.kiai:
     description: Allows you to kiai.

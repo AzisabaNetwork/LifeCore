@@ -13,7 +13,6 @@ import com.github.mori01231.lifecore.command.LifeCommand;
 import com.github.mori01231.lifecore.command.MMIDCommand;
 import com.github.mori01231.lifecore.command.NgWordCommand;
 import com.github.mori01231.lifecore.command.NoobCommand;
-import com.github.mori01231.lifecore.command.PackCommand;
 import com.github.mori01231.lifecore.command.PetClickCommand;
 import com.github.mori01231.lifecore.command.Pve0Command;
 import com.github.mori01231.lifecore.command.Pve1Command;
@@ -126,7 +125,6 @@ public final class LifeCore extends JavaPlugin {
         registerCommand("event", new EventCommand());
         registerCommand("rank", new RankCommand());
         registerCommand("trash", new TrashCommand());
-        registerCommand("pack", new PackCommand());
         registerCommand("kiai", new KiaiCommand());
         registerCommand("noob", new NoobCommand());
         registerCommand("killnonadmin", new KillNonAdminCommand());
