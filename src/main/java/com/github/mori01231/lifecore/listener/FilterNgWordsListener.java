@@ -21,20 +21,22 @@ public class FilterNgWordsListener implements Listener {
 
     @EventHandler
     public void onGlobalChat(AsyncGlobalMessageEvent e) {
-        filter(e.getRecipients(), e.getMessage().format().replaceAll("うんこ", "***"));
+        filter(e.getRecipients(), e.getMessage().format(), true);
     }
 
     @EventHandler
     public void onChannelChat(AsyncChannelMessageEvent e) {
-        filter(e.getRecipients(), e.getMessage().format());
+        filter(e.getRecipients(), e.getMessage().format(), false);
     }
 
-    private void filter(Set<Player> recipients, String format) {
+    private void filter(Set<Player> recipients, String format, boolean global) {
         List<Player> toRemove = new ArrayList<>();
         for (Player player : recipients) {
             Set<String> set = plugin.getNgWordsCache().get(player.getUniqueId());
-            if (set.isEmpty()) continue;
             String filtered = NGWordsCache.filter(set, format);
+            if (global) {
+                filtered = filtered.replaceAll("うんこ", "***");
+            }
             if (!format.equals(filtered)) {
                 toRemove.add(player);
                 player.sendMessage(filtered);
