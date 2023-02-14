@@ -21,7 +21,7 @@ public class FilterNgWordsListener implements Listener {
 
     @EventHandler
     public void onGlobalChat(AsyncGlobalMessageEvent e) {
-        filter(e.getRecipients(), e.getMessage().format());
+        filter(e.getRecipients(), e.getMessage().format().replaceAll("うんこ", "***"));
     }
 
     @EventHandler

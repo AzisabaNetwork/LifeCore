@@ -15,7 +15,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'com.github.johnrengelman.shadow'
 
 group = 'net.azisaba'
-version = '4.7.0'
+version = '4.7.1'
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
