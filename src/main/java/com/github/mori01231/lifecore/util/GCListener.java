@@ -14,16 +14,21 @@ import java.lang.management.ManagementFactory;
 import java.util.Objects;
 
 public class GCListener implements NotificationListener {
+    private final LifeCore plugin;
     private long lastGcTime = 0L;
     private int count = 0;
+    
+    public GCListener(LifeCore plugin) {
+        this.plugin = plugin;
+    }
 
     @Override
     public void handleNotification(Notification notification, Object handback) {
         if (Objects.equals(notification.getType(), GarbageCollectionNotificationInfo.GARBAGE_COLLECTION_NOTIFICATION)) {
             GarbageCollectionNotificationInfo gcInfo = GarbageCollectionNotificationInfo.from((CompositeData) notification.getUserData());
             if (!gcInfo.getGcName().equals("G1 Young Generation")) {
-                LifeCore.getInstance().getLogger().info("GC Name: " + gcInfo.getGcName());
-                LifeCore.getInstance().getLogger().info("GC Cause: " + gcInfo.getGcCause());
+                plugin.getLogger().info("GC Name: " + gcInfo.getGcName());
+                plugin.getLogger().info("GC Cause: " + gcInfo.getGcCause());
             }
             if (gcInfo.getGcName().equals("G1 Old Generation")) {
                 handleGc();
@@ -54,34 +59,34 @@ public class GCListener implements NotificationListener {
         }
         long minutes = (System.currentTimeMillis() - lastGcTime) / 1000 / 60;
         lastGcTime = System.currentTimeMillis();
-        if (minutes < LifeCore.getInstance().getConfig().getInt("gc-threshold-max-minutes-between", 5)) {
+        if (minutes < plugin.getConfig().getInt("gc-threshold-max-minutes-between", 5)) {
             count++;
         } else {
             count = 0;
             return;
         }
-        if (count >= LifeCore.getInstance().getConfig().getInt("gc-threshold-count", 10)) {
+        if (count >= plugin.getConfig().getInt("gc-threshold-count", 10)) {
             count = -1;
-            for (String command : LifeCore.getInstance().getConfig().getStringList("gc-triggered-command")) {
+            for (String command : plugin.getConfig().getStringList("gc-triggered-command")) {
                 try {
                     if (command.startsWith("@delay ")) {
                         try {
                             int delayTicks = Integer.parseInt(command.substring(7, command.indexOf(' ', 7)));
                             String actualCommand = command.substring(command.indexOf(' ', 7) + 1);
                             Bukkit.getScheduler().runTaskLater(
-                                    LifeCore.getInstance(),
+                                    plugin,
                                     () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), actualCommand),
                                     delayTicks);
                         } catch (IllegalArgumentException e) {
-                            LifeCore.getInstance().getLogger().warning("Invalid @delay: " + command);
+                            plugin.getLogger().warning("Invalid @delay: " + command);
                             e.printStackTrace();
                         }
                     } else {
-                        Bukkit.getScheduler().runTask(LifeCore.getInstance(), () ->
-                                Bukkit.dispatchCommand(LifeCore.getInstance().getServer().getConsoleSender(), command));
+                        Bukkit.getScheduler().runTask(plugin, () ->
+                                Bukkit.dispatchCommand(plugin.getServer().getConsoleSender(), command));
                     }
                 } catch (Exception e) {
-                    LifeCore.getInstance().getLogger().warning("Failed to process command: " + command);
+                    plugin.getLogger().warning("Failed to process command: " + command);
                     e.printStackTrace();
                 }
             }

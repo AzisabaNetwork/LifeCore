@@ -69,7 +69,7 @@ import java.util.concurrent.Executors;
 
 public final class LifeCore extends JavaPlugin {
     private static LifeCore instance;
-    private final GCListener gcListener = new GCListener();
+    private final GCListener gcListener = new GCListener(this);
     private final NGWordsCache ngWordsCache = new NGWordsCache();
     private final ExecutorService executorService = Executors.newFixedThreadPool(2);
     public final Executor asyncExecutor = r -> Bukkit.getScheduler().runTaskAsynchronously(this, r);
