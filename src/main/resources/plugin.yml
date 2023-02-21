@@ -118,10 +118,6 @@ commands:
     permission: lifecore.petclick
     usage: "/petclick"
     aliases: ["migikuristopman"]
-  dropprotect:
-    description: "protects items from being dropped"
-    permission: lifecore.dropprotect
-    usage: "/dropprotect (add|remove) (mythic type)"
   ngword:
     permission: lifecore.ngword
   dropnotify:
