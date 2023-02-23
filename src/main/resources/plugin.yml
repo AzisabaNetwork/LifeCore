@@ -5,8 +5,8 @@ author: Mori01231
 description: Core plugin for Life Server in Azi Server Network
 depend:
   - AziPluginMessaging
-  - RyuZUPluginChat
 softdepend:
+  - RyuZUPluginChat
   - Votifier
   - MyPet
   - Towny
