@@ -4,10 +4,13 @@ import net.minecraft.server.v1_15_R1.NBTTagCompound;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class ItemUtil {
@@ -39,5 +42,18 @@ public class ItemUtil {
         NBTTagCompound tag = CraftItemStack.asNMSCopy(stack).getTag();
         if (tag == null) return null;
         return tag.getString(key);
+    }
+
+    public static @NotNull String toString(@NotNull ItemStack stack) {
+        List<String> props = new ArrayList<>();
+        props.add("[Type: " + stack.getType().name() + "]");
+        props.add("[Amount: " + stack.getAmount() + "]");
+        ItemMeta meta = stack.getItemMeta();
+        if (meta != null) {
+            if (meta.hasDisplayName()) props.add("[Name: " + meta.getDisplayName() + "]");
+            if (meta.hasLore()) props.add("[Lore: " + Objects.requireNonNull(meta.getLore()).size() + " entries]");
+            if (meta.hasCustomModelData()) props.add("[CustomModelData: " + meta.getCustomModelData() + "]");
+        }
+        return String.join("", props);
     }
 }
