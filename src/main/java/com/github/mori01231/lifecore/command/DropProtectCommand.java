@@ -1,5 +1,6 @@
 package com.github.mori01231.lifecore.command;
 
+import com.github.mori01231.lifecore.LifeCore;
 import com.github.mori01231.lifecore.gui.DropProtectScreen;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -12,6 +13,12 @@ import java.util.Collections;
 import java.util.List;
 
 public class DropProtectCommand implements TabExecutor {
+    private final LifeCore plugin;
+
+    public DropProtectCommand(@NotNull LifeCore plugin) {
+        this.plugin = plugin;
+    }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!(sender instanceof Player)) {
@@ -19,7 +26,7 @@ public class DropProtectCommand implements TabExecutor {
             return true;
         }
         Player player = (Player) sender;
-        player.openInventory(new DropProtectScreen(player).getInventory());
+        player.openInventory(new DropProtectScreen(plugin, player).getInventory());
         return true;
     }
 

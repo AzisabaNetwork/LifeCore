@@ -39,7 +39,7 @@ public class NgWordCommand implements TabExecutor {
                     sender.sendMessage(ChatColor.RED + "/ngword add <word>");
                     return true;
                 }
-                plugin.getNgWordsCache().add(player.getUniqueId(), String.join(" ", Arrays.copyOfRange(args, 1, args.length)));
+                plugin.ngWordsCache.add(player.getUniqueId(), String.join(" ", Arrays.copyOfRange(args, 1, args.length)));
                 player.sendMessage(ChatColor.GREEN + "NGワードを追加しました。");
                 break;
             case "remove":
@@ -47,16 +47,16 @@ public class NgWordCommand implements TabExecutor {
                     sender.sendMessage(ChatColor.RED + "/ngword remove <word>");
                     return true;
                 }
-                plugin.getNgWordsCache().remove(player.getUniqueId(), String.join(" ", Arrays.copyOfRange(args, 1, args.length)));
+                plugin.ngWordsCache.remove(player.getUniqueId(), String.join(" ", Arrays.copyOfRange(args, 1, args.length)));
                 player.sendMessage(ChatColor.GREEN + "NGワードを削除しました。");
                 break;
             case "clear":
-                plugin.getNgWordsCache().clear(player.getUniqueId());
+                plugin.ngWordsCache.clear(player.getUniqueId());
                 player.sendMessage(ChatColor.GREEN + "NGワードを全て削除しました。");
                 break;
             case "list":
                 player.sendMessage(ChatColor.GREEN + "NGワード一覧:");
-                for (String word : plugin.getNgWordsCache().get(player.getUniqueId())) {
+                for (String word : plugin.ngWordsCache.get(player.getUniqueId())) {
                     player.sendMessage(ChatColor.RED + word);
                 }
                 break;
@@ -74,7 +74,7 @@ public class NgWordCommand implements TabExecutor {
                     .collect(Collectors.toList());
         }
         if (sender instanceof Player && args[0].equals("remove")) {
-            return plugin.getNgWordsCache().get(((Player) sender).getUniqueId())
+            return plugin.ngWordsCache.get(((Player) sender).getUniqueId())
                     .stream()
                     .filter(s -> s.startsWith(args[1]))
                     .collect(Collectors.toList());

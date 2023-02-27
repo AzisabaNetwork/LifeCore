@@ -6,9 +6,16 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.Listener;
+import org.jetbrains.annotations.NotNull;
 
 public class CreatureSpawnEventListener implements Listener {
-    @EventHandler(priority = EventPriority.NORMAL)
+    private final LifeCore plugin;
+    
+    public CreatureSpawnEventListener(@NotNull LifeCore plugin) {
+        this.plugin = plugin;
+    }
+    
+    @EventHandler
     public void onCreatureSpawn(CreatureSpawnEvent event) {
         if (event.getEntityType().equals(EntityType.BEE)) {
             // Remove the bee
@@ -17,7 +24,7 @@ public class CreatureSpawnEventListener implements Listener {
 
         if (event.getEntityType().equals(EntityType.ENDERMAN)) {
 
-            if (LifeCore.getInstance().getConfig().getStringList("NonEndermanWorlds").contains(event.getLocation().getWorld().getName())) {
+            if (plugin.getConfig().getStringList("NonEndermanWorlds").contains(event.getLocation().getWorld().getName())) {
                 // Remove the Enderman
                 event.getEntity().remove();
             }

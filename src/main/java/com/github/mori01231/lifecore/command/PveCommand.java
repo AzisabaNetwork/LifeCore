@@ -6,6 +6,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -16,6 +17,12 @@ import java.util.Random;
 import static org.bukkit.Bukkit.getServer;
 
 public class PveCommand implements CommandExecutor {
+    private final LifeCore plugin;
+    
+    public PveCommand(@NotNull LifeCore plugin) {
+        this.plugin = plugin;
+    }
+    
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
@@ -23,8 +30,8 @@ public class PveCommand implements CommandExecutor {
             Player player = (Player) sender;
             String playerName = player.getName();
 
-            if(LifeCore.getInstance().getConfig().getBoolean("use-pve-command-as-teleport")){
-                String pve = LifeCore.getInstance().getConfig().getString("pve-teleport");
+            if(plugin.getConfig().getBoolean("use-pve-command-as-teleport")){
+                String pve = plugin.getConfig().getString("pve-teleport");
                 getServer().dispatchCommand(getServer().getConsoleSender(), "mvtp " + playerName + " " + pve);
                 sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3ダンジョンロビーにテレポートしました。" ));
 
@@ -50,7 +57,7 @@ public class PveCommand implements CommandExecutor {
                 } catch (IOException e) {
                     // never happens
                 }
-                player.sendPluginMessage(LifeCore.getInstance(), "BungeeCord", b.toByteArray());
+                player.sendPluginMessage(plugin, "BungeeCord", b.toByteArray());
             }
 
         } else {

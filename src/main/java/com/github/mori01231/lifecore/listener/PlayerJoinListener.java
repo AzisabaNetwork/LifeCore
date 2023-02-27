@@ -21,14 +21,14 @@ public class PlayerJoinListener implements Listener {
     public void onPlayerPreLogin(AsyncPlayerPreLoginEvent e) {
         if (e.getLoginResult() == AsyncPlayerPreLoginEvent.Result.ALLOWED) {
             // preload ng word data
-            plugin.getNgWordsCache().loadAsync(e.getUniqueId());
+            plugin.ngWordsCache.loadAsync(e.getUniqueId());
         }
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
         // spawn on join
-        if (LifeCore.getInstance().getConfig().getBoolean("spawnOnJoin", false)) {
+        if (plugin.getConfig().getBoolean("spawnOnJoin", false)) {
             Bukkit.dispatchCommand(e.getPlayer(), "spawn");
         }
 

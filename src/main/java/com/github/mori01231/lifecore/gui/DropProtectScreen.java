@@ -1,6 +1,6 @@
 package com.github.mori01231.lifecore.gui;
 
-import com.github.mori01231.lifecore.config.DropProtectFile;
+import com.github.mori01231.lifecore.LifeCore;
 import com.github.mori01231.lifecore.util.ItemUtil;
 import net.azisaba.rarity.api.RarityAPIProvider;
 import org.bukkit.Bukkit;
@@ -19,28 +19,30 @@ import java.util.Collections;
 
 public class DropProtectScreen implements InventoryHolder {
     private final Inventory inventory = Bukkit.createInventory(this, 9, "DropProtect");
+    private final LifeCore plugin;
     private final Player player;
 
-    public DropProtectScreen(@NotNull Player player) {
+    public DropProtectScreen(@NotNull LifeCore plugin, @NotNull Player player) {
+        this.plugin = plugin;
         this.player = player;
         reset();
     }
 
     public void reset() {
         String commonName = RarityAPIProvider.get().getRarityById("common").getDisplayName(player);
-        String commonLore = DropProtectFile.contains(player.getUniqueId(), "common") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
+        String commonLore = plugin.getDropProtectConfig().contains(player.getUniqueId(), "common") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
         String uncommonName = RarityAPIProvider.get().getRarityById("uncommon").getDisplayName(player);
-        String uncommonLore = DropProtectFile.contains(player.getUniqueId(), "uncommon") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
+        String uncommonLore = plugin.getDropProtectConfig().contains(player.getUniqueId(), "uncommon") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
         String rareName = RarityAPIProvider.get().getRarityById("rare").getDisplayName(player);
-        String rareLore = DropProtectFile.contains(player.getUniqueId(), "rare") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
+        String rareLore = plugin.getDropProtectConfig().contains(player.getUniqueId(), "rare") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
         String epicName = RarityAPIProvider.get().getRarityById("epic").getDisplayName(player);
-        String epicLore = DropProtectFile.contains(player.getUniqueId(), "epic") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
+        String epicLore = plugin.getDropProtectConfig().contains(player.getUniqueId(), "epic") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
         String legendaryName = RarityAPIProvider.get().getRarityById("legendary").getDisplayName(player);
-        String legendaryLore = DropProtectFile.contains(player.getUniqueId(), "legendary") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
+        String legendaryLore = plugin.getDropProtectConfig().contains(player.getUniqueId(), "legendary") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
         String mythicName = RarityAPIProvider.get().getRarityById("mythic").getDisplayName(player);
-        String mythicLore = DropProtectFile.contains(player.getUniqueId(), "mythic") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
+        String mythicLore = plugin.getDropProtectConfig().contains(player.getUniqueId(), "mythic") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
         String specialName = RarityAPIProvider.get().getRarityById("special").getDisplayName(player);
-        String specialLore = DropProtectFile.contains(player.getUniqueId(), "special") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
+        String specialLore = plugin.getDropProtectConfig().contains(player.getUniqueId(), "special") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
         inventory.setItem(0, ItemUtil.createItemStack(Material.COBBLESTONE, 1, item -> {
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
@@ -113,6 +115,12 @@ public class DropProtectScreen implements InventoryHolder {
     }
 
     public static class EventListener implements Listener {
+        private final LifeCore plugin;
+
+        public EventListener(@NotNull LifeCore plugin) {
+            this.plugin = plugin;
+        }
+
         @EventHandler
         public void onClick(InventoryClickEvent e) {
             if (!(e.getInventory().getHolder() instanceof DropProtectScreen)) {
@@ -125,31 +133,31 @@ public class DropProtectScreen implements InventoryHolder {
             DropProtectScreen screen = (DropProtectScreen) e.getInventory().getHolder();
             switch (e.getSlot()) {
                 case 0: {
-                    DropProtectFile.toggle(screen.player.getUniqueId(), "common");
+                    plugin.getDropProtectConfig().toggle(screen.player.getUniqueId(), "common");
                     break;
                 }
                 case 1: {
-                    DropProtectFile.toggle(screen.player.getUniqueId(), "uncommon");
+                    plugin.getDropProtectConfig().toggle(screen.player.getUniqueId(), "uncommon");
                     break;
                 }
                 case 2: {
-                    DropProtectFile.toggle(screen.player.getUniqueId(), "rare");
+                    plugin.getDropProtectConfig().toggle(screen.player.getUniqueId(), "rare");
                     break;
                 }
                 case 3: {
-                    DropProtectFile.toggle(screen.player.getUniqueId(), "epic");
+                    plugin.getDropProtectConfig().toggle(screen.player.getUniqueId(), "epic");
                     break;
                 }
                 case 4: {
-                    DropProtectFile.toggle(screen.player.getUniqueId(), "legendary");
+                    plugin.getDropProtectConfig().toggle(screen.player.getUniqueId(), "legendary");
                     break;
                 }
                 case 5: {
-                    DropProtectFile.toggle(screen.player.getUniqueId(), "mythic");
+                    plugin.getDropProtectConfig().toggle(screen.player.getUniqueId(), "mythic");
                     break;
                 }
                 case 6: {
-                    DropProtectFile.toggle(screen.player.getUniqueId(), "special");
+                    plugin.getDropProtectConfig().toggle(screen.player.getUniqueId(), "special");
                     break;
                 }
                 case 8: {

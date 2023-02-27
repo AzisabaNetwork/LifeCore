@@ -1,5 +1,6 @@
 package com.github.mori01231.lifecore.command;
 
+import com.github.mori01231.lifecore.LifeCore;
 import com.github.mori01231.lifecore.listener.VoteListener;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -15,6 +16,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class DebugVoteCommand implements TabExecutor {
+    private final LifeCore plugin;
+
+    public DebugVoteCommand(@NotNull LifeCore plugin) {
+        this.plugin = plugin;
+    }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length == 0) {
@@ -27,7 +34,7 @@ public class DebugVoteCommand implements TabExecutor {
         } else {
             serviceName = args[1];
         }
-        VoteListener.processVotePacket(args[0], serviceName);
+        VoteListener.processVotePacket(plugin, args[0], serviceName);
         return true;
     }
 

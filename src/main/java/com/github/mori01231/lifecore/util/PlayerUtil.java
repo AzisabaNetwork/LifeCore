@@ -1,6 +1,7 @@
 package com.github.mori01231.lifecore.util;
 
 import com.github.mori01231.lifecore.DBConnector;
+import com.github.mori01231.lifecore.DatabaseConfig;
 import com.github.mori01231.lifecore.LifeCore;
 import com.github.mori01231.lifecore.TableKey;
 import io.netty.channel.Channel;
@@ -19,9 +20,9 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class PlayerUtil {
-    @Contract("_ -> new")
+    @Contract("_, _ -> new")
     @NotNull
-    public static CompletableFuture<UUID> resolveUUIDAsync(@NotNull String name) {
+    public static CompletableFuture<UUID> resolveUUIDAsync(@NotNull LifeCore plugin, @NotNull String name) {
         return CompletableFuture.supplyAsync(() -> {
             // try faster (cached) method first
             try {
@@ -29,13 +30,13 @@ public class PlayerUtil {
             } catch (IllegalArgumentException ignore) {}
 
             // and then try slower (database) method
-            UUID uuid = fetchUUID(name);
+            UUID uuid = fetchUUID(plugin.getDatabaseConfig(), name);
             if (uuid != null) {
                 return uuid;
             }
             return UUID.nameUUIDFromBytes(name.getBytes(StandardCharsets.UTF_8));
             //throw new NoSuchElementException(name + " cannot be resolved to a UUID");
-        }, LifeCore.getInstance().asyncExecutor);
+        }, plugin.asyncExecutor);
     }
 
     @NotNull
@@ -52,8 +53,8 @@ public class PlayerUtil {
     }
 
     @Nullable
-    public static UUID fetchUUID(@NotNull String name) {
-        String dbName = LifeCore.getInstance().getDatabaseConfig().getDatabaseName(TableKey.SpicyAzisaBan);
+    public static UUID fetchUUID(@NotNull DatabaseConfig databaseConfig, @NotNull String name) {
+        String dbName = databaseConfig.getDatabaseName(TableKey.SpicyAzisaBan);
         try {
             return DBConnector.getPrepareStatement("SELECT `uuid` FROM `" + dbName + "`.`players` WHERE LOWER(`name`) = ? LIMIT 1", ps -> {
                 ps.setString(1, name.toLowerCase());

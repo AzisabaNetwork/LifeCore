@@ -55,6 +55,7 @@ public class ItemUtil {
             if (meta.hasDisplayName()) props.add("[Name: " + meta.getDisplayName() + "]");
             if (meta.hasLore()) props.add("[Lore: " + Objects.requireNonNull(meta.getLore()).size() + " entries]");
             if (meta.hasCustomModelData()) props.add("[CustomModelData: " + meta.getCustomModelData() + "]");
+            if (getMythicType(stack) != null) props.add("[MMID: " + getMythicType(stack) + "]");
         }
         return String.join("", props);
     }

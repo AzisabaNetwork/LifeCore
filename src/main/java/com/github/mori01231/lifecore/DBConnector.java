@@ -19,16 +19,16 @@ import java.util.Objects;
 public class DBConnector {
     private static @Nullable HikariDataSource dataSource;
 
-    public static void init() throws SQLException {
+    public static void init(@NotNull LifeCore plugin) throws SQLException {
         new Driver();
         HikariConfig config = new HikariConfig();
-        if (LifeCore.getInstance().getDatabaseConfig().driver() != null) {
-            config.setDriverClassName(LifeCore.getInstance().getDatabaseConfig().driver());
+        if (plugin.getDatabaseConfig().getDriver() != null) {
+            config.setDriverClassName(plugin.getDatabaseConfig().getDriver());
         }
-        config.setJdbcUrl(LifeCore.getInstance().getDatabaseConfig().toUrl());
-        config.setUsername(LifeCore.getInstance().getDatabaseConfig().username());
-        config.setPassword(LifeCore.getInstance().getDatabaseConfig().password());
-        config.setDataSourceProperties(LifeCore.getInstance().getDatabaseConfig().properties());
+        config.setJdbcUrl(plugin.getDatabaseConfig().toUrl());
+        config.setUsername(plugin.getDatabaseConfig().getUsername());
+        config.setPassword(plugin.getDatabaseConfig().getPassword());
+        config.setDataSourceProperties(plugin.getDatabaseConfig().properties());
         dataSource = new HikariDataSource(config);
         // create table
         use(connection -> {
@@ -42,9 +42,9 @@ public class DBConnector {
     }
 
     /**
-     * Returns the data source. Throws an exception if the data source is not initialized using {@link #init()}.
+     * Returns the data source. Throws an exception if the data source is not initialized using {@link #init(LifeCore)}.
      * @return the data source
-     * @throws NullPointerException if the data source is not initialized using {@link #init()}
+     * @throws NullPointerException if the data source is not initialized using {@link #init(LifeCore)}
      */
     @Contract(pure = true)
     @NotNull

@@ -3,6 +3,7 @@ package com.github.mori01231.lifecore.listener;
 import com.github.mori01231.lifecore.LifeCore;
 import com.github.mori01231.lifecore.TrashInventory;
 import com.github.mori01231.lifecore.util.ItemUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -10,44 +11,41 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
-
-import static org.bukkit.Bukkit.getServer;
-
 
 public class TrashListener implements Listener {
-    private final Logger logger;
+    private final LifeCore plugin;
 
-    public TrashListener(LifeCore plugin){
-        this.logger = plugin.getLogger();
+    public TrashListener(@NotNull LifeCore plugin){
+        this.plugin = plugin;
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onInventoryClose(InventoryCloseEvent event) {
         Player player = (Player) event.getPlayer();
-        String PlayerName = player.getName();
+        String playerName = player.getName();
 
-        int TrashMoneyPerItem = Integer.parseInt(LifeCore.getInstance().getConfig().getString("TrashMoneyPerItem"));
+        int trashMoneyPerItem = plugin.getConfig().getInt("TrashMoneyPerItem", 0);
 
         if (event.getView().getTopInventory().getHolder() instanceof TrashInventory) {
 
-            int MoneyCounter = 0;
-            int moneyMultiplier = TrashMoneyPerItem;
+            int moneyCounter = 0;
+            int moneyMultiplier = trashMoneyPerItem;
             List<ItemStack> items = new ArrayList<>();
             for (ItemStack item : event.getInventory().getContents()) {
                 try {
                     if (item.getAmount() > 0) {
 
-                        for (String line : LifeCore.getInstance().getConfig().getStringList("Trash.Items")) {
+                        for (String line : plugin.getConfig().getStringList("Trash.Items")) {
                             if(item.getItemMeta().getDisplayName().equals(line)){
-                                moneyMultiplier = LifeCore.getInstance().getConfig().getInt("TrashMoneyPerSpecialItem");
+                                moneyMultiplier = plugin.getConfig().getInt("TrashMoneyPerSpecialItem");
                             }
                         }
 
-                        MoneyCounter += item.getAmount() * moneyMultiplier;
+                        moneyCounter += item.getAmount() * moneyMultiplier;
                         items.add(item.clone());
                         item.setAmount(0);
                     }
@@ -55,11 +53,11 @@ public class TrashListener implements Listener {
                 } catch (Exception ignored) {
                 }
             }
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3ゴミ箱に" + MoneyCounter + "個のアイテムを捨てました。" ));
-            getServer().dispatchCommand(getServer().getConsoleSender(), "eco give " + PlayerName + " " + MoneyCounter);
-            logger.info("Player " + PlayerName + " has trashed " + MoneyCounter + " items:");
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3ゴミ箱に" + moneyCounter + "個のアイテムを捨てました。" ));
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "eco give " + playerName + " " + moneyCounter);
+            plugin.getSLF4JLogger().info("Player {} has trashed {} items:", playerName, moneyCounter);
             for (ItemStack item : items) {
-                logger.info("  " + ItemUtil.toString(item));
+                plugin.getLogger().info("  " + ItemUtil.toString(item));
             }
         }
     }

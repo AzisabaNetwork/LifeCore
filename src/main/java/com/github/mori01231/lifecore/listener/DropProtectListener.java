@@ -1,6 +1,6 @@
 package com.github.mori01231.lifecore.listener;
 
-import com.github.mori01231.lifecore.config.DropProtectFile;
+import com.github.mori01231.lifecore.LifeCore;
 import net.azisaba.itemstash.ItemStash;
 import net.azisaba.rarity.api.Rarity;
 import net.azisaba.rarity.api.RarityAPI;
@@ -10,10 +10,16 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class DropProtectListener implements Listener {
     private final RarityAPI rarityAPI = RarityAPIProvider.get();
     private final ItemStash itemStash = ItemStash.getInstance();
+    private final LifeCore plugin;
+
+    public DropProtectListener(@NotNull LifeCore plugin) {
+        this.plugin = plugin;
+    }
 
     @EventHandler
     public void onDrop(PlayerDropItemEvent e) {
@@ -21,7 +27,7 @@ public class DropProtectListener implements Listener {
         if (rarity == null) {
             return;
         }
-        if (DropProtectFile.contains(e.getPlayer().getUniqueId(), rarity.getId())) {
+        if (plugin.getDropProtectConfig().contains(e.getPlayer().getUniqueId(), rarity.getId())) {
             e.getPlayer().sendMessage(ChatColor.RED + "このレア度のアイテムはドロップできません。");
             e.getPlayer().sendMessage(ChatColor.AQUA + "/dropprotect" + ChatColor.GOLD + "で設定を変更できます。");
             e.setCancelled(true);

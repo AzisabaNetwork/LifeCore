@@ -330,6 +330,3 @@ database:
     useLocalSessionState: true
     rewriteBatchedStatements: true
     maintainTimeStats: false
-
-drop-protect:
-  - AZISAVIOR

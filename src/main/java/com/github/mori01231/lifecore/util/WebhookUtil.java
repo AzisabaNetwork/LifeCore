@@ -4,6 +4,7 @@ import com.github.mori01231.lifecore.LifeCore;
 import com.google.common.io.ByteStreams;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import org.jetbrains.annotations.NotNull;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.InputStream;
@@ -15,16 +16,16 @@ public class WebhookUtil {
     private static final Gson GSON = new Gson();
 
     // send webhook to discord
-    public static void sendDiscordWebhook(String configPath, String username, String content) {
+    public static void sendDiscordWebhook(@NotNull LifeCore plugin, String configPath, String username, String content) {
         try {
-            String s = LifeCore.getInstance().getConfig().getString(configPath);
+            String s = plugin.getConfig().getString(configPath);
             if (s == null || s.isEmpty()) {
                 return;
             }
             HttpsURLConnection con = (HttpsURLConnection) new URL(s).openConnection();
             con.setRequestMethod("POST");
             con.setRequestProperty("Content-Type", "application/json");
-            con.setRequestProperty("User-Agent", "LifeCore/" + LifeCore.getInstance().getDescription().getVersion());
+            con.setRequestProperty("User-Agent", "LifeCore/" + plugin.getDescription().getVersion());
             con.setRequestProperty("Accept", "application/json");
             con.setDoOutput(true);
             con.setConnectTimeout(5000);
@@ -42,7 +43,7 @@ public class WebhookUtil {
             InputStream errorStream = con.getErrorStream();
             if (errorStream != null) {
                 String err = new String(ByteStreams.toByteArray(errorStream), StandardCharsets.UTF_8);
-                LifeCore.getInstance().getLogger().warning("Discord webhook returned " + con.getResponseCode() + ": " + err);
+                plugin.getLogger().warning("Discord webhook returned " + con.getResponseCode() + ": " + err);
             }
             con.getInputStream().close();
             con.disconnect();

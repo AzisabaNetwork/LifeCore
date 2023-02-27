@@ -17,6 +17,12 @@ import java.util.AbstractMap;
 import java.util.Map;
 
 public class DebtCommand implements CommandExecutor {
+    private final LifeCore plugin;
+
+    public DebtCommand(@NotNull LifeCore plugin) {
+        this.plugin = plugin;
+    }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         String target;
@@ -33,11 +39,11 @@ public class DebtCommand implements CommandExecutor {
             }
             target = args[0];
         }
-        Bukkit.getScheduler().runTaskAsynchronously(LifeCore.getInstance(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             double money;
             double offlineMoney;
             try {
-                String dbName = LifeCore.getInstance().getDatabaseConfig().getDatabaseName(TableKey.MPDB);
+                String dbName = plugin.getDatabaseConfig().getDatabaseName(TableKey.MPDB);
                 Map.Entry<Double, Double> entry = DBConnector.getPrepareStatement("SELECT `money`, `offline_money` FROM `" + dbName + "`.`mpdb_economy` WHERE `player_uuid` = ? OR LOWER(`player_name`) = LOWER(?)", ps -> {
                     ps.setString(1, target);
                     ps.setString(2, target);
@@ -51,7 +57,7 @@ public class DebtCommand implements CommandExecutor {
                     );
                 });
                 if (entry == null) {
-                    Bukkit.getScheduler().runTask(LifeCore.getInstance(), () -> sender.sendMessage(ChatColor.RED + "プレイヤーが見つかりませんでした。"));
+                    Bukkit.getScheduler().runTask(plugin, () -> sender.sendMessage(ChatColor.RED + "プレイヤーが見つかりませんでした。"));
                     return;
                 } else {
                     money = entry.getKey();
@@ -66,7 +72,7 @@ public class DebtCommand implements CommandExecutor {
             }
             double debt = varDebt;
             String details = ChatColor.GRAY + "(" + money + " + " + offlineMoney + ")";
-            Bukkit.getScheduler().runTask(LifeCore.getInstance(), () -> {
+            Bukkit.getScheduler().runTask(plugin, () -> {
                 if (args.length == 0) {
                     sender.sendMessage(ChatColor.GREEN + "現在の借金は" + ChatColor.RED + debt + ChatColor.GREEN + "円です。" + details);
                 } else {

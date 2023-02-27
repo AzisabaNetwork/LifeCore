@@ -11,6 +11,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 public class DeathLoopListener implements Listener {
     @EventHandler
@@ -45,8 +47,8 @@ public class DeathLoopListener implements Listener {
         return false;
     }
 
-    public static void checkAttribute(LivingEntity entity) {
-        Bukkit.getScheduler().runTaskLater(LifeCore.getInstance(), () -> checkAttribute0(entity), 5);
+    public static void checkAttribute(@NotNull Plugin plugin, LivingEntity entity) {
+        Bukkit.getScheduler().runTaskLater(plugin, () -> checkAttribute0(entity), 5);
     }
 
     private static void checkAttribute0(LivingEntity entity) {

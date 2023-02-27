@@ -8,6 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerAttemptPickupItemEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +16,11 @@ import java.util.UUID;
 
 public class UseAdminSwordListener implements Listener {
     private final Map<UUID, Long> cooldown = new HashMap<>();
+    private final LifeCore plugin;
+    
+    public UseAdminSwordListener(@NotNull LifeCore plugin) {
+        this.plugin = plugin;
+    }
 
     // sendDiscordWebhook with config path "adminSwordNotifyWebhookURL" if player uses an item with > 10000 damage attribute modifier
     @EventHandler
@@ -23,8 +29,9 @@ public class UseAdminSwordListener implements Listener {
             e.setCancelled(true);
             if (checkCooldown(e.getPlayer().getUniqueId())) return;
             WebhookUtil.sendDiscordWebhook(
+                    plugin,
                     "adminSwordNotifyWebhookURL",
-                    LifeCore.getInstance().getConfig().getString("adminSwordNotifyWebhookUsername"),
+                    plugin.getConfig().getString("adminSwordNotifyWebhookUsername"),
                     e.getPlayer().getName() + " tried to use an item with >= 9999 generic.attack_damage\n" +
                             "Display name: `" + e.getItem().getItemMeta().getDisplayName() + "`\n" +
                             "Location: " + e.getPlayer().getLocation());
@@ -37,8 +44,9 @@ public class UseAdminSwordListener implements Listener {
             e.setCancelled(true);
             if (checkCooldown(e.getPlayer().getUniqueId())) return;
             WebhookUtil.sendDiscordWebhook(
+                    plugin,
                     "adminSwordNotifyWebhookURL",
-                    LifeCore.getInstance().getConfig().getString("adminSwordNotifyWebhookUsername"),
+                    plugin.getConfig().getString("adminSwordNotifyWebhookUsername"),
                     e.getPlayer().getName() + " tried to drop an item with >= 9999 generic.attack_damage\n" +
                             "Display name: `" + e.getItemDrop().getItemStack().getItemMeta().getDisplayName() + "`\n" +
                             "Location: " + e.getPlayer().getLocation());
@@ -51,8 +59,9 @@ public class UseAdminSwordListener implements Listener {
             e.setCancelled(true);
             if (checkCooldown(e.getPlayer().getUniqueId())) return;
             WebhookUtil.sendDiscordWebhook(
+                    plugin,
                     "adminSwordNotifyWebhookURL",
-                    LifeCore.getInstance().getConfig().getString("adminSwordNotifyWebhookUsername"),
+                    plugin.getConfig().getString("adminSwordNotifyWebhookUsername"),
                     e.getPlayer().getName() + " tried to pick up an item with >= 9999 generic.attack_damage\n" +
                             "Display name: `" + e.getItem().getItemStack().getItemMeta().getDisplayName() + "`\n" +
                             "Location: " + e.getPlayer().getLocation());

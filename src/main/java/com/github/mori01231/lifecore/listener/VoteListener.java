@@ -20,49 +20,55 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 public class VoteListener implements Listener {
+    private final LifeCore plugin;
+    
+    public VoteListener(@NotNull LifeCore plugin) {
+        this.plugin = plugin;
+    }
+    
     @EventHandler
     public void onVote(@NotNull VotifierEvent e) {
-        processVotePacket(e.getVote().getUsername(), e.getVote().getServiceName());
+        processVotePacket(plugin, e.getVote().getUsername(), e.getVote().getServiceName());
     }
 
-    public static void processVotePacket(@NotNull String username, @NotNull String serviceName) {
+    public static void processVotePacket(@NotNull LifeCore plugin, @NotNull String username, @NotNull String serviceName) {
         Player player = Bukkit.getPlayerExact(username);
         Bukkit.broadcastMessage(ChatColor.GOLD + "[" + ChatColor.DARK_RED + "Broadcast" + ChatColor.GOLD + "] " +
             ChatColor.DARK_GREEN + "Thanks " + ChatColor.RED + username +
             ChatColor.DARK_GREEN + " for voting on " + serviceName);
         if (player == null) {
-            PlayerUtil.resolveUUIDAsync(username).thenAcceptAsync(uuid -> {
+            PlayerUtil.resolveUUIDAsync(plugin, username).thenAcceptAsync(uuid -> {
                 if (uuid == null) {
-                    LifeCore.getInstance().getSLF4JLogger().warn("Could not resolve UUID for player " + username);
+                    plugin.getSLF4JLogger().warn("Could not resolve UUID for player " + username);
                     return;
                 }
                 VotesFile.increase(uuid.toString());
-                LifeCore.getInstance().getSLF4JLogger().info("Queued vote from {} (UUID: {}, service name: {})", username, uuid, serviceName);
-            }, LifeCore.getInstance().asyncExecutor);
+                plugin.getSLF4JLogger().info("Queued vote from {} (UUID: {}, service name: {})", username, uuid, serviceName);
+            }, plugin.asyncExecutor);
             return;
         }
         player.sendMessage(ChatColor.GREEN + serviceName + "で投票していただきありがとうございます！");
         long count = VotesFile.getVotes(player.getUniqueId().toString()) + 1;
         VotesFile.setVotes(player.getUniqueId().toString(), 0);
-        processVotes(player, count);
+        processVotes(plugin, player, count);
     }
 
     @EventHandler
     public void onJoin(@NotNull PlayerJoinEvent e) {
-        Bukkit.getScheduler().runTaskLater(LifeCore.getInstance(), () -> {
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
             if (!e.getPlayer().isOnline()) {
                 return;
             }
             long count = VotesFile.getVotes(e.getPlayer().getUniqueId().toString());
             VotesFile.setVotes(e.getPlayer().getUniqueId().toString(), 0);
-            processVotes(e.getPlayer(), count);
+            processVotes(plugin, e.getPlayer(), count);
         }, 20 * 10);
     }
 
-    private static void processVotes(@NotNull Player player, long count) {
+    private static void processVotes(@NotNull LifeCore plugin, @NotNull Player player, long count) {
         Optional<Economy> economy = Optional.ofNullable(Bukkit.getServicesManager().getRegistration(Economy.class))
                 .map(RegisteredServiceProvider::getProvider);
-        LifeCore.getInstance().getLogger().info("Processing vote from " + player.getName() + " (count: " + count + ")");
+        plugin.getLogger().info("Processing vote from " + player.getName() + " (count: " + count + ")");
         for (long i = 0; i < count; i++) {
             ItemStack itemVoteTicket = MythicMobs.inst().getItemManager().getItemStack("vote_ticket");
             ItemStack itemDiamondBlock = new ItemStack(Material.DIAMOND_BLOCK);

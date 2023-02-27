@@ -6,14 +6,23 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class Pve3Command implements CommandExecutor {
+public class TransferCommand implements CommandExecutor {
+    private final LifeCore plugin;
+    private final String server;
+
+    public TransferCommand(@NotNull LifeCore plugin, @NotNull String server) {
+        this.plugin = plugin;
+        this.server = server;
+    }
+
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (sender instanceof Player){
             Player player = (Player) sender;
 
@@ -22,11 +31,11 @@ public class Pve3Command implements CommandExecutor {
             DataOutputStream out = new DataOutputStream(b);
             try {
                 out.writeUTF("Connect");
-                out.writeUTF("lifepve3");
+                out.writeUTF(server);
             } catch (IOException e) {
                 // never happens
             }
-            player.sendPluginMessage(LifeCore.getInstance(), "BungeeCord", b.toByteArray());
+            player.sendPluginMessage(plugin, "BungeeCord", b.toByteArray());
         } else {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3このコマンドはコンソールから使用できません。" ));
         }
