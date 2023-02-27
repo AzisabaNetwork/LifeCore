@@ -11,6 +11,7 @@ softdepend:
   - MyPet
   - Towny
   - MythicMobs
+  - ItemStash
 api-version: 1.13
 
 commands:
@@ -124,6 +125,10 @@ commands:
     description: "notify when items are dropped"
     permission: lifecore.dropnotify
     usage: "/dropnotify"
+  dropprotect:
+    description: "protect items from being dropped"
+    permission: lifecore.dropprotect
+    usage: "/dropprotect"
 
 permissions:
   lifecore.*:
@@ -226,10 +231,9 @@ permissions:
   lifecore.petclick:
     description: "Allows you to prevent shift-right-clicking on the pet"
     default: true
-  lifecore.dropprotect:
-    description: "Allows you to protect items from being dropped"
-    default: false
   lifecore.ngword:
     default: true
   lifecore.dropnotify:
+    default: true
+  lifecore.dropprotect:
     default: true

@@ -15,7 +15,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'com.github.johnrengelman.shadow'
 
 group = 'net.azisaba'
-version = '5.0.1'
+version = '5.1.0'
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
@@ -88,6 +88,10 @@ repositories {
         url = 'https://repo.azisaba.net/repository/maven-public/'
     }
     maven {
+        name = 'acrylic-repo'
+        url = 'https://repo.acrylicstyle.xyz/repository/maven-public/'
+    }
+    maven {
         name = 'lumine'
         url = 'https://mvn.lumine.io/repository/maven-public/'
     }
@@ -104,6 +108,8 @@ dependencies {
     compileOnly 'net.azisaba.ballotbox:receiver:1.0.1'
     compileOnly 'net.azisaba.azipluginmessaging:api:4.0.3'
     compileOnly 'net.azisaba:RyuZUPluginChat:4.2.0'
+    compileOnly 'net.azisaba.rarity:api:1.0.0-SNAPSHOT'
+    compileOnly 'net.azisaba:ItemStash:1.0.0-SNAPSHOT'
     //noinspection VulnerableLibrariesLocal
     compileOnly 'com.destroystokyo.paper:paper-api:1.15.2-R0.1-SNAPSHOT'
     compileOnly 'org.spigotmc:spigot:1.15.2-R0.1-SNAPSHOT'

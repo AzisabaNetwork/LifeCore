@@ -1,6 +1,7 @@
 package com.github.mori01231.lifecore.util;
 
 import net.minecraft.server.v1_15_R1.NBTTagCompound;
+import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
@@ -12,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 public class ItemUtil {
     @Contract("null -> false")
@@ -55,5 +57,11 @@ public class ItemUtil {
             if (meta.hasCustomModelData()) props.add("[CustomModelData: " + meta.getCustomModelData() + "]");
         }
         return String.join("", props);
+    }
+
+    public static @NotNull ItemStack createItemStack(@NotNull Material material, int amount, @NotNull Consumer<ItemStack> action) {
+        ItemStack stack = new ItemStack(material, amount);
+        action.accept(stack);
+        return stack;
     }
 }

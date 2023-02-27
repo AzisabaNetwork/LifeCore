@@ -3,6 +3,7 @@ package com.github.mori01231.lifecore;
 import com.github.mori01231.lifecore.command.DebtCommand;
 import com.github.mori01231.lifecore.command.DebugVoteCommand;
 import com.github.mori01231.lifecore.command.DropNotifyCommand;
+import com.github.mori01231.lifecore.command.DropProtectCommand;
 import com.github.mori01231.lifecore.command.EventCommand;
 import com.github.mori01231.lifecore.command.GuideCommand;
 import com.github.mori01231.lifecore.command.HelpCommand;
@@ -27,13 +28,16 @@ import com.github.mori01231.lifecore.command.VoteCommand;
 import com.github.mori01231.lifecore.command.WebsiteCommand;
 import com.github.mori01231.lifecore.command.WikiCommand;
 import com.github.mori01231.lifecore.config.DropNotifyFile;
+import com.github.mori01231.lifecore.config.DropProtectFile;
 import com.github.mori01231.lifecore.config.PetClickFile;
 import com.github.mori01231.lifecore.config.VotesFile;
+import com.github.mori01231.lifecore.gui.DropProtectScreen;
 import com.github.mori01231.lifecore.listener.CancelJoinAfterStartupListener;
 import com.github.mori01231.lifecore.listener.CancelPetClickListener;
 import com.github.mori01231.lifecore.listener.CreatureSpawnEventListener;
 import com.github.mori01231.lifecore.listener.DeathLoopListener;
 import com.github.mori01231.lifecore.listener.DestroyExperienceOrbListener;
+import com.github.mori01231.lifecore.listener.DropProtectListener;
 import com.github.mori01231.lifecore.listener.FilterNgWordsListener;
 import com.github.mori01231.lifecore.listener.DropNotifyListener;
 import com.github.mori01231.lifecore.listener.item.GlassHammerItemListener;
@@ -92,6 +96,7 @@ public final class LifeCore extends JavaPlugin {
         VotesFile.load(this);
         PetClickFile.load(this);
         DropNotifyFile.load(this);
+        DropProtectFile.load(this);
 
         databaseConfig = new DatabaseConfig(Objects.requireNonNull(getConfig().getConfigurationSection("database"), "database section is missing"));
 
@@ -131,6 +136,7 @@ public final class LifeCore extends JavaPlugin {
         registerCommand("petclick", new PetClickCommand());
         registerCommand("ngword", new NgWordCommand(this));
         registerCommand("dropnotify", new DropNotifyCommand());
+        registerCommand("dropprotect", new DropProtectCommand());
 
         this.saveDefaultConfig();
 
@@ -186,9 +192,12 @@ public final class LifeCore extends JavaPlugin {
         VotesFile.save(this);
         PetClickFile.save(this);
         DropNotifyFile.save(this);
+        DropProtectFile.save(this);
         DBConnector.close();
         executorService.shutdownNow();
-        httpServer.stop(1);
+        if (httpServer != null) {
+            httpServer.stop(1);
+        }
         gcListener.unregister();
 
         // unregister all channel handlers
@@ -214,6 +223,7 @@ public final class LifeCore extends JavaPlugin {
         pm.registerEvents(new CancelJoinAfterStartupListener(), this);
         pm.registerEvents(new DeathLoopListener(), this);
         pm.registerEvents(new DropNotifyListener(), this);
+        pm.registerEvents(new DropProtectScreen.EventListener(), this);
 
         // Items
         pm.registerEvents(new OreOnlyItemListener(), this);
@@ -249,6 +259,14 @@ public final class LifeCore extends JavaPlugin {
             pm.registerEvents(new FilterNgWordsListener(this), this);
         } catch (Exception | NoClassDefFoundError e) {
             getSLF4JLogger().warn("RyuZUPluginChat not detected, skipping event listener registration");
+        }
+
+        try {
+            Class.forName("net.azisaba.rarity.api.RarityAPI");
+            Class.forName("net.azisaba.itemstash.ItemStash");
+            pm.registerEvents(new DropProtectListener(), this);
+        } catch (Exception | NoClassDefFoundError e) {
+            getSLF4JLogger().warn("Rarity and/or ItemStash not detected, skipping event listener registration");
         }
     }
 
