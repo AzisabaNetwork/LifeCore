@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "net.azisaba"
-version = "6.0.0"
+version = "6.0.1"
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(8))
@@ -38,10 +38,6 @@ repositories {
         url = uri("https://repo.azisaba.net/repository/maven-public/")
     }
     maven {
-        name = "acrylic-repo"
-        url = uri("https://repo.acrylicstyle.xyz/repository/maven-public/")
-    }
-    maven {
         name = "lumine"
         url = uri("https://mvn.lumine.io/repository/maven-public/")
     }
@@ -61,7 +57,7 @@ dependencies {
     compileOnly("net.azisaba.ballotbox:receiver:1.0.1")
     compileOnly("net.azisaba.azipluginmessaging:api:4.0.3")
     compileOnly("net.azisaba:RyuZUPluginChat:4.2.0")
-    compileOnly("net.azisaba.rarity:api:1.0.0-SNAPSHOT")
+    compileOnly("net.azisaba.rarity:api:1.0.1-SNAPSHOT")
     compileOnly("net.azisaba:ItemStash:1.0.0-SNAPSHOT")
     //noinspection VulnerableLibrariesLocal
     compileOnly("com.destroystokyo.paper:paper-api:1.15.2-R0.1-SNAPSHOT")
