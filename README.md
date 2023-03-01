@@ -6,11 +6,14 @@ The core plugin for Life server in Azisaba Network
 [![Github forks](https://img.shields.io/github/forks/AzisabaNetwork/LifeCore)](https://github.com/AzisabaNetwork/LifeCore/network/members)
 [![Github stars](https://img.shields.io/github/stars/AzisabaNetwork/LifeCore)](https://github.com/AzisabaNetwork/LifeCore/stargazers)
 [![Github license](https://img.shields.io/github/license/AzisabaNetwork/LifeCore)](https://github.com/AzisabaNetwork/LifeCore/)
+![Latest release](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Frepo.azisaba.net%2Frepository%2Fmaven-releases%2Fnet%252Fazisaba%252FLifeCore%252Fmaven-metadata.xml)
 
 # Contributors
 - [Mori01231](https://github.com/Mori01231)
 
 # Commands
+
+<!-- TODO: Update this section -->
 
 - ``/wiki``： Wikiページのリンクを表示する。  
     必要パーミッション： lifecore.wiki
