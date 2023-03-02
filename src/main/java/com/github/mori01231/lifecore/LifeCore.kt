@@ -24,6 +24,7 @@ import com.github.mori01231.lifecore.config.DropNotifyFile
 import com.github.mori01231.lifecore.config.DropProtectConfig
 import com.github.mori01231.lifecore.config.HttpServerConfig
 import com.github.mori01231.lifecore.config.PetClickFile
+import com.github.mori01231.lifecore.config.VoteConfig
 import com.github.mori01231.lifecore.config.VotesFile
 import com.github.mori01231.lifecore.gui.DropProtectScreen
 import com.github.mori01231.lifecore.listener.CancelJoinAfterStartupListener
@@ -54,6 +55,7 @@ import com.github.mori01231.lifecore.util.runTaskTimerAsynchronously
 import com.github.mori01231.lifecore.util.toReadonlyNode
 import com.sun.net.httpserver.HttpServer
 import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandExecutor
 import org.bukkit.plugin.java.JavaPlugin
@@ -70,6 +72,8 @@ class LifeCore : JavaPlugin() {
     @JvmField
     val asyncExecutor = Executor { Bukkit.getScheduler().runTaskAsynchronously(this, it) }
     private var databaseConfig: DatabaseConfig? = null
+    lateinit var voteConfig: VoteConfig
+        private set
     private var httpServer: HttpServer? = null
     lateinit var dropProtectConfig: DropProtectConfig
         private set
@@ -99,6 +103,12 @@ class LifeCore : JavaPlugin() {
         }
 
         databaseConfig = config.getYamlMap("database").decode(DatabaseConfig.serializer())
+        dataFolder.resolve("config-vote.yml").let {
+            if (!it.exists()) {
+                it.writeText(yaml.encodeToString(VoteConfig()))
+            }
+            voteConfig = yaml.decodeFromString(it.readText())
+        }
 
         val httpServerConfig =
             config.getConfigurationSection("http-server")
