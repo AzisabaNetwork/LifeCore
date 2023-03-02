@@ -2,11 +2,13 @@ package com.github.mori01231.lifecore.vote
 
 import com.charleskorn.kaml.YamlComment
 import com.github.mori01231.lifecore.LifeCore
+import com.github.mori01231.lifecore.util.ItemUtil
 import io.lumine.xikage.mythicmobs.MythicMobs
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.Bukkit
+import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -47,7 +49,12 @@ data class MythicItemReward(
         if (item == null) {
             plugin.logger.warning("Mythic Item $id not found.")
         } else {
-            player.inventory.addItem(item)
+            player.inventory.addItem(item).values.apply {
+                if (isNotEmpty() && all { ItemUtil.addToStashIfEnabled(player.uniqueId, it) }) {
+                    player.sendMessage("${ChatColor.RED}インベントリがいっぱいのため、Stashに入りました。")
+                    player.sendMessage("${ChatColor.AQUA}/pickupstash${ChatColor.RED}で回収できます。")
+                }
+            }
         }
     }
 }
@@ -61,7 +68,12 @@ data class ItemReward(
     val amount: Int = 1,
 ) : VoteReward {
     override fun execute(plugin: LifeCore, player: Player) {
-        player.inventory.addItem(ItemStack(id, amount))
+        player.inventory.addItem(ItemStack(id, amount)).values.apply {
+            if (isNotEmpty() && all { ItemUtil.addToStashIfEnabled(player.uniqueId, it) }) {
+                player.sendMessage("${ChatColor.RED}インベントリがいっぱいのため、Stashに入りました。")
+                player.sendMessage("${ChatColor.AQUA}/pickupstash${ChatColor.RED}で回収できます。")
+            }
+        }
     }
 }
 

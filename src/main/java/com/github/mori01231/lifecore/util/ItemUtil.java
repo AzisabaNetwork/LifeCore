@@ -1,5 +1,6 @@
 package com.github.mori01231.lifecore.util;
 
+import net.azisaba.itemstash.ItemStash;
 import net.minecraft.server.v1_15_R1.NBTTagCompound;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -13,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 public class ItemUtil {
@@ -64,5 +66,15 @@ public class ItemUtil {
         ItemStack stack = new ItemStack(material, amount);
         action.accept(stack);
         return stack;
+    }
+
+    public static boolean addToStashIfEnabled(@NotNull UUID uuid, @NotNull ItemStack item) {
+        try {
+            Class.forName("net.azisaba.itemstash.ItemStash");
+            ItemStash.getInstance().addItemToStash(uuid, item);
+            return true;
+        } catch (ClassNotFoundException ignored) {
+            return false;
+        }
     }
 }
