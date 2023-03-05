@@ -1,10 +1,9 @@
-package com.github.mori01231.lifecore.listener.item;
+package com.github.mori01231.lifecore.listener;
 
 import com.destroystokyo.paper.event.inventory.PrepareGrindstoneEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
-import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -15,17 +14,6 @@ public class UnableCraftListener implements Listener {
 
     private static final List <String> LIST = Arrays.asList( "§a", "§b","§c","§d","§e","§f", "§0","§1","§2","§3","§4","§5","§6","§7","§8", "§9", "§n", "§m", "§o", "§k", "§l");
 
-    @EventHandler
-    public void onCraft(PrepareItemCraftEvent e) {
-
-        if ( e.getView().getPlayer().hasPermission("lifecore.bypasscraft") ) return;
-
-        for ( ItemStack item : e.getInventory().getMatrix() ) {
-
-            if (checkItemStack(item)) e.getInventory().setResult(null);
-
-        }
-    }
     @EventHandler
     public void onCraft(PrepareGrindstoneEvent e) {
 
