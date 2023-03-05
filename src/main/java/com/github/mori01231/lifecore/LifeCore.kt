@@ -42,6 +42,7 @@ import com.github.mori01231.lifecore.listener.UseAdminSwordListener
 import com.github.mori01231.lifecore.listener.VoteListener
 import com.github.mori01231.lifecore.listener.item.GlassHammerItemListener
 import com.github.mori01231.lifecore.listener.item.OreOnlyItemListener
+import com.github.mori01231.lifecore.listener.item.UnableCraftListener
 import com.github.mori01231.lifecore.network.PacketHandler
 import com.github.mori01231.lifecore.util.GCListener
 import com.github.mori01231.lifecore.util.NGWordsCache
@@ -228,6 +229,7 @@ class LifeCore : JavaPlugin() {
         pm.registerEvents(DeathLoopListener(), this)
         pm.registerEvents(DropNotifyListener(), this)
         pm.registerEvents(DropProtectScreen.EventListener(this), this)
+        pm.registerEvents(UnableCraftListener(), this)
 
         // Items
         pm.registerEvents(OreOnlyItemListener(), this)
