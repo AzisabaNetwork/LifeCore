@@ -129,6 +129,10 @@ commands:
     description: "protect items from being dropped"
     permission: lifecore.dropprotect
     usage: "/dropprotect"
+  damagelog:
+    description: "view damage log"
+    permission: lifecore.damagelog
+    usage: "/damagelog"
 
 permissions:
   lifecore.*:
@@ -236,4 +240,6 @@ permissions:
   lifecore.dropnotify:
     default: true
   lifecore.dropprotect:
+    default: true
+  lifecore.damagelog:
     default: true
