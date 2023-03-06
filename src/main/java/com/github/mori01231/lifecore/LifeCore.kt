@@ -1,31 +1,7 @@
 package com.github.mori01231.lifecore
 
-import com.github.mori01231.lifecore.command.DebtCommand
-import com.github.mori01231.lifecore.command.DebugVoteCommand
-import com.github.mori01231.lifecore.command.DropNotifyCommand
-import com.github.mori01231.lifecore.command.DropProtectCommand
-import com.github.mori01231.lifecore.command.GuideCommand
-import com.github.mori01231.lifecore.command.HelpCommand
-import com.github.mori01231.lifecore.command.KiaiCommand
-import com.github.mori01231.lifecore.command.KillNonAdminCommand
-import com.github.mori01231.lifecore.command.MMIDCommand
-import com.github.mori01231.lifecore.command.NgWordCommand
-import com.github.mori01231.lifecore.command.NoobCommand
-import com.github.mori01231.lifecore.command.PetClickCommand
-import com.github.mori01231.lifecore.command.TransferCommand
-import com.github.mori01231.lifecore.command.PveCommand
-import com.github.mori01231.lifecore.command.RankCommand
-import com.github.mori01231.lifecore.command.TrashCommand
-import com.github.mori01231.lifecore.command.TutorialCommand
-import com.github.mori01231.lifecore.command.VoteCommand
-import com.github.mori01231.lifecore.command.WebsiteCommand
-import com.github.mori01231.lifecore.command.WikiCommand
-import com.github.mori01231.lifecore.config.DropNotifyFile
-import com.github.mori01231.lifecore.config.DropProtectConfig
-import com.github.mori01231.lifecore.config.HttpServerConfig
-import com.github.mori01231.lifecore.config.PetClickFile
-import com.github.mori01231.lifecore.config.VoteConfig
-import com.github.mori01231.lifecore.config.VotesFile
+import com.github.mori01231.lifecore.command.*
+import com.github.mori01231.lifecore.config.*
 import com.github.mori01231.lifecore.gui.DropProtectScreen
 import com.github.mori01231.lifecore.listener.*
 import com.github.mori01231.lifecore.listener.item.GlassHammerItemListener
@@ -77,6 +53,7 @@ class LifeCore : JavaPlugin() {
         }
         VotesFile.load(this)
         PetClickFile.load(this)
+        DamageLogFile.load(this)
         DropNotifyFile.load(this)
         dataFolder.resolve("drop-protect.yml").let {
             if (!it.exists()) {
@@ -136,6 +113,7 @@ class LifeCore : JavaPlugin() {
         registerCommand("ngword", NgWordCommand(this))
         registerCommand("dropnotify", DropNotifyCommand())
         registerCommand("dropprotect", DropProtectCommand(this))
+        registerCommand("damagelog", DamageLogCommand())
         saveDefaultConfig()
         server.messenger.registerOutgoingPluginChannel(this, "BungeeCord")
         registerEvents()
@@ -187,6 +165,7 @@ class LifeCore : JavaPlugin() {
         // Plugin shutdown logic
         VotesFile.save(this)
         PetClickFile.save(this)
+        DamageLogFile.save(this)
         DropNotifyFile.save(this)
         dataFolder.resolve("drop-protect.yml").writeText(dropProtectConfig.encode())
         DBConnector.close()
@@ -218,6 +197,7 @@ class LifeCore : JavaPlugin() {
         pm.registerEvents(DropProtectScreen.EventListener(this), this)
         pm.registerEvents(UnableCraftListener(), this)
         pm.registerEvents(AZISAVIORListener(this), this)
+        pm.registerEvents(DamageLogListener(), this)
 
         // Items
         pm.registerEvents(OreOnlyItemListener(), this)
