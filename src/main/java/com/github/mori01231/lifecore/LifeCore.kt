@@ -27,22 +27,9 @@ import com.github.mori01231.lifecore.config.PetClickFile
 import com.github.mori01231.lifecore.config.VoteConfig
 import com.github.mori01231.lifecore.config.VotesFile
 import com.github.mori01231.lifecore.gui.DropProtectScreen
-import com.github.mori01231.lifecore.listener.CancelJoinAfterStartupListener
-import com.github.mori01231.lifecore.listener.CancelPetClickListener
-import com.github.mori01231.lifecore.listener.CreatureSpawnEventListener
-import com.github.mori01231.lifecore.listener.DeathLoopListener
-import com.github.mori01231.lifecore.listener.DestroyExperienceOrbListener
-import com.github.mori01231.lifecore.listener.DropNotifyListener
-import com.github.mori01231.lifecore.listener.DropProtectListener
-import com.github.mori01231.lifecore.listener.FilterNgWordsListener
-import com.github.mori01231.lifecore.listener.PlayerJoinListener
-import com.github.mori01231.lifecore.listener.TownyOutlawListener
-import com.github.mori01231.lifecore.listener.TrashListener
-import com.github.mori01231.lifecore.listener.UseAdminSwordListener
-import com.github.mori01231.lifecore.listener.VoteListener
+import com.github.mori01231.lifecore.listener.*
 import com.github.mori01231.lifecore.listener.item.GlassHammerItemListener
 import com.github.mori01231.lifecore.listener.item.OreOnlyItemListener
-import com.github.mori01231.lifecore.listener.UnableCraftListener
 import com.github.mori01231.lifecore.network.PacketHandler
 import com.github.mori01231.lifecore.util.GCListener
 import com.github.mori01231.lifecore.util.NGWordsCache
@@ -230,6 +217,7 @@ class LifeCore : JavaPlugin() {
         pm.registerEvents(DropNotifyListener(), this)
         pm.registerEvents(DropProtectScreen.EventListener(this), this)
         pm.registerEvents(UnableCraftListener(), this)
+        pm.registerEvents(AZISAVIORListener(this), this)
 
         // Items
         pm.registerEvents(OreOnlyItemListener(), this)
