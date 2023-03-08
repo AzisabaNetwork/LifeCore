@@ -29,16 +29,16 @@ public class AZISAVIORListener implements Listener {
     @EventHandler
     public void onInteract(PlayerInteractEvent e) {
 
-        if ( coolTime.contains(e.getPlayer().getUniqueId()) ) return;
-
-        coolTime.add(e.getPlayer().getUniqueId());
-        Bukkit.getScheduler().runTaskLater(plugin, ()-> coolTime.remove(e.getPlayer().getUniqueId()), 20 * 15);
-
         ItemStack mainHand = e.getPlayer().getInventory().getItemInMainHand();
         ItemStack offHand = e.getPlayer().getInventory().getItemInOffHand();
 
         if ( !"AZISAVIOR".equals(ItemUtil.getMythicType(offHand)) ) return;
         if ( !"offhandactivate".equals(ItemUtil.getMythicType(mainHand)) && !mainHand.getType().isAir() ) return;
+
+        if ( coolTime.contains(e.getPlayer().getUniqueId()) ) return;
+
+        coolTime.add(e.getPlayer().getUniqueId());
+        Bukkit.getScheduler().runTaskLater(plugin, ()-> coolTime.remove(e.getPlayer().getUniqueId()), 20 * 15);
 
         double maxHealth = Objects.requireNonNull(e.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH)).getValue();
 
