@@ -133,6 +133,10 @@ commands:
     description: "view damage log"
     permission: lifecore.damagelog
     usage: "/damagelog"
+  respawn:
+    description: "respawn specified player"
+    permission: lifecore.respawn
+    usage: "/respawn"
 
 permissions:
   lifecore.*:
@@ -163,6 +167,7 @@ permissions:
       lifecore.petclick: true
       lifecore.dropprotect: true
       lifecore.ngword: true
+      lifecore.respawn: true
   lifecore.wiki:
     description: Allows you to show the wiki URL.
     default: true
@@ -243,3 +248,5 @@ permissions:
     default: true
   lifecore.damagelog:
     default: true
+  lifecore.respawn:
+    default: false

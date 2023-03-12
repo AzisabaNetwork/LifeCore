@@ -114,6 +114,10 @@ class LifeCore : JavaPlugin() {
         registerCommand("dropnotify", DropNotifyCommand())
         registerCommand("dropprotect", DropProtectCommand(this))
         registerCommand("damagelog", DamageLogCommand())
+        registerCommand("respawn") { _, _, _, args ->
+            args.getOrNull(0)?.let { Bukkit.getPlayerExact(it)?.spigot()?.respawn() }
+            true
+        }
         saveDefaultConfig()
         server.messenger.registerOutgoingPluginChannel(this, "BungeeCord")
         registerEvents()

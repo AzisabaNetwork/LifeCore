@@ -29,6 +29,7 @@ public class DropProtectScreen implements InventoryHolder {
     }
 
     public void reset() {
+        String noRarityLore = plugin.getDropProtectConfig().contains(player.getUniqueId(), "no_rarity") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
         String commonName = RarityAPIProvider.get().getRarityById("common").getDisplayName(player);
         String commonLore = plugin.getDropProtectConfig().contains(player.getUniqueId(), "common") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
         String uncommonName = RarityAPIProvider.get().getRarityById("uncommon").getDisplayName(player);
@@ -43,7 +44,15 @@ public class DropProtectScreen implements InventoryHolder {
         String mythicLore = plugin.getDropProtectConfig().contains(player.getUniqueId(), "mythic") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
         String specialName = RarityAPIProvider.get().getRarityById("special").getDisplayName(player);
         String specialLore = plugin.getDropProtectConfig().contains(player.getUniqueId(), "special") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
-        inventory.setItem(0, ItemUtil.createItemStack(Material.COBBLESTONE, 1, item -> {
+        inventory.setItem(0, ItemUtil.createItemStack(Material.PAPER, 1, item -> {
+            ItemMeta meta = item.getItemMeta();
+            if (meta != null) {
+                meta.setDisplayName(ChatColor.WHITE + "レア度が付与されていないアイテム");
+                meta.setLore(Collections.singletonList(noRarityLore));
+                item.setItemMeta(meta);
+            }
+        }));
+        inventory.setItem(1, ItemUtil.createItemStack(Material.COBBLESTONE, 1, item -> {
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
                 meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', commonName));
@@ -51,7 +60,7 @@ public class DropProtectScreen implements InventoryHolder {
                 item.setItemMeta(meta);
             }
         }));
-        inventory.setItem(1, ItemUtil.createItemStack(Material.IRON_BLOCK, 1, item -> {
+        inventory.setItem(2, ItemUtil.createItemStack(Material.IRON_BLOCK, 1, item -> {
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
                 meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', uncommonName));
@@ -59,7 +68,7 @@ public class DropProtectScreen implements InventoryHolder {
                 item.setItemMeta(meta);
             }
         }));
-        inventory.setItem(2, ItemUtil.createItemStack(Material.GOLD_BLOCK, 1, item -> {
+        inventory.setItem(3, ItemUtil.createItemStack(Material.GOLD_BLOCK, 1, item -> {
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
                 meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', rareName));
@@ -67,7 +76,7 @@ public class DropProtectScreen implements InventoryHolder {
                 item.setItemMeta(meta);
             }
         }));
-        inventory.setItem(3, ItemUtil.createItemStack(Material.EMERALD_BLOCK, 1, item -> {
+        inventory.setItem(4, ItemUtil.createItemStack(Material.EMERALD_BLOCK, 1, item -> {
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
                 meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', epicName));
@@ -75,7 +84,7 @@ public class DropProtectScreen implements InventoryHolder {
                 item.setItemMeta(meta);
             }
         }));
-        inventory.setItem(4, ItemUtil.createItemStack(Material.DIAMOND_BLOCK, 1, item -> {
+        inventory.setItem(5, ItemUtil.createItemStack(Material.DIAMOND_BLOCK, 1, item -> {
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
                 meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', legendaryName));
@@ -83,7 +92,7 @@ public class DropProtectScreen implements InventoryHolder {
                 item.setItemMeta(meta);
             }
         }));
-        inventory.setItem(5, ItemUtil.createItemStack(Material.ENCHANTED_GOLDEN_APPLE, 1, item -> {
+        inventory.setItem(6, ItemUtil.createItemStack(Material.ENCHANTED_GOLDEN_APPLE, 1, item -> {
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
                 meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', mythicName));
@@ -91,7 +100,7 @@ public class DropProtectScreen implements InventoryHolder {
                 item.setItemMeta(meta);
             }
         }));
-        inventory.setItem(6, ItemUtil.createItemStack(Material.NETHER_STAR, 1, item -> {
+        inventory.setItem(7, ItemUtil.createItemStack(Material.NETHER_STAR, 1, item -> {
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
                 meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', specialName));
@@ -133,30 +142,34 @@ public class DropProtectScreen implements InventoryHolder {
             DropProtectScreen screen = (DropProtectScreen) e.getInventory().getHolder();
             switch (e.getSlot()) {
                 case 0: {
-                    plugin.getDropProtectConfig().toggle(screen.player.getUniqueId(), "common");
+                    plugin.getDropProtectConfig().toggle(screen.player.getUniqueId(), "no_rarity");
                     break;
                 }
                 case 1: {
-                    plugin.getDropProtectConfig().toggle(screen.player.getUniqueId(), "uncommon");
+                    plugin.getDropProtectConfig().toggle(screen.player.getUniqueId(), "common");
                     break;
                 }
                 case 2: {
-                    plugin.getDropProtectConfig().toggle(screen.player.getUniqueId(), "rare");
+                    plugin.getDropProtectConfig().toggle(screen.player.getUniqueId(), "uncommon");
                     break;
                 }
                 case 3: {
-                    plugin.getDropProtectConfig().toggle(screen.player.getUniqueId(), "epic");
+                    plugin.getDropProtectConfig().toggle(screen.player.getUniqueId(), "rare");
                     break;
                 }
                 case 4: {
-                    plugin.getDropProtectConfig().toggle(screen.player.getUniqueId(), "legendary");
+                    plugin.getDropProtectConfig().toggle(screen.player.getUniqueId(), "epic");
                     break;
                 }
                 case 5: {
-                    plugin.getDropProtectConfig().toggle(screen.player.getUniqueId(), "mythic");
+                    plugin.getDropProtectConfig().toggle(screen.player.getUniqueId(), "legendary");
                     break;
                 }
                 case 6: {
+                    plugin.getDropProtectConfig().toggle(screen.player.getUniqueId(), "mythic");
+                    break;
+                }
+                case 7: {
                     plugin.getDropProtectConfig().toggle(screen.player.getUniqueId(), "special");
                     break;
                 }

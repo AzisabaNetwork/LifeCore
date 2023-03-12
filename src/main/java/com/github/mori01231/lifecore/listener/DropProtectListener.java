@@ -35,10 +35,17 @@ public class DropProtectListener implements Listener {
             return;
         }
         Rarity rarity = rarityAPI.getRarityByItemStack(e.getItemDrop().getItemStack());
+        boolean shouldCancel;
         if (rarity == null) {
-            return;
+            if (plugin.getDropProtectConfig().contains(e.getPlayer().getUniqueId(), "no_rarity")) {
+                shouldCancel = true;
+            } else {
+                return;
+            }
+        } else {
+            shouldCancel = plugin.getDropProtectConfig().contains(e.getPlayer().getUniqueId(), rarity.getId());
         }
-        if (plugin.getDropProtectConfig().contains(e.getPlayer().getUniqueId(), rarity.getId())) {
+        if (shouldCancel) {
             ItemStack stack = e.getItemDrop().getItemStack();
             e.setCancelled(true);
 
