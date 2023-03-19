@@ -202,6 +202,7 @@ class LifeCore : JavaPlugin() {
         pm.registerEvents(UnableCraftListener(), this)
         pm.registerEvents(AZISAVIORListener(this), this)
         pm.registerEvents(DamageLogListener(), this)
+        pm.registerEvents(UnusableDyeListener(), this)
 
         // Items
         pm.registerEvents(OreOnlyItemListener(), this)
