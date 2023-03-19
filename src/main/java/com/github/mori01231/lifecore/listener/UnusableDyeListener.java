@@ -10,7 +10,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-public class UnusuableDyeListener implements Listener {
+public class UnusableDyeListener implements Listener {
 
     @EventHandler
     public void onClick(PlayerInteractEvent e) {
