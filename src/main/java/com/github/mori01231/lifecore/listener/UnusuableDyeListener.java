@@ -10,8 +10,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import java.util.Objects;
-
 public class UnusuableDyeListener implements Listener {
 
     @EventHandler
@@ -19,12 +17,14 @@ public class UnusuableDyeListener implements Listener {
 
         PlayerInventory inv = e.getPlayer().getInventory();
 
-        if ( !inv.getItemInMainHand().getItemMeta().hasDisplayName() ) return;
-
         Block block = e.getClickedBlock();
-        Material blockType = Objects.requireNonNull(block).getType();
+        if (block == null) return;
 
-        if ( blockType == Material.OAK_SIGN || blockType == Material.ACACIA_SIGN || blockType == Material.BIRCH_SIGN || blockType == Material.DARK_OAK_SIGN || blockType == Material.JUNGLE_SIGN || blockType == Material.SPRUCE_SIGN ) {
+        Material blockType = block.getType();
+
+        if ( !inv.getItemInMainHand().hasItemMeta() || !inv.getItemInMainHand().getItemMeta().hasDisplayName() ) return;
+
+        if ( blockType.name().endsWith("_SIGN") ) {
 
             Player player = e.getPlayer();
             ItemStack item = player.getInventory().getItemInMainHand();
