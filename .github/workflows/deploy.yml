@@ -32,6 +32,12 @@ jobs:
       - name: Run BuildTools
         if: steps.check_nms.outputs.files_exists == 'false'
         run: cd build && java -jar BuildTools.jar --rev 1.15.2
+      # Java 8 does not have required ssl certificates to download dependencies from repo.essentialsx.net
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
       - name: Prepare gradle.properties
         run: |
           mkdir -p $HOME/.gradle

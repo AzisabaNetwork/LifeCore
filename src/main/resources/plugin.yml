@@ -137,6 +137,10 @@ commands:
     description: "respawn specified player"
     permission: lifecore.respawn
     usage: "/respawn"
+  servermoney:
+    description: "show server money"
+    permission: lifecore.servermoney
+    usage: "/servermoney"
 
 permissions:
   lifecore.*:
@@ -168,6 +172,7 @@ permissions:
       lifecore.dropprotect: true
       lifecore.ngword: true
       lifecore.respawn: true
+      lifecore.servermoney: true
   lifecore.wiki:
     description: Allows you to show the wiki URL.
     default: true
@@ -249,4 +254,6 @@ permissions:
   lifecore.damagelog:
     default: true
   lifecore.respawn:
+    default: false
+  lifecore.servermoney:
     default: false
