@@ -167,26 +167,37 @@ class LifeCore : JavaPlugin() {
 
     override fun onDisable() {
         // Plugin shutdown logic
-        VotesFile.save(this)
-        PetClickFile.save(this)
-        DamageLogFile.save(this)
-        DropNotifyFile.save(this)
-        dataFolder.resolve("drop-protect.yml").writeText(dropProtectConfig.encode())
-        DBConnector.close()
-        executorService.shutdownNow()
-        httpServer?.stop(1)
-        gcListener.unregister()
+        runCatching { VotesFile.save(this) }
+        runCatching { PetClickFile.save(this) }
+        runCatching { DamageLogFile.save(this) }
+        runCatching { DropNotifyFile.save(this) }
+        runCatching { dataFolder.resolve("drop-protect.yml").writeText(dropProtectConfig.encode()) }
+        runCatching { DBConnector.close() }
+        runCatching { executorService.shutdownNow() }
+        runCatching { httpServer?.stop(1) }
+        runCatching { gcListener.unregister() }
 
-        // unregister all channel handlers
-        for (player in Bukkit.getOnlinePlayers()) {
-            val pipeline = PlayerUtil.getChannel(player).pipeline()
-            try {
-                if (pipeline["lifecore"] != null) {
-                    pipeline.remove("lifecore")
+        runCatching {
+            // unregister all channel handlers
+            for (player in Bukkit.getOnlinePlayers()) {
+                val pipeline = PlayerUtil.getChannel(player).pipeline()
+                try {
+                    if (pipeline["lifecore"] != null) {
+                        pipeline.remove("lifecore")
+                    }
+                } catch (ignored: NoSuchElementException) {
                 }
-            } catch (ignored: NoSuchElementException) {}
+            }
         }
         logger.info("LifeCore has been disabled.")
+    }
+
+    private fun runCatching(action: () -> Unit) {
+        try {
+            action()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun registerEvents() {
