@@ -16,6 +16,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,7 +63,8 @@ public class ServerMoneyCommand implements CommandExecutor {
                 throw new RuntimeException(e);
             }
             //noinspection RedundantOperationOnEmptyContainer
-            diff.sort((o1, o2) -> (int) (Math.abs(o2.getValue()) - Math.abs(o1.getValue())));
+            diff.sort(Comparator.comparingDouble(o -> Math.abs(o.getValue())));
+            Collections.reverse(diff);
             // diffの中身を最大10個出力
             Consumer<CommandSender> sendDiff = senderIn -> {
                 if (!diff.isEmpty()) {
