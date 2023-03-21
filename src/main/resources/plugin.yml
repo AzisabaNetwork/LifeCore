@@ -141,6 +141,10 @@ commands:
     description: "show server money"
     permission: lifecore.servermoney
     usage: "/servermoney"
+  fixtime:
+    description: "fix your autorank time"
+    permission: lifecore.fixtime
+    usage: "/fixtime"
 
 permissions:
   lifecore.*:
@@ -173,6 +177,8 @@ permissions:
       lifecore.ngword: true
       lifecore.respawn: true
       lifecore.servermoney: true
+      lifecore.fixtime: true
+      lifecore.fixtime.bypass-cooldown: true
   lifecore.wiki:
     description: Allows you to show the wiki URL.
     default: true
@@ -256,4 +262,8 @@ permissions:
   lifecore.respawn:
     default: false
   lifecore.servermoney:
+    default: false
+  lifecore.fixtime:
+    default: true
+  lifecore.fixtime.bypass-cooldown:
     default: false

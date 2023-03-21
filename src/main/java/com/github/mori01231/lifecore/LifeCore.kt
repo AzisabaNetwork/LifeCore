@@ -115,6 +115,7 @@ class LifeCore : JavaPlugin() {
         registerCommand("dropprotect", DropProtectCommand(this))
         registerCommand("damagelog", DamageLogCommand())
         registerCommand("servermoney", ServerMoneyCommand(this))
+        registerCommand("fixtime", FixTimeCommand)
         registerCommand("respawn") { _, _, _, args ->
             args.getOrNull(0)?.let { Bukkit.getPlayerExact(it)?.spigot()?.respawn() }
             true
