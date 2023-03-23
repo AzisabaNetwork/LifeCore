@@ -3,9 +3,11 @@ package com.github.mori01231.lifecore.listener;
 import com.github.mori01231.lifecore.util.LazyInitValue;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,15 +33,28 @@ public class TownyOutlawListener implements Listener {
             }
         }
         lastMove.put(e.getPlayer().getUniqueId(), System.currentTimeMillis());
+        if (!e.getPlayer().hasPermission("lifecore.bypass-outlaw") && isInOutlawedTown(e.getPlayer(), e.getPlayer().getLocation())) {
+            e.getPlayer().sendMessage(ChatColor.RED + "出入り禁止になっている街に進入することはできません！");
+            e.getPlayer().teleport(e.getPlayer().getWorld().getSpawnLocation());
+        }
+    }
+
+    @EventHandler
+    public void onTeleport(PlayerTeleportEvent e) throws ReflectiveOperationException {
+        if (!e.getPlayer().hasPermission("lifecore.bypass-outlaw") && isInOutlawedTown(e.getPlayer(), e.getTo())) {
+            e.setCancelled(true);
+            e.getPlayer().sendMessage(ChatColor.RED + "この場所にはテレポートできません。");
+        }
+    }
+
+    private boolean isInOutlawedTown(@NotNull Player player, @NotNull Location location) throws ReflectiveOperationException {
         Object townyApi = getTownyAPI();
-        Object townBlock = getTownBlock(townyApi, e.getPlayer().getLocation());
+        Object townBlock = getTownBlock(townyApi, location);
         if (townBlock != null && hasTown(townBlock)) {
             Object town = getTown(townBlock);
-            if (hasOutlaw(town, e.getPlayer().getName())) {
-                e.getPlayer().sendMessage(ChatColor.RED + "出入り禁止になっている街に進入することはできません！");
-                e.getPlayer().teleport(e.getPlayer().getWorld().getSpawnLocation());
-            }
+            return hasOutlaw(town, player.getName());
         }
+        return false;
     }
 
     private static @NotNull Object getTownyAPI() throws ReflectiveOperationException {

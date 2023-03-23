@@ -179,6 +179,7 @@ permissions:
       lifecore.servermoney: true
       lifecore.fixtime: true
       lifecore.fixtime.bypass-cooldown: true
+      lfiecore.bypass-outlaw: true
   lifecore.wiki:
     description: Allows you to show the wiki URL.
     default: true
@@ -266,4 +267,6 @@ permissions:
   lifecore.fixtime:
     default: true
   lifecore.fixtime.bypass-cooldown:
+    default: false
+  lifecore.bypass-outlaw:
     default: false
