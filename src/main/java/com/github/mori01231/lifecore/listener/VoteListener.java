@@ -50,12 +50,13 @@ public class VoteListener implements Listener {
     @EventHandler
     public void onJoin(@NotNull PlayerJoinEvent e) {
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            if (!e.getPlayer().isOnline()) {
+            Player player = Bukkit.getPlayer(e.getPlayer().getUniqueId());
+            if (player == null || !player.isOnline()) {
                 return;
             }
-            long count = VotesFile.getVotes(e.getPlayer().getUniqueId().toString());
-            VotesFile.setVotes(e.getPlayer().getUniqueId().toString(), 0);
-            processVotes(plugin, e.getPlayer(), count);
+            long count = VotesFile.getVotes(player.getUniqueId().toString());
+            VotesFile.setVotes(player.getUniqueId().toString(), 0);
+            processVotes(plugin, player, count);
         }, 20 * 10);
     }
 
