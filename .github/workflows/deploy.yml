@@ -21,17 +21,6 @@ jobs:
         with:
           java-version: '8'
           distribution: 'temurin'
-      - name: Check 1.15.2 NMS existence
-        id: check_nms
-        uses: andstor/file-existence-action@v1
-        with:
-          files: "/home/runner/.m2/repository/org/spigotmc/spigot/1.15.2-R0.1-SNAPSHOT/spigot-1.15.2-R0.1-SNAPSHOT.pom"
-      - name: Download BuildTools
-        if: steps.check_nms.outputs.files_exists == 'false'
-        run: mkdir -p ./build/ && curl -L -o ./build/BuildTools.jar https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
-      - name: Run BuildTools
-        if: steps.check_nms.outputs.files_exists == 'false'
-        run: cd build && java -jar BuildTools.jar --rev 1.15.2
       # Java 8 does not have required ssl certificates to download dependencies from repo.essentialsx.net
       - name: Set up JDK 17
         uses: actions/setup-java@v3
@@ -41,6 +30,8 @@ jobs:
       - name: Prepare gradle.properties
         run: |
           mkdir -p $HOME/.gradle
+          echo "azisabaNmsUsername=${{ secrets.REPO_USERNAME }}" >> $HOME/.gradle/gradle.properties
+          echo "azisabaNmsPassword=${{ secrets.REPO_PASSWORD }}" >> $HOME/.gradle/gradle.properties
           echo "repoUsername=${{ secrets.REPO_USERNAME }}" >> $HOME/.gradle/gradle.properties
           echo "repoPassword=${{ secrets.REPO_PASSWORD }}" >> $HOME/.gradle/gradle.properties
       - name: Deploy

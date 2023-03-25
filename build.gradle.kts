@@ -37,6 +37,13 @@ repositories {
         name = "azisaba-repo"
         url = uri("https://repo.azisaba.net/repository/maven-public/")
     }
+    if (properties["azisabaNmsUsername"] != null && properties["azisabaNmsPassword"] != null) {
+        maven {
+            name = "azisabaNms"
+            credentials(PasswordCredentials::class)
+            url = uri("https://repo.azisaba.net/repository/nms/")
+        }
+    }
     maven {
         name = "lumine"
         url = uri("https://mvn.lumine.io/repository/maven-public/")
