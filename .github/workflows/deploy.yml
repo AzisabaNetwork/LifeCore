@@ -29,4 +29,4 @@ jobs:
           echo "repoUsername=${{ secrets.REPO_USERNAME }}" >> $HOME/.gradle/gradle.properties
           echo "repoPassword=${{ secrets.REPO_PASSWORD }}" >> $HOME/.gradle/gradle.properties
       - name: Deploy
-        run: ./gradlew clean test publish --info
+        run: ./gradlew clean test publish
