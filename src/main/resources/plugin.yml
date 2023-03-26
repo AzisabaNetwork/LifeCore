@@ -145,6 +145,10 @@ commands:
     description: "fix your autorank time"
     permission: lifecore.fixtime
     usage: "/fixtime"
+  lifecoreconfig:
+    description: "manage LifeCore config"
+    permission: lifecore.lifecoreconfig
+    usage: "/lifecoreconfig"
 
 permissions:
   lifecore.*:
@@ -179,7 +183,10 @@ permissions:
       lifecore.servermoney: true
       lifecore.fixtime: true
       lifecore.fixtime.bypass-cooldown: true
-      lfiecore.bypass-outlaw: true
+      lifecore.bypass-outlaw: true
+      lifecore.wand: true
+      lifecore.lifecoreconfig: true
+      lifecore.lobby-bypass: true
   lifecore.wiki:
     description: Allows you to show the wiki URL.
     default: true
@@ -269,4 +276,10 @@ permissions:
   lifecore.fixtime.bypass-cooldown:
     default: false
   lifecore.bypass-outlaw:
+    default: false
+  lifecore.wand:
+    default: false
+  lifecore.lifecoreconfig:
+    default: false
+  lifecore.lobby-bypass:
     default: false

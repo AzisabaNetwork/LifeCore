@@ -6,7 +6,9 @@ import com.github.mori01231.lifecore.gui.DropProtectScreen
 import com.github.mori01231.lifecore.listener.*
 import com.github.mori01231.lifecore.listener.item.GlassHammerItemListener
 import com.github.mori01231.lifecore.listener.item.OreOnlyItemListener
+import com.github.mori01231.lifecore.listener.item.WandItemListener
 import com.github.mori01231.lifecore.network.PacketHandler
+import com.github.mori01231.lifecore.region.PlayerRegionManager
 import com.github.mori01231.lifecore.util.GCListener
 import com.github.mori01231.lifecore.util.NGWordsCache
 import com.github.mori01231.lifecore.util.PlayerUtil
@@ -35,6 +37,8 @@ class LifeCore : JavaPlugin() {
     private val executorService = Executors.newFixedThreadPool(2)
     @JvmField
     val asyncExecutor = Executor { Bukkit.getScheduler().runTaskAsynchronously(this, it) }
+    val lifeCoreConfig = LifeCoreConfig.load(this)
+    val playerRegionManager = PlayerRegionManager()
     private var databaseConfig: DatabaseConfig? = null
     lateinit var voteConfig: VoteConfig
         private set
@@ -44,6 +48,8 @@ class LifeCore : JavaPlugin() {
 
     init {
         instance = this
+
+        preloadClasses()
     }
 
     override fun onEnable() {
@@ -57,7 +63,7 @@ class LifeCore : JavaPlugin() {
         DropNotifyFile.load(this)
         dataFolder.resolve("drop-protect.yml").let {
             if (!it.exists()) {
-                it.writeText("players: {}")
+                it.writeText(yaml.encodeToString(DropProtectConfig()))
             }
             dropProtectConfig = yaml.decodeFromString(it.readText())
         }
@@ -116,6 +122,7 @@ class LifeCore : JavaPlugin() {
         registerCommand("damagelog", DamageLogCommand())
         registerCommand("servermoney", ServerMoneyCommand(this))
         registerCommand("fixtime", FixTimeCommand)
+        registerCommand("lifecoreconfig", LifeCoreConfigCommand(this))
         registerCommand("respawn") { _, _, _, args ->
             args.getOrNull(0)?.let { Bukkit.getPlayerExact(it)?.spigot()?.respawn() }
             true
@@ -194,6 +201,25 @@ class LifeCore : JavaPlugin() {
         logger.info("LifeCore has been disabled.")
     }
 
+    private fun preloadClasses() {
+        for (i in 0..5) {
+            preloadClass("com.github.mori01231.lifecore.LifeCore\$onDisable\$$i", false)
+        }
+        preloadClass("com.github.mori01231.lifecore.lib.com.charleskorn.kaml.Yaml\$encodeToString\$writer\$1")
+        preloadClass("com.github.mori01231.lifecore.lib.org.yaml.snakeyaml.Yaml")
+        preloadClass("com.github.mori01231.lifecore.lib.org.yaml.snakeyaml.nodes.CollectionNode")
+    }
+
+    private fun preloadClass(name: String, required: Boolean = true) {
+        try {
+            Class.forName(name)
+        } catch (e: ClassNotFoundException) {
+            if (required) {
+                throw e
+            }
+        }
+    }
+
     private fun runCatching(action: () -> Unit) {
         try {
             action()
@@ -216,6 +242,8 @@ class LifeCore : JavaPlugin() {
         pm.registerEvents(AZISAVIORListener(this), this)
         pm.registerEvents(DamageLogListener(), this)
         pm.registerEvents(UnusableDyeListener(), this)
+        pm.registerEvents(WandItemListener(this), this)
+        pm.registerEvents(EscapeLobbyListener(this), this)
 
         // Items
         pm.registerEvents(OreOnlyItemListener(), this)
