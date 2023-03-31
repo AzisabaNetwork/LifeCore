@@ -47,7 +47,8 @@ class LifeCoreConfigCommand(private val plugin: LifeCore) : PlayerTabExecutor() 
 
     override fun onTabComplete(sender: CommandSender, command: Command, alias: String, args: Array<String>): List<String> {
         if (args.size == 1) {
-            return listOf("pos1", "pos2", "wand", "setLobby").filter { it.lowercase().startsWith(args[0].lowercase()) }
+            return listOf("pos1", "pos2", "wand", "setLobby", "removeLobby")
+                .filter { it.lowercase().startsWith(args[0].lowercase()) }
         }
         return emptyList()
     }

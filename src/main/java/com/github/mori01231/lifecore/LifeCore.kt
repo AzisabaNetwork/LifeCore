@@ -123,6 +123,7 @@ class LifeCore : JavaPlugin() {
         registerCommand("servermoney", ServerMoneyCommand(this))
         registerCommand("fixtime", FixTimeCommand)
         registerCommand("lifecoreconfig", LifeCoreConfigCommand(this))
+        registerCommand("townconfig", TownConfigCommand(this))
         registerCommand("respawn") { _, _, _, args ->
             args.getOrNull(0)?.let { Bukkit.getPlayerExact(it)?.spigot()?.respawn() }
             true
@@ -244,6 +245,9 @@ class LifeCore : JavaPlugin() {
         pm.registerEvents(UnusableDyeListener(), this)
         pm.registerEvents(WandItemListener(this), this)
         pm.registerEvents(EscapeLobbyListener(this), this)
+        TownSpecificListener(this)
+            .apply { startTask() }
+            .apply { pm.registerEvents(this, this@LifeCore) }
 
         // Items
         pm.registerEvents(OreOnlyItemListener(), this)
@@ -263,6 +267,7 @@ class LifeCore : JavaPlugin() {
         } catch (e: ClassNotFoundException) {
             slF4JLogger.warn("Votifier not detected, skipping event listener registration")
         }
+        isEnabled
         try {
             Class.forName("com.palmergames.bukkit.towny.TownyAPI")
             pm.registerEvents(TownyOutlawListener(), this)

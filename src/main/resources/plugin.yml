@@ -149,6 +149,10 @@ commands:
     description: "manage LifeCore config"
     permission: lifecore.lifecoreconfig
     usage: "/lifecoreconfig"
+  townconfig:
+    description: "manage town config"
+    permission: lifecore.townconfig
+    usage: "/townconfig"
 
 permissions:
   lifecore.*:
@@ -187,6 +191,7 @@ permissions:
       lifecore.wand: true
       lifecore.lifecoreconfig: true
       lifecore.lobby-bypass: true
+      lifecore.bypass-town-restrictions: true
   lifecore.wiki:
     description: Allows you to show the wiki URL.
     default: true
@@ -282,4 +287,8 @@ permissions:
   lifecore.lifecoreconfig:
     default: false
   lifecore.lobby-bypass:
+    default: false
+  lifecore.townconfig:
+    default: true
+  lifecore.bypass-town-restrictions:
     default: false

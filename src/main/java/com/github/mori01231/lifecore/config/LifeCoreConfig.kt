@@ -10,6 +10,7 @@ import kotlinx.serialization.encodeToString
 @Serializable
 data class LifeCoreConfig(
     var lobbyRegion: CuboidRegion? = null,
+    val townConfig: MutableMap<String, TownConfig> = mutableMapOf(),
 ) {
     companion object {
         private const val NAME = "config-core.yml"

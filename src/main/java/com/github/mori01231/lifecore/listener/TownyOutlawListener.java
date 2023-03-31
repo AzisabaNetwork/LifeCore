@@ -26,7 +26,7 @@ public class TownyOutlawListener implements Listener {
     private final Map<UUID, Long> lastMove = new HashMap<>();
 
     @EventHandler
-    public void onPlayerMove(PlayerMoveEvent e) throws ReflectiveOperationException {
+    public void onPlayerMove(PlayerMoveEvent e) {
         if (lastMove.containsKey(e.getPlayer().getUniqueId())) {
             if (System.currentTimeMillis() - lastMove.get(e.getPlayer().getUniqueId()) < 1000) {
                 return;
@@ -40,32 +40,30 @@ public class TownyOutlawListener implements Listener {
     }
 
     @EventHandler
-    public void onTeleport(PlayerTeleportEvent e) throws ReflectiveOperationException {
+    public void onTeleport(PlayerTeleportEvent e) {
         if (!e.getPlayer().hasPermission("lifecore.bypass-outlaw") && isInOutlawedTown(e.getPlayer(), e.getTo())) {
             e.setCancelled(true);
             e.getPlayer().sendMessage(ChatColor.RED + "この場所にはテレポートできません。");
         }
     }
 
-    private boolean isInOutlawedTown(@NotNull Player player, @NotNull Location location) throws ReflectiveOperationException {
-        Object townyApi = getTownyAPI();
-        Object townBlock = getTownBlock(townyApi, location);
-        if (townBlock != null && hasTown(townBlock)) {
-            Object town = getTown(townBlock);
+    private boolean isInOutlawedTown(@NotNull Player player, @NotNull Location location) {
+        Object town = getTownAt(location);
+        if (town != null) {
             return hasOutlaw(town, player.getName());
         }
         return false;
     }
 
-    private static @NotNull Object getTownyAPI() throws ReflectiveOperationException {
+    public static @NotNull Object /* = TownyAPI */ getTownyAPI() throws ReflectiveOperationException {
         return CLASS_TOWNY_API.get().getMethod("getInstance").invoke(null);
     }
 
-    private static @Nullable Object getTownBlock(@NotNull Object townyApi, @NotNull Location location) throws ReflectiveOperationException {
+    public static @Nullable Object /* = TownBlock */ getTownBlock(@NotNull Object townyApi, @NotNull Location location) throws ReflectiveOperationException {
         return CLASS_TOWNY_API.get().getMethod("getTownBlock", Location.class).invoke(townyApi, location);
     }
 
-    private static boolean hasTown(@NotNull Object townBlock) {
+    public static boolean hasTown(@NotNull Object townBlock) {
         try {
             return (boolean) townBlock.getClass().getMethod("hasTown").invoke(townBlock);
         } catch (ReflectiveOperationException e) {
@@ -73,9 +71,18 @@ public class TownyOutlawListener implements Listener {
         }
     }
 
-    private static @NotNull Object getTown(@NotNull Object townBlock) {
+    public static @NotNull Object /* = Resident */ getTown(@NotNull Object townBlock) {
         try {
             return townBlock.getClass().getMethod("getTown").invoke(townBlock);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static @NotNull String getNameTownyObject(@NotNull Object townyObject) {
+        try {
+            Class<?> clazz = Class.forName("com.palmergames.bukkit.towny.object.TownyObject");
+            return (String) clazz.getMethod("getName").invoke(townyObject);
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
@@ -86,6 +93,27 @@ public class TownyOutlawListener implements Listener {
             return (boolean) town.getClass().getMethod("hasOutlaw", String.class).invoke(town, name);
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public static Object /* = Resident */ getMayor(@NotNull Object town) {
+        try {
+            return town.getClass().getMethod("getMayor").invoke(town);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static @Nullable Object getTownAt(@NotNull Location location) {
+        try {
+            Object townyApi = getTownyAPI();
+            Object townBlock = getTownBlock(townyApi, location);
+            if (townBlock != null && hasTown(townBlock)) {
+                return getTown(townBlock);
+            }
+            return null;
+        } catch (ReflectiveOperationException e) {
+            return null;
         }
     }
 }
