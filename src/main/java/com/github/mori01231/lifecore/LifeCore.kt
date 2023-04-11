@@ -245,6 +245,7 @@ class LifeCore : JavaPlugin() {
         pm.registerEvents(UnusableDyeListener(), this)
         pm.registerEvents(WandItemListener(this), this)
         pm.registerEvents(EscapeLobbyListener(this), this)
+        pm.registerEvents(PreventOpenMerchantMenuListener(), this)
         TownSpecificListener(this)
             .apply { startTask() }
             .apply { pm.registerEvents(this, this@LifeCore) }

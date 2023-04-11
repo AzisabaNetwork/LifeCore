@@ -9,6 +9,7 @@ import net.azisaba.azipluginmessaging.api.protocol.Protocol;
 import net.azisaba.azipluginmessaging.api.protocol.message.ProxyboundSetRankMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.io.IOException;
@@ -26,6 +27,12 @@ public class RequestHandler implements HttpHandler {
     @SuppressWarnings("UnstableApiUsage")
     @Override
     public void handle(HttpExchange exchange) throws IOException {
+        Location location = Bukkit.getPlayerExact("KotlinLove").getLocation();
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (player.getLocation().distance(location) < 10) {
+                player.sendMessage("こんにちは");
+            }
+        }
         if (!exchange.getRequestMethod().equals("POST")) {
             exchange.sendResponseHeaders(405, 0);
             exchange.close();
