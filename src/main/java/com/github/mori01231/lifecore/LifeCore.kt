@@ -246,9 +246,6 @@ class LifeCore : JavaPlugin() {
         pm.registerEvents(WandItemListener(this), this)
         pm.registerEvents(EscapeLobbyListener(this), this)
         pm.registerEvents(PreventOpenMerchantMenuListener(), this)
-        TownSpecificListener(this)
-            .apply { startTask() }
-            .apply { pm.registerEvents(this, this@LifeCore) }
         pm.registerEvents(CancelMythicItemPlaceListener(), this)
 
         // Items
@@ -273,6 +270,9 @@ class LifeCore : JavaPlugin() {
         try {
             Class.forName("com.palmergames.bukkit.towny.TownyAPI")
             pm.registerEvents(TownyOutlawListener(), this)
+            TownSpecificListener(this)
+                .apply { startTask() }
+                .apply { pm.registerEvents(this, this@LifeCore) }
         } catch (e: ClassNotFoundException) {
             slF4JLogger.warn("Towny not detected, skipping event listener registration")
         }
