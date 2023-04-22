@@ -249,6 +249,7 @@ class LifeCore : JavaPlugin() {
         TownSpecificListener(this)
             .apply { startTask() }
             .apply { pm.registerEvents(this, this@LifeCore) }
+        pm.registerEvents(CancelMythicItemPlaceListener(), this)
 
         // Items
         pm.registerEvents(OreOnlyItemListener(), this)
