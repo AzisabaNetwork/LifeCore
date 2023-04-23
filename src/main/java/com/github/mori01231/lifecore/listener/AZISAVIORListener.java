@@ -14,12 +14,14 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
 public class AZISAVIORListener implements Listener {
+    private static final Set<String> OFFHAND_ITEMS = new HashSet<>(Arrays.asList("AZISAVIOR"));
     private final LifeCore plugin;
     public AZISAVIORListener(@NotNull LifeCore plugin) {
         this.plugin = plugin;
@@ -32,7 +34,7 @@ public class AZISAVIORListener implements Listener {
         ItemStack mainHand = e.getPlayer().getInventory().getItemInMainHand();
         ItemStack offHand = e.getPlayer().getInventory().getItemInOffHand();
 
-        if ( !"AZISAVIOR".equals(ItemUtil.getMythicType(offHand)) ) return;
+        if ( !OFFHAND_ITEMS.contains(ItemUtil.getMythicType(offHand)) ) return;
         if ( !"offhandactivate".equals(ItemUtil.getMythicType(mainHand)) && !mainHand.getType().isAir() ) return;
 
         if ( coolTime.contains(e.getPlayer().getUniqueId()) ) return;
