@@ -21,7 +21,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public class AZISAVIORListener implements Listener {
-    private static final Set<String> OFFHAND_ITEMS = new HashSet<>(Arrays.asList("AZISAVIOR"));
+    private static final Set<String> OFFHAND_ITEMS = new HashSet<>(Arrays.asList("AZISAVIOR", "ZARISAVIOR"));
     private final LifeCore plugin;
     public AZISAVIORListener(@NotNull LifeCore plugin) {
         this.plugin = plugin;
