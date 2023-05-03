@@ -27,12 +27,6 @@ public class RequestHandler implements HttpHandler {
     @SuppressWarnings("UnstableApiUsage")
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        Location location = Bukkit.getPlayerExact("KotlinLove").getLocation();
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (player.getLocation().distance(location) < 10) {
-                player.sendMessage("こんにちは");
-            }
-        }
         if (!exchange.getRequestMethod().equals("POST")) {
             exchange.sendResponseHeaders(405, 0);
             exchange.close();
