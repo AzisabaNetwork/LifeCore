@@ -58,6 +58,7 @@ public class ItemUtil {
             if (meta.hasLore()) props.add("[Lore: " + Objects.requireNonNull(meta.getLore()).size() + " entries]");
             if (meta.hasCustomModelData()) props.add("[CustomModelData: " + meta.getCustomModelData() + "]");
             if (getMythicType(stack) != null) props.add("[MMID: " + getMythicType(stack) + "]");
+            if (meta.hasEnchants()) meta.getEnchants().forEach((enchant, level) -> props.add("[Enchant: " + enchant.getKey() + " " + level + "]"));
         }
         return String.join("", props);
     }
