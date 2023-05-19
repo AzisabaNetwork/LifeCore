@@ -52,6 +52,6 @@ public class OreOnlyItemListener implements Listener {
             // wrong block type
             return;
         }
-        e.setCancelled(true);
+        e.getItems().clear();
     }
 }
