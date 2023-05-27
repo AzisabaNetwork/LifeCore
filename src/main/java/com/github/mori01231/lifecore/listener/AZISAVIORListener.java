@@ -54,7 +54,7 @@ public class AZISAVIORListener implements Listener {
         Player player = (Player) e.getEntity();
 
         ItemStack offHand = player.getInventory().getItemInOffHand();
-        if ( !"AZISAVIOR".equals(ItemUtil.getMythicType(offHand)) ) return;
+        if ( !OFFHAND_ITEMS.contains(ItemUtil.getMythicType(offHand)) ) return;
 
         player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 200, 1));
         player.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, 200, 1));
