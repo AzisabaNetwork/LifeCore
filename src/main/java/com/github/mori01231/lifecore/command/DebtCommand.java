@@ -13,10 +13,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.AbstractMap;
 import java.util.Map;
 
 public class DebtCommand implements CommandExecutor {
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#,###.##");
     private final LifeCore plugin;
 
     public DebtCommand(@NotNull LifeCore plugin) {
@@ -71,12 +73,12 @@ public class DebtCommand implements CommandExecutor {
                 varDebt = 0.0;
             }
             double debt = varDebt;
-            String details = ChatColor.GRAY + "(" + money + " + " + offlineMoney + ")";
+            String details = ChatColor.GRAY + "(" + DECIMAL_FORMAT.format(money) + " + " + DECIMAL_FORMAT.format(offlineMoney) + ")";
             Bukkit.getScheduler().runTask(plugin, () -> {
                 if (args.length == 0) {
-                    sender.sendMessage(ChatColor.GREEN + "現在の借金は" + ChatColor.RED + debt + ChatColor.GREEN + "円です。" + details);
+                    sender.sendMessage(ChatColor.GREEN + "現在の借金は" + ChatColor.RED + DECIMAL_FORMAT.format(debt) + ChatColor.GREEN + "円です。" + details);
                 } else {
-                    sender.sendMessage(ChatColor.GREEN + target + "の現在の借金は" + ChatColor.RED + debt + ChatColor.GREEN + "円です。" + details);
+                    sender.sendMessage(ChatColor.GREEN + target + "の現在の借金は" + ChatColor.RED + DECIMAL_FORMAT.format(debt) + ChatColor.GREEN + "円です。" + details);
                 }
             });
         });
