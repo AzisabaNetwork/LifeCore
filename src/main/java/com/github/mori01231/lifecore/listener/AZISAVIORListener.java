@@ -3,10 +3,12 @@ package com.github.mori01231.lifecore.listener;
 import com.github.mori01231.lifecore.LifeCore;
 import com.github.mori01231.lifecore.util.ItemUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -30,7 +32,9 @@ public class AZISAVIORListener implements Listener {
 
     @EventHandler
     public void onInteract(PlayerInteractEvent e) {
-
+        if (e.getAction() != Action.RIGHT_CLICK_AIR && e.getAction() != Action.RIGHT_CLICK_BLOCK) {
+            return;
+        }
         ItemStack mainHand = e.getPlayer().getInventory().getItemInMainHand();
         ItemStack offHand = e.getPlayer().getInventory().getItemInOffHand();
 
@@ -45,6 +49,7 @@ public class AZISAVIORListener implements Listener {
         double maxHealth = Objects.requireNonNull(e.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH)).getValue();
 
         e.getPlayer().setHealth(Math.min(e.getPlayer().getHealth() + 50, maxHealth));
+        e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 10000f, 2f);
     }
     @EventHandler
     public void onDamaged(EntityDamageEvent e) {
