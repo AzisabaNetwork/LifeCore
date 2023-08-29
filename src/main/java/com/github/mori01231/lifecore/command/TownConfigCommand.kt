@@ -30,7 +30,11 @@ class TownConfigCommand(private val plugin: LifeCore) : PlayerTabExecutor() {
         }
         val valueString = args[1]
         val field = TownConfig::class.java.getField(args[0])
-        val value = toValue(field.type, valueString)
+        val value = try {
+            toValue(field.type, valueString)
+        } catch (e: Exception) {
+            player.sendMessage("${ChatColor.RED}${e.message}")
+        }
         field.set(townConfig, value)
         plugin.lifeCoreConfig.save(plugin)
         player.sendMessage("${ChatColor.GOLD}${args[0]}${ChatColor.GREEN}を${ChatColor.WHITE}$value${ChatColor.GREEN}に設定しました。")
@@ -71,7 +75,13 @@ class TownConfigCommand(private val plugin: LifeCore) : PlayerTabExecutor() {
             return type.enumConstants.first { (it as Enum<*>).name.lowercase() == value.lowercase() }
         }
         return when (type) {
+            String::class.java -> value
             Boolean::class.java -> value.toBoolean()
+            Int::class.java -> value.toInt()
+            Float::class.java -> value.toFloat()
+            Byte::class.java -> value.toByte()
+            Double::class.java -> value.toDouble()
+            Class::class.java -> Class.forName(value)
             else -> error("Unknown type: $type")
         }
     }
