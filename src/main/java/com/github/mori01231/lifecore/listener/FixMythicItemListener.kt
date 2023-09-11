@@ -6,6 +6,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.ClickType
 import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.player.PlayerJoinEvent
 import xyz.acrylicstyle.util.expression.RuntimeData
 import xyz.acrylicstyle.util.expression.instruction.InstInvokeVirtual
 import xyz.acrylicstyle.util.expression.instruction.InstLoadVariable
@@ -35,16 +36,25 @@ object FixMythicItemListener : Listener {
         if (e.click != ClickType.NUMBER_KEY) {
             return
         }
+        scheduleFix(e.whoClicked as Player)
+    }
+
+    @EventHandler
+    fun onJoin(e: PlayerJoinEvent) {
+        scheduleFix(e.player)
+    }
+
+    private fun scheduleFix(player: Player) {
         val plugin = Bukkit.getPluginManager().getPlugin("MythicCrucible") ?: return
         Bukkit.getScheduler().runTask(plugin, Runnable {
             val runtimeData = RuntimeData.builder()
                 .allowPrivate(false)
-                .addVariable("player", e.whoClicked)
+                .addVariable("player", player)
                 .addVariable("plugin", plugin)
                 .build()
             parseWeapon.execute(runtimeData)
             parseArmor.execute(runtimeData)
-            (e.whoClicked as Player).updateInventory()
+            player.updateInventory()
         })
     }
 }
