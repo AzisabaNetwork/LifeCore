@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "net.azisaba"
-version = "6.6.11"
+version = "6.6.12"
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(8))
@@ -61,6 +61,7 @@ dependencies {
     implementation("com.zaxxer:HikariCP:4.0.3")
     implementation("org.mariadb.jdbc:mariadb-java-client:3.0.6")
     implementation("org.yaml:snakeyaml:2.0")
+    implementation("xyz.acrylicstyle.java-util:expression:2.0.0-SNAPSHOT")
     compileOnly("net.azisaba.ballotbox:receiver:1.0.1")
     compileOnly("net.azisaba.azipluginmessaging:api:4.0.3")
     compileOnly("net.azisaba:RyuZUPluginChat:4.2.0")
@@ -135,5 +136,6 @@ tasks {
         relocate("org.yaml", "com.github.mori01231.lifecore.lib.org.yaml")
         relocate("org.snakeyaml", "com.github.mori01231.lifecore.lib.org.snakeyaml")
         relocate("org.intellij", "com.github.mori01231.lifecore.lib.org.intellij")
+        relocate("xyz.acrylicstyle.util", "com.github.mori01231.lifecore.lib.xyz.acrylicstyle.util")
     }
 }
