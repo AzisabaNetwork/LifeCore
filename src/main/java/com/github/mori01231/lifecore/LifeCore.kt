@@ -5,6 +5,7 @@ import com.github.mori01231.lifecore.config.*
 import com.github.mori01231.lifecore.gui.DropProtectScreen
 import com.github.mori01231.lifecore.listener.*
 import com.github.mori01231.lifecore.listener.item.GlassHammerItemListener
+import com.github.mori01231.lifecore.listener.item.LavaSpongeItemListener
 import com.github.mori01231.lifecore.listener.item.OreOnlyItemListener
 import com.github.mori01231.lifecore.listener.item.WandItemListener
 import com.github.mori01231.lifecore.network.PacketHandler
@@ -31,7 +32,7 @@ import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 class LifeCore : JavaPlugin() {
-    private val gcListener = GCListener(this)
+    val gcListener = GCListener(this)
     @JvmField
     val ngWordsCache = NGWordsCache()
     private val executorService = Executors.newFixedThreadPool(2)
@@ -124,6 +125,8 @@ class LifeCore : JavaPlugin() {
         registerCommand("fixtime", FixTimeCommand)
         registerCommand("lifecoreconfig", LifeCoreConfigCommand(this))
         registerCommand("townconfig", TownConfigCommand(this))
+        registerCommand("schedulerestart", ScheduleRestartCommand(this))
+        registerCommand("gclistenerrestartextendtimecommand", GCListenerRestartExtendTimeCommand(this))
         registerCommand("respawn") { _, _, _, args ->
             args.getOrNull(0)?.let { Bukkit.getPlayerExact(it)?.spigot()?.respawn() }
             true
@@ -253,6 +256,7 @@ class LifeCore : JavaPlugin() {
         // Items
         pm.registerEvents(OreOnlyItemListener(), this)
         pm.registerEvents(GlassHammerItemListener(), this)
+        pm.registerEvents(LavaSpongeItemListener(), this)
         if (config.getBoolean("destroy-experience-orb-on-chunk-load", false)) {
             pm.registerEvents(DestroyExperienceOrbListener(), this)
         }

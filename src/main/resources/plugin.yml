@@ -153,6 +153,13 @@ commands:
     description: "manage town config"
     permission: lifecore.townconfig
     usage: "/townconfig"
+  schedulerestart:
+    description: "schedule a restart"
+    permission: lifecore.schedulerestart
+    usage: "/<command>"
+  gclistenerrestartextendtimecommand:
+    permission: lifecore.gclistenerrestartextendtimecommand
+    usage: "/<command>"
 
 permissions:
   lifecore.*:
@@ -192,6 +199,9 @@ permissions:
       lifecore.lifecoreconfig: true
       lifecore.lobby-bypass: true
       lifecore.bypass-town-restrictions: true
+      lifecore.schedulerestart: true
+      lifecore.gclistenerrestartextendtimecommand: true
+      lifecore.lifecore.extend-time-immediately: true
   lifecore.wiki:
     description: Allows you to show the wiki URL.
     default: true
@@ -291,4 +301,10 @@ permissions:
   lifecore.townconfig:
     default: true
   lifecore.bypass-town-restrictions:
+    default: false
+  lifecore.schedulerestart:
+    default: false
+  lifecore.gclistenerrestartextendtimecommand:
+    default: true
+  lifecore.lifecore.extend-time-immediately:
     default: false

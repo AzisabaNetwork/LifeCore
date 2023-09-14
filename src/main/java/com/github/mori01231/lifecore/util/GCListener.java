@@ -1,7 +1,11 @@
 package com.github.mori01231.lifecore.util;
 
 import com.github.mori01231.lifecore.LifeCore;
+import com.github.mori01231.lifecore.command.ScheduleRestartCommand;
 import com.sun.management.GarbageCollectionNotificationInfo;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 
 import javax.management.ListenerNotFoundException;
@@ -17,7 +21,7 @@ public class GCListener implements NotificationListener {
     private final LifeCore plugin;
     private long lastGcTime = 0L;
     private int count = 0;
-    
+
     public GCListener(LifeCore plugin) {
         this.plugin = plugin;
     }
@@ -52,9 +56,13 @@ public class GCListener implements NotificationListener {
         }
     }
 
+    public boolean isTriggered() {
+        return count < 0;
+    }
+
     public synchronized void handleGc() {
-        if (count < 0) {
-            // exceeded max count
+        if (isTriggered()) {
+            // exceeded max count or triggered manually
             return;
         }
         long minutes = (System.currentTimeMillis() - lastGcTime) / 1000 / 60;
@@ -66,29 +74,45 @@ public class GCListener implements NotificationListener {
             return;
         }
         if (count >= plugin.getConfig().getInt("gc-threshold-count", 10)) {
-            count = -1;
-            for (String command : plugin.getConfig().getStringList("gc-triggered-command")) {
-                try {
-                    if (command.startsWith("@delay ")) {
-                        try {
-                            int delayTicks = Integer.parseInt(command.substring(7, command.indexOf(' ', 7)));
-                            String actualCommand = command.substring(command.indexOf(' ', 7) + 1);
-                            Bukkit.getScheduler().runTaskLater(
-                                    plugin,
-                                    () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), actualCommand),
-                                    delayTicks);
-                        } catch (IllegalArgumentException e) {
-                            plugin.getLogger().warning("Invalid @delay: " + command);
-                            e.printStackTrace();
-                        }
-                    } else {
-                        Bukkit.getScheduler().runTask(plugin, () ->
-                                Bukkit.dispatchCommand(plugin.getServer().getConsoleSender(), command));
+            triggerNow();
+        }
+    }
+
+    public synchronized void triggerNow() {
+        if (isTriggered()) return;
+        count = -1;
+        for (String command : plugin.getConfig().getStringList("gc-triggered-command")) {
+            try {
+                if (command.startsWith("@delay ")) {
+                    try {
+                        int delayTicks = Integer.parseInt(command.substring(7, command.indexOf(' ', 7)));
+                        String actualCommand = command.substring(command.indexOf(' ', 7) + 1);
+                        Bukkit.getScheduler().runTaskLater(
+                                plugin,
+                                () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), actualCommand),
+                                delayTicks);
+                    } catch (IllegalArgumentException e) {
+                        plugin.getSLF4JLogger().warn("Invalid @delay: " + command, e);
                     }
-                } catch (Exception e) {
-                    plugin.getLogger().warning("Failed to process command: " + command);
-                    e.printStackTrace();
+                } else if (command.startsWith("@schedulerestart ")) {
+                    try {
+                        int delayMinutes = Integer.parseInt(command.substring("@schedulerestart ".length()));
+                        ScheduleRestartCommand.schedule(delayMinutes);
+                        TextComponent component = new TextComponent("再起動までの時間を延長するには、このメッセージをクリックしてください。");
+                        component.setColor(ChatColor.AQUA);
+                        component.setUnderlined(true);
+                        component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/gclistenerrestartextendtimecommand"));
+                        Bukkit.broadcast(component);
+                        Bukkit.broadcastMessage("§a5人が上のメッセージをクリックすると、30分に延長されます。");
+                    } catch (IllegalArgumentException e) {
+                        plugin.getSLF4JLogger().warn("Invalid @schedulerestart: " + command, e);
+                    }
+                } else {
+                    Bukkit.getScheduler().runTask(plugin, () ->
+                            Bukkit.dispatchCommand(plugin.getServer().getConsoleSender(), command));
                 }
+            } catch (Exception e) {
+                plugin.getSLF4JLogger().warn("Failed to process command: " + command, e);
             }
         }
     }
