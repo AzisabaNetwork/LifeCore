@@ -17,6 +17,7 @@ import java.util.*;
 public class ScheduleRestartCommand implements TabExecutor {
     private static final Map<Integer, Set<Action>> ACTIONS = new HashMap<>();
     private static final List<BukkitTask> tasks = new ArrayList<>();
+    private static boolean whitelistWasOn = false;
     private final LifeCore plugin;
 
     public ScheduleRestartCommand(@NotNull LifeCore plugin) {
@@ -77,6 +78,7 @@ public class ScheduleRestartCommand implements TabExecutor {
         ENABLE_WHITELIST {
             @Override
             public void execute(int seconds) {
+                whitelistWasOn = Bukkit.hasWhitelist();
                 Bukkit.setWhitelist(true);
             }
         },
@@ -92,7 +94,10 @@ public class ScheduleRestartCommand implements TabExecutor {
         SCHEDULE_SHUTDOWN_SERVER {
             @Override
             public void execute(int seconds) {
-                Bukkit.getScheduler().runTaskLater(LifeCore.getPlugin(LifeCore.class), Bukkit::shutdown, 20 * 60);
+                Bukkit.getScheduler().runTaskLater(LifeCore.getPlugin(LifeCore.class), () -> {
+                    if (!whitelistWasOn) Bukkit.setWhitelist(false);
+                    Bukkit.shutdown();
+                }, 20 * 60);
             }
         },
         ;
