@@ -252,6 +252,7 @@ class LifeCore : JavaPlugin() {
         pm.registerEvents(CancelMythicItemPlaceListener(), this)
         pm.registerEvents(GameModeChangeLoggerListener(this), this)
         pm.registerEvents(FixMythicItemListener, this)
+        pm.registerEvents(VoidListener, this)
 
         // Items
         pm.registerEvents(OreOnlyItemListener(), this)
