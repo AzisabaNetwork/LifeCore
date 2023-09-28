@@ -1,5 +1,6 @@
 package com.github.mori01231.lifecore.listener.item;
 
+import com.github.mori01231.lifecore.util.ItemStackExKt;
 import com.github.mori01231.lifecore.util.ItemUtil;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -48,7 +49,7 @@ public class LavaSpongeItemListener implements Listener {
             }
         }
         if (affected > 0 && e.getPlayer().getGameMode() != GameMode.CREATIVE) {
-            // TODO: reduce durability
+            ItemStackExKt.damage(e.getItem(), e.getPlayer(), 1, false, true);
         }
     }
 }
