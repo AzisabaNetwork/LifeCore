@@ -31,9 +31,6 @@ public class DropProtectListener implements Listener {
     @SuppressWarnings("unchecked")
     @EventHandler
     public void onDrop(PlayerDropItemEvent e) {
-        if (e.getPlayer().getGameMode() == GameMode.CREATIVE) {
-            return;
-        }
         Rarity rarity = rarityAPI.getRarityByItemStack(e.getItemDrop().getItemStack());
         boolean shouldCancel;
         if (rarity == null) {
