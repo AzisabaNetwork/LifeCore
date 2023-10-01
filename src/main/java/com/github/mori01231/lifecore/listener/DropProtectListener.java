@@ -9,7 +9,6 @@ import net.minecraft.server.v1_15_R1.DataWatcherObject;
 import net.minecraft.server.v1_15_R1.EntityItem;
 import net.minecraft.server.v1_15_R1.Items;
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftItem;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -29,7 +28,7 @@ public class DropProtectListener implements Listener {
     }
 
     @SuppressWarnings("unchecked")
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onDrop(PlayerDropItemEvent e) {
         Rarity rarity = rarityAPI.getRarityByItemStack(e.getItemDrop().getItemStack());
         boolean shouldCancel;
