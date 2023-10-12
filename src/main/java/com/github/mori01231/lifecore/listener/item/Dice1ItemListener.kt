@@ -7,6 +7,7 @@ import org.bukkit.GameMode
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 
 class Dice1ItemListener(val plugin: LifeCore) : Listener {
@@ -21,6 +22,18 @@ class Dice1ItemListener(val plugin: LifeCore) : Listener {
         if (itemId != ItemUtil.getStringTag(e.item, "LifeItemId")) {
             // wrong item
             return
+        }
+        fun rollNow() {
+            val randomPlayer =
+                e.player
+                    .getNearbyEntities(50.0, 50.0, 50.0)
+                    .filterIsInstance<Player>()
+                    .filter { it.gameMode != GameMode.SPECTATOR && !it.hasMetadata("vanished") }
+                    .randomOrNull()
+            e.player.sendMessageToNearbyPlayers("§f§l${e.player.name}§6§lの抽選ダイスの結果は§f§l${randomPlayer?.name}§6§lさんになりました！")
+        }
+        if (e.action == Action.RIGHT_CLICK_BLOCK || e.action == Action.RIGHT_CLICK_AIR) {
+            return rollNow()
         }
         e.player.sendMessageToNearbyPlayers("$prefix§6§l${e.player.name}§f§lの§a§l抽§b§l選§c§lま§a§lで§b§lえ§c§lえ§a§l.§b§l.§c§l.§a§l.§b§l!§c§l!§a§l!§b§l!§c§l!§a§l!§b§l!")
         Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, Runnable {
@@ -40,13 +53,7 @@ class Dice1ItemListener(val plugin: LifeCore) : Listener {
         }, 59)
         Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, Runnable {
             Bukkit.getScheduler().runTask(plugin, Runnable {
-                val randomPlayer =
-                    e.player
-                        .getNearbyEntities(50.0, 50.0, 50.0)
-                        .filterIsInstance<Player>()
-                        .filter { it.gameMode != GameMode.SPECTATOR && !it.hasMetadata("vanished") }
-                        .randomOrNull()
-                e.player.sendMessageToNearbyPlayers("§f§l${e.player.name}§6§lの抽選ダイスの結果は§f§l${randomPlayer?.name}§6§lさんになりました！")
+                rollNow()
             })
         }, 79)
     }
