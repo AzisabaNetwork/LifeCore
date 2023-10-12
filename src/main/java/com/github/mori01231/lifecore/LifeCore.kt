@@ -4,10 +4,7 @@ import com.github.mori01231.lifecore.command.*
 import com.github.mori01231.lifecore.config.*
 import com.github.mori01231.lifecore.gui.DropProtectScreen
 import com.github.mori01231.lifecore.listener.*
-import com.github.mori01231.lifecore.listener.item.GlassHammerItemListener
-import com.github.mori01231.lifecore.listener.item.LavaSpongeItemListener
-import com.github.mori01231.lifecore.listener.item.OreOnlyItemListener
-import com.github.mori01231.lifecore.listener.item.WandItemListener
+import com.github.mori01231.lifecore.listener.item.*
 import com.github.mori01231.lifecore.network.PacketHandler
 import com.github.mori01231.lifecore.region.PlayerRegionManager
 import com.github.mori01231.lifecore.util.GCListener
@@ -253,6 +250,7 @@ class LifeCore : JavaPlugin() {
         pm.registerEvents(GameModeChangeLoggerListener(this), this)
         pm.registerEvents(FixMythicItemListener, this)
         pm.registerEvents(VoidListener, this)
+        pm.registerEvents(Dice1ItemListener(this), this)
 
         // Items
         pm.registerEvents(OreOnlyItemListener(), this)
