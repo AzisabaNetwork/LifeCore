@@ -50,10 +50,12 @@ data class MythicItemReward(
             plugin.logger.warning("Mythic Item $id not found.")
         } else {
             player.inventory.addItem(item).values.apply {
-                if (isNotEmpty() && all { ItemUtil.addToStashIfEnabled(player.uniqueId, it) }) {
-                    player.sendMessage("${ChatColor.RED}インベントリがいっぱいのため、Stashに入りました。")
-                    player.sendMessage("${ChatColor.AQUA}/pickupstash${ChatColor.RED}で回収できます。")
-                }
+                Bukkit.getScheduler().runTaskAsynchronously(plugin, Runnable {
+                    if (isNotEmpty() && all { ItemUtil.addToStashIfEnabled(player.uniqueId, it) }) {
+                        player.sendMessage("${ChatColor.RED}インベントリがいっぱいのため、Stashに入りました。")
+                        player.sendMessage("${ChatColor.AQUA}/pickupstash${ChatColor.RED}で回収できます。")
+                    }
+                })
             }
         }
     }
@@ -69,10 +71,12 @@ data class ItemReward(
 ) : VoteReward {
     override fun execute(plugin: LifeCore, player: Player) {
         player.inventory.addItem(ItemStack(id, amount)).values.apply {
-            if (isNotEmpty() && all { ItemUtil.addToStashIfEnabled(player.uniqueId, it) }) {
-                player.sendMessage("${ChatColor.RED}インベントリがいっぱいのため、Stashに入りました。")
-                player.sendMessage("${ChatColor.AQUA}/pickupstash${ChatColor.RED}で回収できます。")
-            }
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, Runnable {
+                if (isNotEmpty() && all { ItemUtil.addToStashIfEnabled(player.uniqueId, it) }) {
+                    player.sendMessage("${ChatColor.RED}インベントリがいっぱいのため、Stashに入りました。")
+                    player.sendMessage("${ChatColor.AQUA}/pickupstash${ChatColor.RED}で回収できます。")
+                }
+            })
         }
     }
 }
