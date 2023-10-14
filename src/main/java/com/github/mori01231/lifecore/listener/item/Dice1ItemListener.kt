@@ -9,8 +9,10 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
+import java.security.SecureRandom
 
 class Dice1ItemListener(val plugin: LifeCore) : Listener {
+    private val random = SecureRandom()
     private val itemId = "b46ed137-a581-4ee8-b714-c1e136d141f2"
     private val prefix = "§f§l【§6§l抽選§f§l】"
 
@@ -29,7 +31,7 @@ class Dice1ItemListener(val plugin: LifeCore) : Listener {
                     .getNearbyEntities(50.0, 50.0, 50.0)
                     .filterIsInstance<Player>()
                     .filter { it.gameMode != GameMode.SPECTATOR && !it.hasMetadata("vanished") }
-                    .randomOrNull()
+                    .let { if (it.isEmpty()) null else it[random.nextInt(it.size)] }
             e.player.sendMessageToNearbyPlayers("§f§l${e.player.name}§6§lの抽選ダイスの結果は§f§l${randomPlayer?.name}§6§lさんになりました！")
         }
         if (e.action == Action.RIGHT_CLICK_BLOCK || e.action == Action.RIGHT_CLICK_AIR) {
