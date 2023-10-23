@@ -30,7 +30,7 @@ class Dice1ItemListener(val plugin: LifeCore) : Listener {
                 e.player
                     .getNearbyEntities(50.0, 50.0, 50.0)
                     .filterIsInstance<Player>()
-                    .filter { it.gameMode != GameMode.SPECTATOR && !it.hasMetadata("vanished") }
+                    .filter { it.gameMode != GameMode.SPECTATOR && it.getMetadata("vanished").getOrNull(0)?.asBoolean() != true }
                     .let { if (it.isEmpty()) null else it[random.nextInt(it.size)] }
             e.player.sendMessageToNearbyPlayers("§f§l${e.player.name}§6§lの抽選ダイスの結果は§f§l${randomPlayer?.name}§6§lさんになりました！")
         }
