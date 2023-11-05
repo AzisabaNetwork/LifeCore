@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.Damageable
 
 fun ItemStack.damage(player: Player? = null, amount: Int = 1, checkDurabilityEnchantment: Boolean = false, consumeIfNotDamageable: Boolean = true) {
+    if (itemMeta?.isUnbreakable == true) return
     if (itemMeta !is Damageable || type.maxDurability.toInt() == 0) {
         if (!consumeIfNotDamageable) error("item is not damageable and consumeIfNotDamageable is false")
         this.amount--
