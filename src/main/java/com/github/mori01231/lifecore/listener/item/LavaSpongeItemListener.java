@@ -49,7 +49,7 @@ public class LavaSpongeItemListener implements Listener {
             }
         }
         if (affected > 0 && e.getPlayer().getGameMode() != GameMode.CREATIVE) {
-            ItemStackExKt.damage(e.getItem(), e.getPlayer(), 1, false, true);
+            ItemStackExKt.damage(e.getItem(), e.getPlayer(), 1, true, true);
         }
     }
 }
