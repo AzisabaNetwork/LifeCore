@@ -8,6 +8,7 @@ import org.bukkit.Location
 data class TownConfig(
     @JvmField var allowInvisibility: Boolean = true,
     @JvmField var allowSit: Boolean = true,
+    @JvmField var allowPetPickup: Boolean = true,
 ) {
     companion object {
         fun getTownConfigAt(lifeCoreConfig: LifeCoreConfig, location: Location): TownConfig? {

@@ -1,5 +1,6 @@
 package com.github.mori01231.lifecore.network;
 
+import com.github.mori01231.lifecore.event.AsyncPlayerPreInteractEntityEvent;
 import com.github.mori01231.lifecore.event.AsyncPlayerPreInteractEvent;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -25,7 +26,8 @@ public class PacketHandler extends ChannelDuplexHandler {
             PacketPlayInUseEntity packet = (PacketPlayInUseEntity) msg;
             Entity entity = packet.a(entityPlayer.world);
             if (entity != null) {
-                if (new AsyncPlayerPreInteractEvent(player, packet.b(), entity).callEvent()) {
+                if (new AsyncPlayerPreInteractEvent(player, packet.b(), entity).callEvent() &&
+                        new AsyncPlayerPreInteractEntityEvent(player, packet.b(), entity).callEvent()) {
                     super.channelRead(ctx, msg);
                 }
                 return;

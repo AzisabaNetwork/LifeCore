@@ -8,17 +8,13 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * @deprecated misspelled
- */
-@Deprecated
-public class AsyncPlayerPreInteractEvent extends PlayerEvent implements Cancellable {
+public class AsyncPlayerPreInteractEntityEvent extends PlayerEvent implements Cancellable {
     private static final HandlerList HANDLER_LIST = new HandlerList();
     private final PacketPlayInUseEntity.EnumEntityUseAction action;
     private final Entity interactedEntity;
     private boolean cancelled = false;
 
-    public AsyncPlayerPreInteractEvent(@NotNull Player player, @NotNull PacketPlayInUseEntity.EnumEntityUseAction action, @NotNull Entity interactedEntity) {
+    public AsyncPlayerPreInteractEntityEvent(@NotNull Player player, @NotNull PacketPlayInUseEntity.EnumEntityUseAction action, @NotNull Entity interactedEntity) {
         super(player, true);
         this.action = action;
         this.interactedEntity = interactedEntity;

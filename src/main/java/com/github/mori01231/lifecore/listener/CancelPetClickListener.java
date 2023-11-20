@@ -1,7 +1,7 @@
 package com.github.mori01231.lifecore.listener;
 
 import com.github.mori01231.lifecore.config.PetClickFile;
-import com.github.mori01231.lifecore.event.AsyncPlayerPreInteractEvent;
+import com.github.mori01231.lifecore.event.AsyncPlayerPreInteractEntityEvent;
 import de.Keyle.MyPet.MyPetApi;
 import de.Keyle.MyPet.api.entity.MyPet;
 import de.Keyle.MyPet.api.entity.MyPetBukkitEntity;
@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public class CancelPetClickListener implements Listener {
     @EventHandler
-    public void onClickEntity(AsyncPlayerPreInteractEvent e) {
+    public void onClickEntity(AsyncPlayerPreInteractEntityEvent e) {
         if (!PetClickFile.isDisabled(e.getPlayer().getUniqueId()) && e.getPlayer().isSneaking()) {
             return;
         }
