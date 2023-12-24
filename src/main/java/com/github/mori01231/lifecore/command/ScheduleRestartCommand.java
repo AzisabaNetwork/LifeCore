@@ -48,10 +48,12 @@ public class ScheduleRestartCommand implements TabExecutor {
         int maxTicks = minutes * 60 * 20;
         ACTIONS.forEach((seconds, actions) -> {
             if (seconds < minutes * 60) {
-                BukkitTask task = Bukkit.getScheduler().runTaskLater(LifeCore.getPlugin(LifeCore.class), () -> {
-                    for (Action action : actions) {
-                        action.execute(seconds);
-                    }
+                BukkitTask task = Bukkit.getScheduler().runTaskLaterAsynchronously(LifeCore.getPlugin(LifeCore.class), () -> {
+                    Bukkit.getScheduler().runTask(LifeCore.getPlugin(LifeCore.class), () -> {
+                        for (Action action : actions) {
+                            action.execute(seconds);
+                        }
+                    });
                 }, maxTicks - seconds * 20);
                 tasks.add(task);
             }
