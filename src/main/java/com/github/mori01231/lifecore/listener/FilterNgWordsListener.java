@@ -35,7 +35,6 @@ public class FilterNgWordsListener implements Listener {
             Set<String> set = plugin.ngWordsCache.get(player.getUniqueId());
             String filtered = NGWordsCache.filter(set, format);
             if (global) {
-                filtered = filtered.replaceAll("うんこ", "***");
             }
             if (!format.equals(filtered)) {
                 toRemove.add(player);
