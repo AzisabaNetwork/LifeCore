@@ -251,6 +251,7 @@ class LifeCore : JavaPlugin() {
         pm.registerEvents(FixMythicItemListener, this)
         pm.registerEvents(VoidListener, this)
         pm.registerEvents(Dice1ItemListener(this), this)
+        pm.registerEvents(OverrideTabCompleteListener(), this)
 
         // Items
         pm.registerEvents(OreOnlyItemListener(), this)
