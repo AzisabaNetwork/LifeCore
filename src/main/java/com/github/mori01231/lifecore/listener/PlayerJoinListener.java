@@ -9,6 +9,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 
 public class PlayerJoinListener implements Listener {
     private final LifeCore plugin;
@@ -35,5 +36,15 @@ public class PlayerJoinListener implements Listener {
         // inject channel handler
         PlayerUtil.getChannel(e.getPlayer()).pipeline()
                 .addBefore("packet_handler", "lifecore", new PacketHandler(e.getPlayer()));
+    }
+
+    @EventHandler
+    public void onPlayerLogin(PlayerLoginEvent e) {
+        if (!Bukkit.getPluginManager().isPluginEnabled("Towny")) {
+            return;
+        }
+        if (e.getPlayer().getName().toLowerCase().startsWith("town_") || e.getPlayer().getName().toLowerCase().startsWith("nation_")) {
+            e.disallow(PlayerLoginEvent.Result.KICK_OTHER, "Towny is preventing you from logging in using this account name.");
+        }
     }
 }
