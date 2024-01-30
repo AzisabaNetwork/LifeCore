@@ -1,15 +1,15 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
-    kotlin("jvm") version "1.8.10"
-    kotlin("plugin.serialization") version "1.8.10"
+    kotlin("jvm") version "1.9.22"
+    kotlin("plugin.serialization") version "1.9.22"
     id("com.github.johnrengelman.shadow") version "7.0.0"
     java
     `maven-publish`
 }
 
 group = "net.azisaba"
-version = "6.8.4"
+version = "6.9.0"
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(8))
@@ -56,7 +56,8 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation("com.charleskorn.kaml:kaml:0.52.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+    implementation("com.charleskorn.kaml:kaml:0.57.0")
     //noinspection GradlePackageUpdate
     implementation("com.zaxxer:HikariCP:4.0.3")
     implementation("org.mariadb.jdbc:mariadb-java-client:3.0.6")

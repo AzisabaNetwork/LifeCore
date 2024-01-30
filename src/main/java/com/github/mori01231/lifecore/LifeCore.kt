@@ -1,5 +1,6 @@
 package com.github.mori01231.lifecore
 
+import com.github.mori01231.lifecore.block.CustomBlockManager
 import com.github.mori01231.lifecore.command.*
 import com.github.mori01231.lifecore.config.*
 import com.github.mori01231.lifecore.gui.DropProtectScreen
@@ -43,6 +44,11 @@ class LifeCore : JavaPlugin() {
     private var httpServer: HttpServer? = null
     lateinit var dropProtectConfig: DropProtectConfig
         private set
+    val customBlockManager = CustomBlockManager(this)
+    var customModelDataWrench = 0
+    var customModelDataBlank = 0
+    var customModelDataBlankShapeDownLeft = 0
+    var customModelDataBlankShapeDownRight = 0
 
     init {
         instance = this
@@ -52,6 +58,12 @@ class LifeCore : JavaPlugin() {
 
     override fun onEnable() {
         // Plugin startup logic
+        customModelDataWrench = config.getInt("custom-model-data.wrench", 0)
+        customModelDataBlank = config.getInt("custom-model-data.blank", 0)
+        customModelDataBlankShapeDownLeft = config.getInt("custom-model-data.blank-shape-down-left", 0)
+        customModelDataBlankShapeDownRight = config.getInt("custom-model-data.blank-shape-down-right", 0)
+        customBlockManager.init()
+
         if (config.getBoolean("enable-gc-detector", false)) {
             gcListener.register()
         }

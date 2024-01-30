@@ -330,3 +330,19 @@ database:
     useLocalSessionState: true
     rewriteBatchedStatements: true
     maintainTimeStats: false
+
+custom-model-data:
+  wrench: 98
+  blank: 1
+  blank-shape-down-left: 2
+  blank-shape-down-right: 3
+
+custom-blocks:
+  - name: reinforced_glass
+    material: glass
+    displayName: "&fReinforced Glass"
+    customModelData: 1
+    consoleCommands:
+      - "tell <player> You interacted with glass"
+    commands:
+      - "pl"

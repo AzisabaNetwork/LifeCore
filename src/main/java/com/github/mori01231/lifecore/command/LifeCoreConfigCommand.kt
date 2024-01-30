@@ -41,14 +41,35 @@ class LifeCoreConfigCommand(private val plugin: LifeCore) : PlayerTabExecutor() 
             plugin.lifeCoreConfig.lobbyRegion = null
             plugin.lifeCoreConfig.save(plugin)
             player.sendMessage("${ChatColor.GREEN}ロビーの範囲を削除しました。")
+        } else if (args[0] == "getBlock") {
+            if (args.size < 2) {
+                player.sendMessage("${ChatColor.RED}ブロック名を指定してください。")
+                return true
+            }
+            val block = plugin.customBlockManager.findBlockByName(args[1])
+            if (block == null) {
+                player.sendMessage("${ChatColor.RED}ブロックが見つかりませんでした。")
+                return true
+            }
+            player.inventory.addItem(block.getItemStack(null))
+        } else if (args[0] == "reloadBlocks") {
+            plugin.customBlockManager.reloadBlocks()
+            player.sendMessage("${ChatColor.GREEN}ブロックを再読み込みしました。")
         }
         return true
     }
 
     override fun onTabComplete(sender: CommandSender, command: Command, alias: String, args: Array<String>): List<String> {
         if (args.size == 1) {
-            return listOf("pos1", "pos2", "wand", "setLobby", "removeLobby")
+            return listOf("pos1", "pos2", "wand", "setLobby", "removeLobby", "getBlock", "reloadBlocks")
                 .filter { it.lowercase().startsWith(args[0].lowercase()) }
+        }
+        if (args.size == 2) {
+            if (args[0] == "getBlock") {
+                return plugin.customBlockManager.getBlocks()
+                    .map { it.name }
+                    .filter { it.lowercase().startsWith(args[1].lowercase()) }
+            }
         }
         return emptyList()
     }
