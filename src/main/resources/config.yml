@@ -339,6 +339,7 @@ custom-model-data:
 
 custom-blocks:
   - name: reinforced_glass
+    backgroundBlock: barrier
     material: glass
     displayName: "&fReinforced Glass"
     customModelData: 1

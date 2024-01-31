@@ -2,12 +2,16 @@ package com.github.mori01231.lifecore.block
 
 import com.github.mori01231.lifecore.LifeCore
 import com.github.mori01231.lifecore.listener.CustomBlockListener
+import com.github.mori01231.lifecore.util.AxisX
 import com.github.mori01231.lifecore.util.LRUCache
 import kotlinx.serialization.json.Json
 import org.bukkit.ChatColor
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
+import org.bukkit.block.data.Directional
+import org.bukkit.block.data.Orientable
+import org.bukkit.block.data.type.Leaves
 import org.bukkit.entity.ArmorStand
 import org.bukkit.event.HandlerList
 import org.bukkit.inventory.ItemStack
@@ -56,7 +60,7 @@ class CustomBlockManager(val plugin: LifeCore) {
             findArmorStand(location)?.remove()
             location.block.type = Material.AIR
         } else {
-            spawnBlock(location, state.getBlock())
+            spawnBlock(location, state.getBlock(), state.axis)
         }
         region.setState(location.blockX, location.blockY, location.blockZ, state)
         region.save()
@@ -106,17 +110,25 @@ class CustomBlockManager(val plugin: LifeCore) {
         blocks.forEach { block ->
             HandlerList.unregisterAll(block)
         }
+        blocks.clear()
 
         // add blocks
         plugin.config.getMapList("custom-blocks").forEach { map ->
             val blockName = map["name"]?.toString() ?: return plugin.logger.warning("name is required")
+            val axisShift = map["axisShift"]?.toString()?.toIntOrNull() ?: 0
+            val lockFacing = map["lockFacing"]?.toString()?.toBoolean() ?: false
+            val backgroundBlock = Material.valueOf(map["backgroundBlock"]?.toString()?.uppercase() ?: "BARRIER")
+            if (backgroundBlock.isAir) {
+                return plugin.logger.warning("$blockName: backgroundBlock must not be air")
+            }
             val material = Material.valueOf(map["material"]?.toString()?.uppercase() ?: return plugin.logger.warning("material is required"))
             val displayName = map["displayName"]?.toString()?.let { ChatColor.translateAlternateColorCodes('&', it) }
             val lore = map["lore"]?.toString()?.let { ChatColor.translateAlternateColorCodes('&', it) }?.split("\n")
             val customModelData = map["customModelData"]?.toString()?.toIntOrNull() ?: 0
             val commands = map["commands"] as List<String>?
             val consoleCommands = map["consoleCommands"] as List<String>?
-            val block = CommandCustomBlock(blockName, material, displayName, lore, commands ?: emptyList(), consoleCommands ?: emptyList())
+            val destroyWithoutWrench = map["destroyWithoutWrench"]?.toString()?.toBoolean() ?: false
+            val block = CommandCustomBlock(blockName, lockFacing, axisShift, backgroundBlock, material, displayName, lore, commands ?: emptyList(), consoleCommands ?: emptyList(), destroyWithoutWrench)
             block.customModelData = customModelData
             registerCustomBlock(block)
         }
@@ -131,9 +143,19 @@ class CustomBlockManager(val plugin: LifeCore) {
             .firstOrNull { it.customName == "custom_block" && !it.isVisible && it.isInvulnerable && it.isSmall }
     }
 
-    private fun spawnBlock(location: Location, block: CustomBlock): ArmorStand {
+    private fun spawnBlock(location: Location, block: CustomBlock, axis: AxisX): ArmorStand {
         findArmorStand(location)?.remove()
-        location.block.type = Material.BARRIER
+        location.block.type = block.backgroundBlock
+        location.block.blockData.let {
+            if (!block.lockFacing && it is Directional && axis.blockFace in it.faces) {
+                it.facing = axis.blockFace
+                location.block.blockData = it
+            }
+            if (it is Leaves) {
+                it.isPersistent = true
+                location.block.blockData = it
+            }
+        }
         val x = location.blockX + 0.5
         val y = location.blockY.toDouble()
         val z = location.blockZ + 0.5
@@ -145,6 +167,7 @@ class CustomBlockManager(val plugin: LifeCore) {
             it.customName = "custom_block"
             it.isCustomNameVisible = false
             it.isSilent = true
+            it.setRotation(((axis.yaw + block.axisShift) % 360).toFloat(), 0f)
             it.equipment?.helmet = ItemStack(block.material).apply {
                 itemMeta = itemMeta?.apply {
                     setCustomModelData(block.customModelData)

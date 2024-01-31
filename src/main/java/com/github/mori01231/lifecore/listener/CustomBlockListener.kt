@@ -21,14 +21,21 @@ class CustomBlockListener(val plugin: LifeCore) : Listener {
         val state = plugin.customBlockManager.getState(e.clickedBlock!!.location) ?: return
         if (wrench) {
             e.isCancelled = true
+            if (!state.getBlock().canDestroy(state, true)) return
             if (!e.player.hasPermission("lifecore.customblock.destroy.${state.blockName}")) {
                 e.player.sendActionBar("このブロックを破壊する権限がありません。")
                 return
             }
+            val drop = state.getBlock().preDestroy(state)
             plugin.customBlockManager.setState(e.clickedBlock!!.location, null)
-            e.player.playSound(e.player.location, Sound.ENTITY_ITEM_PICKUP, 1f, 1f)
-            e.player.inventory.addItem(state.getBlock().getItemStack(state)).forEach { (_, item) ->
-                e.player.world.dropItem(e.player.location, item)
+            if (drop) {
+                e.player.playSound(e.player.location, Sound.ENTITY_ITEM_PICKUP, 1f, 1f)
+                e.player.inventory.addItem(state.getBlock().getItemStack(state)).forEach { (_, item) ->
+                    e.player.world.dropItemNaturally(
+                        e.clickedBlock!!.location.clone().apply { add(0.5, 0.0, 0.5) },
+                        item
+                    )
+                }
             }
         } else {
             if (!e.player.hasPermission("lifecore.customblock.interact.${state.blockName}")) {
@@ -57,18 +64,28 @@ class CustomBlockListener(val plugin: LifeCore) : Listener {
         }
         val state = block.onPlace(e)
         plugin.customBlockManager.setState(e.block.location, state)
+        block.postPlace(e, state)
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onBlockBreak(e: BlockBreakEvent) {
-        if (e.player.gameMode != GameMode.CREATIVE) return
         val state = plugin.customBlockManager.getState(e.block.location) ?: return
         e.isCancelled = true
         if (!e.player.hasPermission("lifecore.customblock.destroy.${state.blockName}")) {
             e.player.sendActionBar("このブロックを破壊する権限がありません。")
             return
         }
+        if (e.player.gameMode != GameMode.CREATIVE && !state.getBlock().canDestroy(state, false)) {
+            return
+        }
+        val drop = state.getBlock().preDestroy(state)
         plugin.customBlockManager.setState(e.block.location, null)
+        if (drop && e.player.gameMode != GameMode.CREATIVE) {
+            e.player.world.dropItemNaturally(
+                e.block.location.clone().apply { add(0.5, 0.0, 0.5) },
+                state.getBlock().getItemStack(state)
+            )
+        }
     }
 
     @EventHandler
