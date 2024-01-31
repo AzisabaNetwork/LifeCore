@@ -10,7 +10,6 @@ import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.block.data.Directional
-import org.bukkit.block.data.Orientable
 import org.bukkit.block.data.type.Leaves
 import org.bukkit.entity.ArmorStand
 import org.bukkit.event.HandlerList
@@ -118,9 +117,6 @@ class CustomBlockManager(val plugin: LifeCore) {
             val axisShift = map["axisShift"]?.toString()?.toIntOrNull() ?: 0
             val lockFacing = map["lockFacing"]?.toString()?.toBoolean() ?: false
             val backgroundBlock = Material.valueOf(map["backgroundBlock"]?.toString()?.uppercase() ?: "BARRIER")
-            if (backgroundBlock.isAir) {
-                return plugin.logger.warning("$blockName: backgroundBlock must not be air")
-            }
             val material = Material.valueOf(map["material"]?.toString()?.uppercase() ?: return plugin.logger.warning("material is required"))
             val displayName = map["displayName"]?.toString()?.let { ChatColor.translateAlternateColorCodes('&', it) }
             val lore = map["lore"]?.toString()?.let { ChatColor.translateAlternateColorCodes('&', it) }?.split("\n")

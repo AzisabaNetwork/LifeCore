@@ -2,14 +2,18 @@ package com.github.mori01231.lifecore.listener
 
 import com.github.mori01231.lifecore.LifeCore
 import org.bukkit.GameMode
+import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
+import org.bukkit.event.player.PlayerInteractAtEntityEvent
 import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 
@@ -21,22 +25,7 @@ class CustomBlockListener(val plugin: LifeCore) : Listener {
         val state = plugin.customBlockManager.getState(e.clickedBlock!!.location) ?: return
         if (wrench) {
             e.isCancelled = true
-            if (!state.getBlock().canDestroy(state, true)) return
-            if (!e.player.hasPermission("lifecore.customblock.destroy.${state.blockName}")) {
-                e.player.sendActionBar("このブロックを破壊する権限がありません。")
-                return
-            }
-            val drop = state.getBlock().preDestroy(state)
-            plugin.customBlockManager.setState(e.clickedBlock!!.location, null)
-            if (drop) {
-                e.player.playSound(e.player.location, Sound.ENTITY_ITEM_PICKUP, 1f, 1f)
-                e.player.inventory.addItem(state.getBlock().getItemStack(state)).forEach { (_, item) ->
-                    e.player.world.dropItemNaturally(
-                        e.clickedBlock!!.location.clone().apply { add(0.5, 0.0, 0.5) },
-                        item
-                    )
-                }
-            }
+            destroyAt(e.player, e.clickedBlock!!.location)
         } else {
             if (!e.player.hasPermission("lifecore.customblock.interact.${state.blockName}")) {
                 e.player.sendActionBar("このブロックを使用する権限がありません。")
@@ -88,11 +77,64 @@ class CustomBlockListener(val plugin: LifeCore) : Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onPlayerInteractEntity(e: PlayerInteractEntityEvent) {
         val armorStand = plugin.customBlockManager.findArmorStand(e.rightClicked.location)
-        if (armorStand == e.rightClicked) {
-            e.isCancelled = true
+        if (armorStand != e.rightClicked) {
+            return
+        }
+        e.isCancelled = true
+        val wrench = plugin.customBlockManager.getWrenchItem().isSimilar(e.player.inventory.itemInMainHand) && e.player.isSneaking
+        if (wrench) {
+            destroyAt(e.player, e.rightClicked.location)
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    fun onPlayerInteractAtEntity(e: PlayerInteractAtEntityEvent) {
+        val armorStand = plugin.customBlockManager.findArmorStand(e.rightClicked.location)
+        if (armorStand != e.rightClicked) {
+            return
+        }
+        e.isCancelled = true
+        val wrench = plugin.customBlockManager.getWrenchItem().isSimilar(e.player.inventory.itemInMainHand) && e.player.isSneaking
+        if (wrench) {
+            destroyAt(e.player, e.rightClicked.location)
+        }
+    }
+
+    private fun destroyAt(player: Player, location: Location, callEvent: Boolean = true) {
+        val state = plugin.customBlockManager.getState(location) ?: return
+        if (callEvent) {
+            val wasAir = location.block.type.isAir
+            if (wasAir) {
+                location.block.type = Material.BARRIER
+            }
+            try {
+                if (!BlockBreakEvent(location.block, player).callEvent()) {
+                    return
+                }
+            } finally {
+                if (wasAir) {
+                    location.block.type = Material.AIR
+                }
+            }
+        }
+        if (!state.getBlock().canDestroy(state, true)) return
+        if (!player.hasPermission("lifecore.customblock.destroy.${state.blockName}")) {
+            player.sendActionBar("このブロックを破壊する権限がありません。")
+            return
+        }
+        val drop = state.getBlock().preDestroy(state)
+        plugin.customBlockManager.setState(location, null)
+        if (drop) {
+            player.playSound(player.location, Sound.ENTITY_ITEM_PICKUP, 1f, 1f)
+            player.inventory.addItem(state.getBlock().getItemStack(state)).forEach { (_, item) ->
+                player.world.dropItemNaturally(
+                    location.clone().apply { add(0.5, 0.0, 0.5) },
+                    item
+                )
+            }
         }
     }
 }
