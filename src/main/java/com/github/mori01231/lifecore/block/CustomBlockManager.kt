@@ -163,7 +163,11 @@ class CustomBlockManager(val plugin: LifeCore) {
             it.customName = "custom_block"
             it.isCustomNameVisible = false
             it.isSilent = true
-            it.setRotation(((axis.yaw + block.axisShift) % 360).toFloat(), 0f)
+            if (block.lockFacing) {
+                it.setRotation(block.axisShift.toFloat(), 0f)
+            } else {
+                it.setRotation(((axis.yaw + block.axisShift) % 360).toFloat(), 0f)
+            }
             it.equipment?.helmet = ItemStack(block.material).apply {
                 itemMeta = itemMeta?.apply {
                     setCustomModelData(block.customModelData)
