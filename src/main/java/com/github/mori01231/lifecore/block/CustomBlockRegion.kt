@@ -6,7 +6,7 @@ import kotlinx.serialization.json.Json
 import java.io.File
 
 @Serializable
-data class CustomBlockRegion(val x: Int, val z: Int) {
+data class CustomBlockRegion(val world: String, val x: Int, val z: Int) {
     private val states = mutableMapOf<Long, CustomBlockState>()
     var dirty: Boolean = false
         private set
@@ -36,10 +36,11 @@ data class CustomBlockRegion(val x: Int, val z: Int) {
 
     fun save() {
         if (dirty) {
-            val file = File(CustomBlockManager.regionDir, "$x.$z.json.writing")
+            val file = File(CustomBlockManager.regionDir, "$world/$x.$z.json.writing")
+            file.parentFile.mkdirs()
             dirty = false
             file.writeText(Json.encodeToString(this))
-            file.renameTo(File(CustomBlockManager.regionDir, "$x.$z.json"))
+            file.renameTo(File(CustomBlockManager.regionDir, "$world/$x.$z.json"))
         }
     }
 }

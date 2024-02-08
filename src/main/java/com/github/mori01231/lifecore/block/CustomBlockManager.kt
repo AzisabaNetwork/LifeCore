@@ -9,6 +9,7 @@ import org.bukkit.ChatColor
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
+import org.bukkit.World
 import org.bukkit.block.data.Directional
 import org.bukkit.block.data.type.Leaves
 import org.bukkit.entity.ArmorStand
@@ -28,7 +29,7 @@ class CustomBlockManager(val plugin: LifeCore) {
     }
 
     private val blocks = mutableListOf<CustomBlock>()
-    private val region = LRUCache<Pair<Int, Int>, CustomBlockRegion>(500)
+    private val region = mutableMapOf<String, LRUCache<Pair<Int, Int>, CustomBlockRegion>>()
 
     fun getBlocks() = blocks.toList()
 
@@ -49,12 +50,12 @@ class CustomBlockManager(val plugin: LifeCore) {
     private fun getRegionPos(worldPos: Int) = worldPos shr 9
 
     fun getState(location: Location): CustomBlockState? {
-        val region = loadRegion(getRegionPos(location.blockX), getRegionPos(location.blockZ))
+        val region = loadRegion(location.world, getRegionPos(location.blockX), getRegionPos(location.blockZ))
         return region.getState(location.blockX, location.blockY, location.blockZ)
     }
 
     fun setState(location: Location, state: CustomBlockState?) {
-        val region = loadRegion(getRegionPos(location.blockX), getRegionPos(location.blockZ))
+        val region = loadRegion(location.world, getRegionPos(location.blockX), getRegionPos(location.blockZ))
         if (state == null) {
             findArmorStand(location)?.remove()
             location.block.type = Material.AIR
@@ -62,18 +63,18 @@ class CustomBlockManager(val plugin: LifeCore) {
             spawnBlock(location, state.getBlock(), state.axis)
         }
         region.setState(location.blockX, location.blockY, location.blockZ, state)
-        region.save()
     }
 
-    private fun loadRegion(x: Int, z: Int): CustomBlockRegion {
-        val loaded = region.getOrPut(x to z) {
-            val file = File(regionDir, "$x.$z.json")
+    private fun loadRegion(world: World, x: Int, z: Int): CustomBlockRegion {
+        val wld = region.getOrPut(world.name) { LRUCache(100) }
+        val loaded = wld.getOrPut(x to z) {
+            val file = File(regionDir, "${world.name}/$x.$z.json")
             if (file.exists()) {
                 plugin.logger.info("Loading region $x, $z")
                 Json.decodeFromString(CustomBlockRegion.serializer(), file.readText())
             } else {
                 plugin.logger.info("Creating region $x, $z")
-                CustomBlockRegion(x, z)
+                CustomBlockRegion(world.name, x, z)
             }
         }
         if (loaded.dirty) {
@@ -128,6 +129,10 @@ class CustomBlockManager(val plugin: LifeCore) {
             block.customModelData = customModelData
             registerCustomBlock(block)
         }
+    }
+
+    fun saveAll() {
+        region.values.forEach { it.values.forEach { r -> r.save() } }
     }
 
     fun findArmorStand(location: Location): ArmorStand? {

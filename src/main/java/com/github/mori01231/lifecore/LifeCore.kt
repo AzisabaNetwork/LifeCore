@@ -83,6 +83,11 @@ class LifeCore : JavaPlugin() {
             dataFolder.resolve("drop-protect.yml").writeText(dropProtectConfig.encode())
         }
 
+        // save every 10 seconds
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, 20 * 10, 20 * 10) {
+            customBlockManager.saveAll()
+        }
+
         databaseConfig = config.getYamlMap("database").decode(DatabaseConfig.serializer())
         dataFolder.resolve("config-vote.yml").let {
             if (!it.exists()) {
