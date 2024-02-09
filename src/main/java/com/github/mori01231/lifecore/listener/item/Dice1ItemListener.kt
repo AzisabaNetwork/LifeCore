@@ -10,11 +10,13 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 import java.security.SecureRandom
+import java.util.UUID
 
 class Dice1ItemListener(val plugin: LifeCore) : Listener {
     private val random = SecureRandom()
     private val itemId = "b46ed137-a581-4ee8-b714-c1e136d141f2"
     private val prefix = "§f§l【§6§l抽選§f§l】"
+    private val cooldown = mutableSetOf<UUID>()
 
     @EventHandler
     fun onPlayerInteract(e: PlayerInteractEvent) {
@@ -25,6 +27,13 @@ class Dice1ItemListener(val plugin: LifeCore) : Listener {
             // wrong item
             return
         }
+        if (cooldown.contains(e.player.uniqueId)) {
+            return
+        }
+        cooldown.add(e.player.uniqueId)
+        Bukkit.getScheduler().runTaskLater(plugin, Runnable {
+            cooldown.remove(e.player.uniqueId)
+        }, 20 * 5)
         fun rollNow() {
             val randomPlayer =
                 e.player
