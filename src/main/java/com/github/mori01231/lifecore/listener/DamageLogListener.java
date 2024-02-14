@@ -4,6 +4,7 @@ import com.github.mori01231.lifecore.config.DamageLogFile;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -44,7 +45,7 @@ public class DamageLogListener implements Listener {
 
         p.sendMessage(prefix + entityName + damageColor + damage + " §8(" + damageType + " §7" + type + "§8)");
     }
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onDamaged(EntityDamageEvent e) {
 
         if ( !(e.getEntity() instanceof Player) ) return;
@@ -74,7 +75,7 @@ public class DamageLogListener implements Listener {
         if ( e.getCause() == EntityDamageEvent.DamageCause.CUSTOM ) message(player, "貫通", e.getFinalDamage(), false);
 
     }
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onEntityDamage(EntityDamageByEntityEvent e) {
 
         if ( (e.getEntity() instanceof Player) ) {
