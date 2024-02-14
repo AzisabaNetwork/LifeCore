@@ -160,6 +160,8 @@ commands:
   gclistenerrestartextendtimecommand:
     permission: lifecore.gclistenerrestartextendtimecommand
     usage: "/<command>"
+  lifecoredebug:
+    permission: lifecore.lifecoredebug
 
 permissions:
   lifecore.*:
@@ -201,7 +203,8 @@ permissions:
       lifecore.bypass-town-restrictions: true
       lifecore.schedulerestart: true
       lifecore.gclistenerrestartextendtimecommand: true
-      lifecore.lifecore.extend-time-immediately: true
+      lifecore.lifecoredebug: true
+      lifecore.extend-time-immediately: true
   lifecore.wiki:
     description: Allows you to show the wiki URL.
     default: true
@@ -306,5 +309,5 @@ permissions:
     default: false
   lifecore.gclistenerrestartextendtimecommand:
     default: true
-  lifecore.lifecore.extend-time-immediately:
+  lifecore.extend-time-immediately:
     default: false

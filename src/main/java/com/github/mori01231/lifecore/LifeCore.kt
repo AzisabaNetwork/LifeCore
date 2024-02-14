@@ -141,6 +141,7 @@ class LifeCore : JavaPlugin() {
         registerCommand("townconfig", TownConfigCommand(this))
         registerCommand("schedulerestart", ScheduleRestartCommand(this))
         registerCommand("gclistenerrestartextendtimecommand", GCListenerRestartExtendTimeCommand(this))
+        registerCommand("lifecoredebug", LifeCoreDebugCommand(this))
         registerCommand("respawn") { _, _, _, args ->
             args.getOrNull(0)?.let { Bukkit.getPlayerExact(it)?.spigot()?.respawn() }
             true
@@ -269,6 +270,7 @@ class LifeCore : JavaPlugin() {
         pm.registerEvents(VoidListener, this)
         pm.registerEvents(Dice1ItemListener(this), this)
         pm.registerEvents(OverrideTabCompleteListener(), this)
+        pm.registerEvents(KotlinLoveItemListener(this), this)
 
         // Items
         pm.registerEvents(OreOnlyItemListener(), this)

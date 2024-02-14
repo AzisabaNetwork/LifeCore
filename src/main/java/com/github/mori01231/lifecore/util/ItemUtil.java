@@ -5,7 +5,11 @@ import net.minecraft.server.v1_15_R1.NBTTagCompound;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -77,5 +81,22 @@ public class ItemUtil {
         } catch (ClassNotFoundException ignored) {
             return false;
         }
+    }
+
+    @SuppressWarnings("ConstantValue")
+    public static boolean isEquippedInAnySlot(@NotNull Player player, @NotNull ItemStack stack) {
+        PlayerInventory inventory = player.getInventory();
+        for (EquipmentSlot slot : EquipmentSlot.values()) {
+            if (inventory.getItem(slot) != null && inventory.getItem(slot).equals(stack)) return true;
+        }
+        return false;
+    }
+
+    public static boolean isEquippedInAnySlot(@NotNull Player player, @NotNull String mythicType) {
+        PlayerInventory inventory = player.getInventory();
+        for (EquipmentSlot slot : EquipmentSlot.values()) {
+            if (mythicType.equals(getMythicType(inventory.getItem(slot)))) return true;
+        }
+        return false;
     }
 }
