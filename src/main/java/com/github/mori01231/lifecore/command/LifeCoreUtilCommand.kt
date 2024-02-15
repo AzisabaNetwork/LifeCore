@@ -6,9 +6,10 @@ import org.bukkit.ChatColor
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabExecutor
+import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack
 import org.bukkit.entity.Player
 
-class LifeCoreDebugCommand(val plugin: LifeCore) : TabExecutor {
+class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
     override fun onCommand(sender: CommandSender, p1: Command, p2: String, args: Array<String>): Boolean {
         if (sender !is Player) {
             sender.sendMessage("${ChatColor.RED}You must be player to execute this command.")
@@ -72,7 +73,27 @@ class LifeCoreDebugCommand(val plugin: LifeCore) : TabExecutor {
                 }
                 player.sendMessage(ItemUtil.isEquippedInAnySlot(player, args[0]).toString())
             }
-        }
+        },
+        GetTag {
+            override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
+                if (args.isEmpty()) {
+                    player.sendMessage("${ChatColor.RED}Usage: /lifecoredebug $commandName <tag names...>")
+                    return
+                }
+                var tag = CraftItemStack.asNMSCopy(player.inventory.itemInMainHand).tag ?: run {
+                    player.sendMessage("${ChatColor.RED}Item has no tag.")
+                    return
+                }
+                for (i in args.indices) {
+                    val key = args[i]
+                    if (i == args.size - 1) {
+                        player.sendMessage("$key: ${tag.get(key)}")
+                    } else {
+                        tag = tag.getCompound(key)
+                    }
+                }
+            }
+        },
         ;
 
         abstract fun execute(plugin: LifeCore, player: Player, args: Array<String>)

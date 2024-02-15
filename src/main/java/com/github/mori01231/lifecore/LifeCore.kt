@@ -141,7 +141,7 @@ class LifeCore : JavaPlugin() {
         registerCommand("townconfig", TownConfigCommand(this))
         registerCommand("schedulerestart", ScheduleRestartCommand(this))
         registerCommand("gclistenerrestartextendtimecommand", GCListenerRestartExtendTimeCommand(this))
-        registerCommand("lifecoredebug", LifeCoreDebugCommand(this))
+        registerCommand("lifecoreutil", LifeCoreUtilCommand(this))
         registerCommand("respawn") { _, _, _, args ->
             args.getOrNull(0)?.let { Bukkit.getPlayerExact(it)?.spigot()?.respawn() }
             true
