@@ -94,6 +94,27 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
                 }
             }
         },
+        SetTagString {
+            override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
+                if (args.isEmpty()) {
+                    player.sendMessage("${ChatColor.RED}Usage: /lifecoredebug $commandName <tag names...> <value>")
+                    return
+                }
+                var tag = CraftItemStack.asNMSCopy(player.inventory.itemInMainHand).tag ?: run {
+                    player.sendMessage("${ChatColor.RED}Item has no tag.")
+                    return
+                }
+                for (i in args.indices) {
+                    val key = args[i]
+                    if (i == args.size - 2) {
+                        tag.setString(key, args[i + 1])
+                        break
+                    } else {
+                        tag = tag.getCompound(key)
+                    }
+                }
+            }
+        },
         ;
 
         abstract fun execute(plugin: LifeCore, player: Player, args: Array<String>)
