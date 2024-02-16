@@ -53,6 +53,11 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
     }
 
     enum class Commands(val description: String? = null) {
+        GetHealth("体力を取得します") {
+            override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
+                player.sendMessage(player.health.toString())
+            }
+        },
         SetHealth("体力をセットします") {
             override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
                 if (args.isEmpty()) {
@@ -117,6 +122,26 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
                 val item = CraftItemStack.asNMSCopy(player.inventory.itemInMainHand)
                 item.tag = MojangsonParser.parse(args.joinToString(" "))
                 player.inventory.setItemInMainHand(CraftItemStack.asBukkitCopy(item))
+            }
+        },
+        GetBlock {
+            override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
+                if (args.isEmpty()) {
+                    player.sendMessage("${ChatColor.RED}ブロック名を指定してください。")
+                    return
+                }
+                val block = plugin.customBlockManager.findBlockByName(args[0])
+                if (block == null) {
+                    player.sendMessage("${ChatColor.RED}ブロックが見つかりませんでした。")
+                    return
+                }
+                player.inventory.addItem(block.getItemStack(null))
+            }
+        },
+        ReloadBlocks {
+            override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
+                plugin.customBlockManager.reloadBlocks()
+                player.sendMessage("${ChatColor.GREEN}カスタムブロックを再読み込みしました。")
             }
         },
         ;
