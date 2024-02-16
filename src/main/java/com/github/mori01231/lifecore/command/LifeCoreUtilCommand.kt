@@ -47,7 +47,7 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
         args: Array<out String>
     ): List<String> {
         if (args.size == 1) {
-            return Commands.entries.map { cmd -> cmd.commandName }
+            return Commands.entries.map { cmd -> cmd.commandName }.filter { it.startsWith(args[0], ignoreCase = true) }
         }
         return emptyList()
     }
@@ -78,12 +78,12 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
         },
         GetTag {
             override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
-                if (args.isEmpty()) {
-                    player.sendMessage("${ChatColor.RED}Usage: /lifecoredebug $commandName <tag names...>")
-                    return
-                }
                 var tag = CraftItemStack.asNMSCopy(player.inventory.itemInMainHand).tag ?: run {
                     player.sendMessage("${ChatColor.RED}Item has no tag.")
+                    return
+                }
+                if (args.isEmpty()) {
+                    player.sendMessage(tag.toString())
                     return
                 }
                 for (i in args.indices) {
