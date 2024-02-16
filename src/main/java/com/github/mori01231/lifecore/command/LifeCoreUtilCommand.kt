@@ -2,6 +2,8 @@ package com.github.mori01231.lifecore.command
 
 import com.github.mori01231.lifecore.LifeCore
 import com.github.mori01231.lifecore.util.ItemUtil
+import net.minecraft.server.v1_15_R1.MojangsonParser
+import net.minecraft.server.v1_15_R1.NBTTagCompound
 import org.bukkit.ChatColor
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
@@ -94,25 +96,27 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
                 }
             }
         },
-        SetTagString {
+        MergeTag {
             override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
                 if (args.isEmpty()) {
-                    player.sendMessage("${ChatColor.RED}Usage: /lifecoredebug $commandName <tag names...> <value>")
+                    player.sendMessage("${ChatColor.RED}Usage: /lifecoredebug $commandName <value>")
                     return
                 }
-                var tag = CraftItemStack.asNMSCopy(player.inventory.itemInMainHand).tag ?: run {
-                    player.sendMessage("${ChatColor.RED}Item has no tag.")
+                val item = CraftItemStack.asNMSCopy(player.inventory.itemInMainHand)
+                val tag = item.tag ?: NBTTagCompound()
+                tag.a(MojangsonParser.parse(args.joinToString(" ")))
+                player.inventory.setItemInMainHand(CraftItemStack.asBukkitCopy(item))
+            }
+        },
+        SetTag {
+            override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
+                if (args.isEmpty()) {
+                    player.sendMessage("${ChatColor.RED}Usage: /lifecoredebug $commandName <value>")
                     return
                 }
-                for (i in args.indices) {
-                    val key = args[i]
-                    if (i == args.size - 2) {
-                        tag.setString(key, args[i + 1])
-                        break
-                    } else {
-                        tag = tag.getCompound(key)
-                    }
-                }
+                val item = CraftItemStack.asNMSCopy(player.inventory.itemInMainHand)
+                item.tag = MojangsonParser.parse(args.joinToString(" "))
+                player.inventory.setItemInMainHand(CraftItemStack.asBukkitCopy(item))
             }
         },
         ;
