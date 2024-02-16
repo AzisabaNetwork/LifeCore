@@ -36,9 +36,9 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
     private fun sendHelp(sender: CommandSender) {
         Commands.entries.forEach { cmd ->
             if (cmd.description == null) {
-                sender.sendMessage("${ChatColor.AQUA}/lifecoredebug ${cmd.commandName}")
+                sender.sendMessage("${ChatColor.AQUA}/lifecoreutil ${cmd.commandName}")
             } else {
-                sender.sendMessage("${ChatColor.AQUA}/lifecoredebug ${cmd.commandName} ${ChatColor.GRAY}- ${ChatColor.GREEN}${cmd.description}")
+                sender.sendMessage("${ChatColor.AQUA}/lifecoreutil ${cmd.commandName} ${ChatColor.GRAY}- ${ChatColor.GREEN}${cmd.description}")
             }
         }
     }
@@ -65,11 +65,49 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
                     .invoke(plugin.server as CraftServer)
             }
         },
+        Glowing("発光状態を切り替えます") {
+            override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
+                if (args.isEmpty()) {
+                    player.sendMessage("${ChatColor.RED}Usage: /lifecoreutil $commandName <true|false> [player]")
+                    return
+                }
+                val glowing = args[0].toBoolean()
+                optionalPlayer(player, args, 1).isGlowing = glowing
+            }
+        },
+        AddPassenger("<sender>の上に<player>を乗せます") {
+            override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
+                if (args.size < 2) {
+                    player.sendMessage("${ChatColor.RED}Usage: /lifecoreutil $commandName <player> [sender]")
+                    return
+                }
+                val passenger = Bukkit.getPlayerExact(args[1]) ?: run {
+                    player.sendMessage("${ChatColor.RED}Player not found: ${args[1]}")
+                    return
+                }
+                optionalPlayer(player, args, 2).addPassenger(passenger)
+            }
+
+            override fun suggest(plugin: LifeCore, player: Player, args: Array<String>): List<String> {
+                if (args.size == 1 || args.size == 2) return suggestPlayers(args.last())
+                return super.suggest(plugin, player, args)
+            }
+        },
+        Eject("<sender>からプレイヤーを降ろします") {
+            override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
+                optionalPlayer(player, args, 0).eject()
+            }
+
+            override fun suggest(plugin: LifeCore, player: Player, args: Array<String>): List<String> {
+                if (args.size == 1) return suggestPlayers(args[0])
+                return super.suggest(plugin, player, args)
+            }
+        },
         SetFallDistance {
             override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
                 val amount = args.getOrNull(0)?.toDoubleOrNull()
                 if (amount == null) {
-                    player.sendMessage("${ChatColor.RED}Usage: /lifecoredebug $commandName <amount> [player]")
+                    player.sendMessage("${ChatColor.RED}Usage: /lifecoreutil $commandName <amount> [player]")
                     return
                 }
                 optionalPlayer(player, args, 1).fallDistance = amount.toFloat()
@@ -93,7 +131,7 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
         SetVelocity {
             override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
                 if (args.size < 3) {
-                    player.sendMessage("${ChatColor.RED}Usage: /lifecoredebug $commandName <x> <y> <z> [player]")
+                    player.sendMessage("${ChatColor.RED}Usage: /lifecoreutil $commandName <x> <y> <z> [player]")
                     return
                 }
                 val x = args[0].toDoubleOrNull()
@@ -124,7 +162,7 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
         SetHealth("体力をセットします") {
             override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
                 if (args.isEmpty()) {
-                    player.sendMessage("${ChatColor.RED}Usage: /lifecoredebug $commandName <amount> [player]")
+                    player.sendMessage("${ChatColor.RED}Usage: /lifecoreutil $commandName <amount> [player]")
                     return
                 }
                 val amount = args[0].toDoubleOrNull()
@@ -143,7 +181,7 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
         IsEquippedInAnySlot {
             override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
                 if (args.isEmpty()) {
-                    player.sendMessage("${ChatColor.RED}Usage: /lifecoredebug $commandName <mythic type> [player]")
+                    player.sendMessage("${ChatColor.RED}Usage: /lifecoreutil $commandName <mythic type> [player]")
                     return
                 }
                 player.sendMessage(ItemUtil.isEquippedInAnySlot(optionalPlayer(player, args, 1), args[0]).toString())
@@ -177,7 +215,7 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
         MergeTag {
             override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
                 if (args.isEmpty()) {
-                    player.sendMessage("${ChatColor.RED}Usage: /lifecoredebug $commandName <value>")
+                    player.sendMessage("${ChatColor.RED}Usage: /lifecoreutil $commandName <value>")
                     return
                 }
                 val item = CraftItemStack.asNMSCopy(player.inventory.itemInMainHand)
@@ -189,7 +227,7 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
         SetTag {
             override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
                 if (args.isEmpty()) {
-                    player.sendMessage("${ChatColor.RED}Usage: /lifecoredebug $commandName <value>")
+                    player.sendMessage("${ChatColor.RED}Usage: /lifecoreutil $commandName <value>")
                     return
                 }
                 val item = CraftItemStack.asNMSCopy(player.inventory.itemInMainHand)
@@ -217,6 +255,27 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
                 player.sendMessage("${ChatColor.GREEN}カスタムブロックを再読み込みしました。")
             }
         },
+        ReloadConfig("指定したプラグインのconfig.ymlをリロードさせます") {
+            override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
+                if (args.isEmpty()) {
+                    player.sendMessage("${ChatColor.RED}Usage: /lifecoreutil $commandName <plugin>")
+                    return
+                }
+                val target = args[0]
+                val targetPlugin = Bukkit.getPluginManager().getPlugin(target)
+                if (targetPlugin == null) {
+                    player.sendMessage("${ChatColor.RED}プラグインが見つかりませんでした。")
+                    return
+                }
+                targetPlugin.reloadConfig()
+                player.sendMessage("${ChatColor.GREEN}${target}のconfig.ymlをリロードしました。")
+            }
+
+            override fun suggest(plugin: LifeCore, player: Player, args: Array<String>): List<String> {
+                if (args.size == 1) return Bukkit.getPluginManager().plugins.map { it.name }
+                return super.suggest(plugin, player, args)
+            }
+        },
         ;
 
         abstract fun execute(plugin: LifeCore, player: Player, args: Array<String>)
@@ -225,7 +284,7 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
 
         protected fun optionalPlayer(player: Player, args: Array<String>, index: Int): Player {
             if (args.size > index) {
-                return Bukkit.getPlayer(args[index]) ?: player
+                return Bukkit.getPlayerExact(args[index]) ?: player
             }
             return player
         }
