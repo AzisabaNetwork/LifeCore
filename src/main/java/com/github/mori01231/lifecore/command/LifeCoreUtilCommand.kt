@@ -276,6 +276,29 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
                 return super.suggest(plugin, player, args)
             }
         },
+        ClearPlot("イマサラタウンのplotを消し飛ばします") {
+            override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
+                val minX = player.chunk.x * 16
+                val minZ = player.chunk.z * 16
+                val maxX = minX + 15
+                val maxZ = minZ + 15
+                scheduleLater(plugin, 0) { Bukkit.dispatchCommand(player, "/chunk") }
+                scheduleLater(plugin, 1) { Bukkit.dispatchCommand(player, "/regen") }
+                scheduleLater(plugin, 2) { Bukkit.dispatchCommand(player, "/pos1 $minX,3,$minZ") }
+                scheduleLater(plugin, 3) { Bukkit.dispatchCommand(player, "/pos2 $maxX,30,$maxZ") }
+                scheduleLater(plugin, 4) { Bukkit.dispatchCommand(player, "/cut -e") }
+                scheduleLater(plugin, 5) { Bukkit.dispatchCommand(player, "/pos2 $maxX,3,$maxZ") }
+                scheduleLater(plugin, 6) { Bukkit.dispatchCommand(player, "/set minecraft:grass_block") }
+                scheduleLater(plugin, 7) { Bukkit.dispatchCommand(player, "/pos1 $minX,4,$minZ") }
+                scheduleLater(plugin, 8) { Bukkit.dispatchCommand(player, "/pos2 $maxX,4,$maxZ") }
+                scheduleLater(plugin, 9) { Bukkit.dispatchCommand(player, "/walls minecraft:smooth_stone_slab") }
+                scheduleLater(plugin, 10) { Bukkit.dispatchCommand(player, "plot fs") }
+            }
+
+            private fun scheduleLater(plugin: LifeCore, delayTicks: Long, action: () -> Unit) {
+                Bukkit.getScheduler().runTaskLater(plugin, Runnable(action), delayTicks)
+            }
+        },
         ;
 
         abstract fun execute(plugin: LifeCore, player: Player, args: Array<String>)
