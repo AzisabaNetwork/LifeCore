@@ -47,15 +47,8 @@ class LifeCoreConfigCommand(private val plugin: LifeCore) : PlayerTabExecutor() 
 
     override fun onTabComplete(sender: CommandSender, command: Command, alias: String, args: Array<String>): List<String> {
         if (args.size == 1) {
-            return listOf("pos1", "pos2", "wand", "setLobby", "removeLobby", "getBlock", "reloadBlocks")
+            return listOf("pos1", "pos2", "wand", "setLobby", "removeLobby")
                 .filter { it.lowercase().startsWith(args[0].lowercase()) }
-        }
-        if (args.size == 2) {
-            if (args[0] == "getBlock") {
-                return plugin.customBlockManager.getBlocks()
-                    .map { it.name }
-                    .filter { it.lowercase().startsWith(args[1].lowercase()) }
-            }
         }
         return emptyList()
     }

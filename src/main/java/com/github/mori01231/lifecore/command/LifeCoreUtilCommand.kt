@@ -248,6 +248,15 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
                 }
                 player.inventory.addItem(block.getItemStack(null))
             }
+
+            override fun suggest(plugin: LifeCore, player: Player, args: Array<String>): List<String> {
+                if (args.size == 1) {
+                    return plugin.customBlockManager.getBlocks()
+                        .map { it.name }
+                        .filter { it.lowercase().startsWith(args[0].lowercase()) }
+                }
+                return super.suggest(plugin, player, args)
+            }
         },
         ReloadBlocks {
             override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
