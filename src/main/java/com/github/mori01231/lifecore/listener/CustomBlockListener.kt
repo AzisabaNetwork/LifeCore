@@ -6,6 +6,7 @@ import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack
+import org.bukkit.entity.Arrow
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -13,6 +14,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
+import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.event.player.PlayerInteractAtEntityEvent
 import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
@@ -100,6 +102,13 @@ class CustomBlockListener(val plugin: LifeCore) : Listener {
         val wrench = plugin.customBlockManager.getWrenchItem().isSimilar(e.player.inventory.itemInMainHand) && e.player.isSneaking
         if (wrench) {
             destroyAt(e.player, e.rightClicked.location)
+        }
+    }
+
+    @EventHandler
+    fun onProjectileHit(e: ProjectileHitEvent) {
+        if (e.entity is Arrow && plugin.customBlockManager.isCustomBlockEntity(e.hitEntity)) {
+            e.entity.remove()
         }
     }
 

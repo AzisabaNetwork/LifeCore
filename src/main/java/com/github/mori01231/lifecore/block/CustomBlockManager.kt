@@ -13,6 +13,7 @@ import org.bukkit.World
 import org.bukkit.block.data.Directional
 import org.bukkit.block.data.type.Leaves
 import org.bukkit.entity.ArmorStand
+import org.bukkit.entity.Entity
 import org.bukkit.event.HandlerList
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.ShapedRecipe
@@ -181,4 +182,7 @@ class CustomBlockManager(val plugin: LifeCore) {
             }
         }
     }
+
+    fun isCustomBlockEntity(e: Entity?) =
+        e is ArmorStand && e.customName == "custom_block" && !e.isVisible && e.isInvulnerable && e.isSmall
 }
