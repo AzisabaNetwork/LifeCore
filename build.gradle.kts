@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "net.azisaba"
-version = "6.9.9"
+version = "6.9.10"
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(8))

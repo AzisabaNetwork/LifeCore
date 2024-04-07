@@ -2,6 +2,7 @@ package com.github.mori01231.lifecore.listener
 
 import com.github.mori01231.lifecore.LifeCore
 import com.github.mori01231.lifecore.config.TownConfig
+import com.github.mori01231.lifecore.util.LazyInitValue
 import com.github.mori01231.lifecore.util.runTaskTimer
 import de.Keyle.MyPet.MyPetApi
 import de.Keyle.MyPet.api.skill.skills.Backpack
@@ -15,13 +16,15 @@ import org.bukkit.event.Listener
 import org.bukkit.event.entity.PotionSplashEvent
 import org.bukkit.event.player.PlayerCommandPreprocessEvent
 import org.bukkit.potion.PotionEffectType
+import org.spigotmc.event.entity.EntityMountEvent
 import java.lang.reflect.Field
 
 class TownSpecificListener(private val plugin: LifeCore) : Listener {
-    private val pickupPickupField: Field =
+    private val pickupPickupField: LazyInitValue<Field> = LazyInitValue {
         Class.forName("de.Keyle.MyPet.skill.skills.PickupImpl")
             .getDeclaredField("pickup")
             .apply { isAccessible = true }
+    }
 
     fun startTask() {
         Bukkit.getScheduler().runTaskTimer(plugin, 20, 20) {
@@ -34,6 +37,10 @@ class TownSpecificListener(private val plugin: LifeCore) : Listener {
                     player.removePotionEffect(PotionEffectType.INVISIBILITY)
                     player.sendMessage("${ChatColor.RED}この町での透明化は許可されていません。")
                 }
+                if (!config.allowPassenger && player.vehicle is Player) {
+                    player.leaveVehicle()
+                    player.sendMessage("${ChatColor.RED}この町でプレイヤーに乗ることは許可されていません。")
+                }
                 if (Bukkit.getPluginManager().isPluginEnabled("MyPet")) {
                     runMyPet(config, player)
                 }
@@ -45,7 +52,7 @@ class TownSpecificListener(private val plugin: LifeCore) : Listener {
         if (!config.allowPetPickup) {
             MyPetApi.getMyPetManager().getMyPet(player)?.let { pet ->
                 val skill = pet.skills.get(Pickup::class.java)
-                if (skill.isActive && pet.skills.isActive(Backpack::class.java) && (pickupPickupField[skill] as Boolean)) {
+                if (skill.isActive && pet.skills.isActive(Backpack::class.java) && (pickupPickupField.get()[skill] as Boolean)) {
                     player.sendMessage("${ChatColor.RED}この町でのpetpickupは許可されていません。")
                     skill.activate() // this toggles the "pickup" status and sends a message to the player
                 }
@@ -64,6 +71,22 @@ class TownSpecificListener(private val plugin: LifeCore) : Listener {
                 }
             }
             toRemove.forEach { e.setIntensity(it, 0.0) }
+        }
+    }
+
+    @EventHandler
+    fun onVehicleEnter(e: EntityMountEvent) {
+        if (e.entity !is Player || e.mount !is Player) {
+            return
+        }
+        val player = e.entity as Player
+        if (player.hasPermission("lifecore.bypass-town-restrictions")) {
+            return
+        }
+        val config = TownConfig.getTownConfigAt(plugin.lifeCoreConfig, player.location) ?: return
+        if (!config.allowPassenger) {
+            e.isCancelled = true
+            player.sendMessage("${ChatColor.RED}この町でプレイヤーに乗ることは許可されていません。")
         }
     }
 

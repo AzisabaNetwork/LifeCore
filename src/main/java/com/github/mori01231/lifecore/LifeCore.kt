@@ -291,7 +291,6 @@ class LifeCore : JavaPlugin() {
         } catch (e: ClassNotFoundException) {
             slF4JLogger.warn("Votifier not detected, skipping event listener registration")
         }
-        isEnabled
         try {
             Class.forName("com.palmergames.bukkit.towny.TownyAPI")
             pm.registerEvents(TownyOutlawListener(), this)
@@ -300,6 +299,7 @@ class LifeCore : JavaPlugin() {
                 .apply { pm.registerEvents(this, this@LifeCore) }
         } catch (e: ClassNotFoundException) {
             slF4JLogger.warn("Towny not detected, skipping event listener registration")
+            e.printStackTrace()
         }
         try {
             Class.forName("net.azisaba.ryuzupluginchat.event.AsyncGlobalMessageEvent")

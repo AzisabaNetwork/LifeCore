@@ -9,6 +9,7 @@ data class TownConfig(
     @JvmField var allowInvisibility: Boolean = true,
     @JvmField var allowSit: Boolean = true,
     @JvmField var allowPetPickup: Boolean = true,
+    @JvmField var allowPassenger: Boolean = true,
 ) {
     companion object {
         fun getTownConfigAt(lifeCoreConfig: LifeCoreConfig, location: Location): TownConfig? {
