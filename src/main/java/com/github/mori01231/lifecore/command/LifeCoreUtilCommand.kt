@@ -1,5 +1,6 @@
 package com.github.mori01231.lifecore.command
 
+import com.github.mori01231.lifecore.DBConnector
 import com.github.mori01231.lifecore.LifeCore
 import com.github.mori01231.lifecore.util.ItemUtil
 import net.minecraft.server.v1_15_R1.MojangsonParser
@@ -29,6 +30,10 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
             sendHelp(sender)
             return true
         }
+        if (!sender.hasPermission("lifecore.lifecoreutil.${handler.name}")) {
+            sender.sendMessage("${ChatColor.RED}You don't have permission to execute this command.")
+            return true
+        }
         handler.execute(plugin, sender, args.copyOfRange(1, args.size))
         return true
     }
@@ -51,7 +56,9 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
     ): List<String> {
         if (args.isEmpty()) return emptyList()
         if (args.size == 1) {
-            return Commands.entries.map { cmd -> cmd.commandName }.filter { it.startsWith(args[0], ignoreCase = true) }
+            return Commands.entries
+                .map { cmd -> cmd.commandName }
+                .filter { it.startsWith(args[0], ignoreCase = true) && sender.hasPermission("lifecore.lifecoreutil.$it") }
         }
         val handler = Commands.findByName(args[0]) ?: return emptyList()
         return handler.suggest(plugin, sender as Player, args.copyOfRange(1, args.size))
@@ -306,6 +313,101 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
 
             private fun scheduleLater(plugin: LifeCore, delayTicks: Long, action: () -> Unit) {
                 Bukkit.getScheduler().runTaskLater(plugin, Runnable(action), delayTicks)
+            }
+        },
+        GetOfflineMoney("offline_moneyを取得します") {
+            @Suppress("DEPRECATION")
+            override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
+                if (args.isEmpty()) {
+                    player.sendMessage("${ChatColor.RED}Usage: /lifecoreutil $commandName <player>")
+                    return
+                }
+                Bukkit.getScheduler().runTaskAsynchronously(LifeCore.instance, Runnable {
+                    val target = Bukkit.getOfflinePlayer(args[0])
+                    val result =
+                        DBConnector.getPrepareStatement("SELECT * FROM `mpdb_economy` WHERE `player_uuid` = ?") { statement ->
+                            statement.setString(1, target.uniqueId.toString())
+                            statement.executeQuery().use { result ->
+                                if (result.next()) {
+                                    result.getDouble("offline_money")
+                                } else {
+                                    null
+                                }
+                            }
+                        }
+                    Bukkit.getScheduler().runTask(LifeCore.instance, Runnable {
+                        if (result == null) {
+                            player.sendMessage("${ChatColor.RED}プレイヤーが見つかりませんでした。")
+                        } else {
+                            player.sendMessage("${ChatColor.GREEN}${target.name}のoffline_money: $result")
+                        }
+                    })
+                })
+            }
+
+            override fun suggest(plugin: LifeCore, player: Player, args: Array<String>): List<String> {
+                if (args.size == 1) return suggestPlayers(args[0])
+                return super.suggest(plugin, player, args)
+            }
+        },
+        SetOfflineMoney("offline_moneyをセットします") {
+            @Suppress("DEPRECATION")
+            override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
+                if (args.size < 2) {
+                    player.sendMessage("${ChatColor.RED}Usage: /lifecoreutil $commandName <player> <amount>")
+                    return
+                }
+                val amount = args[1].toDoubleOrNull() ?: run {
+                    player.sendMessage("${ChatColor.RED}無効な数値: ${args[1]}")
+                    return
+                }
+                Bukkit.getScheduler().runTaskAsynchronously(LifeCore.instance, Runnable {
+                    val target = Bukkit.getOfflinePlayer(args[0])
+                    val result =
+                        DBConnector.getPrepareStatement("UPDATE `mpdb_economy` SET `offline_money` = ? WHERE `player_uuid` = ?") { statement ->
+                            statement.setDouble(1, amount)
+                            statement.setString(2, target.uniqueId.toString())
+                            statement.executeUpdate()
+                        }
+                    Bukkit.getScheduler().runTask(LifeCore.instance, Runnable {
+                        player.sendMessage("${ChatColor.GREEN}$result rows affected")
+                    })
+                })
+            }
+
+            override fun suggest(plugin: LifeCore, player: Player, args: Array<String>): List<String> {
+                if (args.size == 1) return suggestPlayers(args[0])
+                return super.suggest(plugin, player, args)
+            }
+        },
+        AddOfflineMoney("offline_moneyを追加(add)します") {
+            @Suppress("DEPRECATION")
+            override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
+                if (args.size < 2) {
+                    player.sendMessage("${ChatColor.RED}Usage: /lifecoreutil $commandName <player> <amount>")
+                    return
+                }
+                val amount = args[1].toDoubleOrNull() ?: run {
+                    player.sendMessage("${ChatColor.RED}無効な数値: ${args[1]}")
+                    return
+                }
+                Bukkit.getScheduler().runTaskAsynchronously(LifeCore.instance, Runnable {
+                    val target = Bukkit.getOfflinePlayer(args[0])
+                    val result =
+                        DBConnector.getPrepareStatement("UPDATE `mpdb_economy` SET `offline_money` = `offline_money` + ? WHERE `player_uuid` = ?") { statement ->
+                            statement.setDouble(1, amount)
+                            statement.setString(2, target.uniqueId.toString())
+                            statement.executeUpdate()
+                        }
+                    Bukkit.getScheduler().runTask(LifeCore.instance, Runnable {
+                        player.sendMessage("${ChatColor.GREEN}$result rows affected")
+                    })
+                })
+            }
+
+            override fun suggest(plugin: LifeCore, player: Player, args: Array<String>): List<String> {
+                if (args.size == 1) return suggestPlayers(args[0])
+                return super.suggest(plugin, player, args)
             }
         },
         ;
