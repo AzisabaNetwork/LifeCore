@@ -8,6 +8,8 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.UUID;
+
 public class AsyncPlayerPreInteractEntityEvent extends PlayerEvent implements Cancellable {
     private static final HandlerList HANDLER_LIST = new HandlerList();
     private final PacketPlayInUseEntity.EnumEntityUseAction action;
@@ -28,6 +30,11 @@ public class AsyncPlayerPreInteractEntityEvent extends PlayerEvent implements Ca
     @NotNull
     public Entity getInteractedEntity() {
         return interactedEntity;
+    }
+
+    @NotNull
+    public UUID getEntityUniqueID() {
+        return interactedEntity.getUniqueID();
     }
 
     @Override
