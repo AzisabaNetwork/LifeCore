@@ -1,19 +1,25 @@
-package com.github.mori01231.lifecore;
+package com.github.mori01231.lifecore
 
-import org.bukkit.Bukkit;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
-import org.jetbrains.annotations.NotNull;
+import com.github.mori01231.lifecore.util.ItemUtil
+import org.bukkit.Bukkit
+import org.bukkit.Material
+import org.bukkit.inventory.Inventory
+import org.bukkit.inventory.InventoryHolder
+import org.bukkit.inventory.ItemStack
 
-public class TrashInventory implements InventoryHolder {
-    private final Inventory inventory;
+class TrashInventory : InventoryHolder {
+    private val inventory = Bukkit.createInventory(this, 54, "ゴミ箱")
 
-    public TrashInventory() {
-        this.inventory = Bukkit.createInventory(this, 54, "ゴミ箱");
+    init {
+        val item = ItemUtil.createItemStack(Material.BARRIER, 1) {
+            it.itemMeta = it.itemMeta.apply {
+                setDisplayName("ゴミを捨てる")
+            }
+        }
+        inventory.setItem(53, item)
     }
 
-    @Override
-    public @NotNull Inventory getInventory() {
-        return inventory;
+    override fun getInventory(): Inventory {
+        return inventory
     }
 }

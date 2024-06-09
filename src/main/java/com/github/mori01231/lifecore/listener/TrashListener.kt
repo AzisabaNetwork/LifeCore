@@ -1,63 +1,76 @@
-package com.github.mori01231.lifecore.listener;
+package com.github.mori01231.lifecore.listener
 
-import com.github.mori01231.lifecore.LifeCore;
-import com.github.mori01231.lifecore.TrashInventory;
-import com.github.mori01231.lifecore.util.ItemUtil;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import com.github.mori01231.lifecore.LifeCore
+import com.github.mori01231.lifecore.TrashInventory
+import com.github.mori01231.lifecore.util.ItemUtil
+import org.bukkit.Bukkit
+import org.bukkit.ChatColor
+import org.bukkit.Material
+import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
+import org.bukkit.event.Listener
+import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.inventory.InventoryCloseEvent
+import org.bukkit.event.inventory.InventoryDragEvent
+import org.bukkit.inventory.ItemStack
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class TrashListener implements Listener {
-    private final LifeCore plugin;
-
-    public TrashListener(@NotNull LifeCore plugin){
-        this.plugin = plugin;
-    }
-
-    @EventHandler(priority = EventPriority.NORMAL)
-    public void onInventoryClose(InventoryCloseEvent event) {
-        Player player = (Player) event.getPlayer();
-        String playerName = player.getName();
-
-        int trashMoneyPerItem = plugin.getConfig().getInt("TrashMoneyPerItem", 0);
-
-        if (event.getView().getTopInventory().getHolder() instanceof TrashInventory) {
-
-            int moneyCounter = 0;
-            int moneyMultiplier = trashMoneyPerItem;
-            List<ItemStack> items = new ArrayList<>();
-            for (ItemStack item : event.getInventory().getContents()) {
-                try {
-                    if (item.getAmount() > 0) {
-
-                        for (String line : plugin.getConfig().getStringList("Trash.Items")) {
-                            if(item.getItemMeta().getDisplayName().equals(line)){
-                                moneyMultiplier = plugin.getConfig().getInt("TrashMoneyPerSpecialItem");
+class TrashListener(private val plugin: LifeCore) : Listener {
+    @EventHandler
+    fun onInventoryClick(e: InventoryClickEvent) {
+        if (e.clickedInventory?.holder is TrashInventory) {
+            if (e.slot == 53) {
+                e.isCancelled = true
+                val trashMoneyPerItem = plugin.config.getInt("TrashMoneyPerItem", 0)
+                var moneyCounter = -1
+                var moneyMultiplier = trashMoneyPerItem
+                val items: MutableList<ItemStack> = ArrayList()
+                for (item in e.inventory.contents) {
+                    try {
+                        if (item.amount > 0) {
+                            for (line in plugin.config.getStringList("Trash.Items")) {
+                                if (item.itemMeta.displayName == line) {
+                                    moneyMultiplier = plugin.config.getInt("TrashMoneyPerSpecialItem")
+                                }
                             }
+
+                            moneyCounter += item.amount * moneyMultiplier
+                            items.add(item.clone())
+                            item.amount = 0
                         }
-
-                        moneyCounter += item.getAmount() * moneyMultiplier;
-                        items.add(item.clone());
-                        item.setAmount(0);
+                    } catch (ignored: Exception) {
                     }
-
-                } catch (Exception ignored) {
                 }
+                e.whoClicked.sendMessage(
+                    ChatColor.translateAlternateColorCodes(
+                        '&',
+                        "&3ゴミ箱に" + moneyCounter + "個のアイテムを捨てました。"
+                    )
+                )
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "eco give ${e.whoClicked.name} $moneyCounter")
+                plugin.slF4JLogger.info("Player {} has trashed {} items:", e.whoClicked.name, moneyCounter)
+                for (item in items) {
+                    plugin.logger.info("  " + ItemUtil.toString(item))
+                }
+                e.clickedInventory?.clear()
+                e.whoClicked.closeInventory()
             }
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3ゴミ箱に" + moneyCounter + "個のアイテムを捨てました。" ));
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "eco give " + playerName + " " + moneyCounter);
-            plugin.getSLF4JLogger().info("Player {} has trashed {} items:", playerName, moneyCounter);
-            for (ItemStack item : items) {
-                plugin.getLogger().info("  " + ItemUtil.toString(item));
+        }
+    }
+    @EventHandler
+    fun onInventoryDrag(e: InventoryDragEvent) {
+        if (e.inventory.holder is TrashInventory) {
+            e.isCancelled = true
+        }
+    }
+    @EventHandler
+    fun onInventoryClose(e: InventoryCloseEvent) {
+        if (e.inventory.holder is TrashInventory) {
+            val inv = e.inventory
+            for (item in inv.contents) {
+                if (item.type != Material.AIR) {
+                    e.player.inventory.addItem(item)
+                }
             }
         }
     }
