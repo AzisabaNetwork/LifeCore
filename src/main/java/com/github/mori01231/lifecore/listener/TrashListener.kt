@@ -6,9 +6,7 @@ import com.github.mori01231.lifecore.util.ItemUtil
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Material
-import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
-import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
@@ -68,9 +66,9 @@ class TrashListener(private val plugin: LifeCore) : Listener {
         if (e.inventory.holder is TrashInventory) {
             val inv = e.inventory
             for (item in inv.contents) {
-                if (item.type != Material.AIR) {
-                    e.player.inventory.addItem(item)
-                }
+                @Suppress("SENSELESS_COMPARISON")
+                if (item == null || item.type.isAir) continue
+                e.player.inventory.addItem(item)
             }
         }
     }
