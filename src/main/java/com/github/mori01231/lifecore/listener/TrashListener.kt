@@ -48,6 +48,7 @@ class TrashListener(private val plugin: LifeCore) : Listener {
                 plugin.slF4JLogger.info("Player {} has trashed {} items:", e.whoClicked.name, moneyCounter)
                 for (item in items) {
                     plugin.logger.info("  " + ItemUtil.toString(item))
+                    e.whoClicked.sendMessage("  " + ItemUtil.toString(item))
                 }
                 e.clickedInventory?.clear()
                 e.whoClicked.closeInventory()
