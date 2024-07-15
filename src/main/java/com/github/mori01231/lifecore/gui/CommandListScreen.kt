@@ -20,6 +20,7 @@ import kotlin.math.min
 class CommandListScreen(val player: Player) : InventoryHolder {
     companion object {
         val commands = listOf(
+            CommandInfo(CommandType.Useful, "ゴミ箱", listOf(), "/trash"),
             CommandInfo(CommandType.Useful, "Flyオン(10分) / オフ", listOf("Flyがオフの場合は10分間オンにします。", "オンの場合は残りの秒数を計算して返金→オフにします。"), "/fly") {
                 if (it.allowFlight) {
                     CommandInfo.State.Enabled
@@ -56,8 +57,18 @@ class CommandListScreen(val player: Player) : InventoryHolder {
                     CommandInfo.State.Disabled
                 }
             },
+            CommandInfo(CommandType.Toggle, "ゲーミングランク表示切替", listOf(), "/gamingsara", true),
+            CommandInfo(CommandType.Toggle, "Nitroランク表示切替", listOf(), "/togglenitro", true),
+            CommandInfo(CommandType.Toggle, "皿表示切替", listOf("複数の皿を持っている場合はすべての皿が切替されます。"), "/sara", true),
+            CommandInfo(CommandType.Toggle, "リペア・サルベージ", listOf("金ブロック・鉄ブロックのクリック可否を切り替えます。"), "/blocking"),
             CommandInfo(CommandType.Utility, "Stash受け取り", listOf("Stashの中身を受け取るGUIを開きます。"), "/pickupstash"),
-            CommandInfo(CommandType.Misc, "アンパンチ", listOf(), "アンパーンチ！！！！！！！！！！！！！！１１", true)
+            CommandInfo(CommandType.Utility, "借金情報", listOf("現在のシステム上の借金を表示します。"), "/debt", true),
+            CommandInfo(CommandType.Utility, "アイテムFix", listOf("Fix対象のアイテムをFixします。", "クールタイム: 60秒"), "/fixitems"),
+            CommandInfo(CommandType.Utility, "ショップリスト", listOf(), "/sis list"),
+            CommandInfo(CommandType.Utility, "ショップ検索", listOf(), "/sis search"),
+            CommandInfo(CommandType.Utility, "オンタイムポイント表示", listOf("現在所持しているオンタイムポイントを表示します。"), "/points me"),
+            CommandInfo(CommandType.Utility, "mcMMOスキルレベル表示", listOf("mcMMOのstatsを表示します。"), "/stats"),
+            CommandInfo(CommandType.Utility, "プレイ状況表示", listOf("Statzのリストを表示します。"), "/statz list"),
         )
         val maxPage = floor(commands.size / 45.0).toInt()
     }
@@ -95,7 +106,8 @@ class CommandListScreen(val player: Player) : InventoryHolder {
                 CommandInfo.State.Disabled -> ChatColor.RED
                 CommandInfo.State.Unknown -> ChatColor.YELLOW
             }
-            inv.setItem(index, ItemUtil.createItemStack(type, "$color${info.name}", info.lore.map { "${ChatColor.LIGHT_PURPLE}$it" }))
+            val lore = info.lore.map { "${ChatColor.LIGHT_PURPLE}$it" } + listOf("", "§eカテゴリ: ${info.type.label}", "§8コマンド: ${info.command}")
+            inv.setItem(index, ItemUtil.createItemStack(type, "$color${info.name}", lore))
         }
         inv.setItem(45, ItemUtil.createItemStack(Material.ARROW, "${if (page == 0) "§7" else "§a"}<< $page", listOf("§e前のページ")))
         inv.setItem(49, ItemUtil.createItemStack(Material.BARRIER, "§c閉じる", listOf()))
