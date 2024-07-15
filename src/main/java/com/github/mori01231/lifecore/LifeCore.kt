@@ -3,6 +3,7 @@ package com.github.mori01231.lifecore
 import com.github.mori01231.lifecore.block.CustomBlockManager
 import com.github.mori01231.lifecore.command.*
 import com.github.mori01231.lifecore.config.*
+import com.github.mori01231.lifecore.gui.CommandListScreen
 import com.github.mori01231.lifecore.gui.DropProtectScreen
 import com.github.mori01231.lifecore.listener.*
 import com.github.mori01231.lifecore.listener.item.*
@@ -142,6 +143,7 @@ class LifeCore : JavaPlugin() {
         registerCommand("schedulerestart", ScheduleRestartCommand(this))
         registerCommand("gclistenerrestartextendtimecommand", GCListenerRestartExtendTimeCommand(this))
         registerCommand("lifecoreutil", LifeCoreUtilCommand(this))
+        registerCommand("commandlist", CommandListCommand)
         registerCommand("respawn") { _, _, _, args ->
             args.getOrNull(0)?.let { Bukkit.getPlayerExact(it)?.spigot()?.respawn() }
             true
@@ -271,6 +273,7 @@ class LifeCore : JavaPlugin() {
         pm.registerEvents(Dice1ItemListener(this), this)
         pm.registerEvents(OverrideTabCompleteListener(), this)
         pm.registerEvents(KotlinLoveItemListener(this), this)
+        pm.registerEvents(CommandListScreen.EventListener(), this)
 
         // Items
         pm.registerEvents(OreOnlyItemListener(), this)

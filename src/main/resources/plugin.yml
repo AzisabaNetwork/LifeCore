@@ -162,6 +162,9 @@ commands:
     usage: "/<command>"
   lifecoreutil:
     permission: lifecore.lifecoreutil
+  commandlist:
+    permission: lifecore.commandlist
+    aliases: ["commands"]
 
 permissions:
   lifecore.*:
@@ -205,6 +208,7 @@ permissions:
       lifecore.gclistenerrestartextendtimecommand: true
       lifecore.lifecoreutil: true
       lifecore.extend-time-immediately: true
+      lifecore.commandlist: true
   lifecore.wiki:
     description: Allows you to show the wiki URL.
     default: true
@@ -311,3 +315,5 @@ permissions:
     default: true
   lifecore.extend-time-immediately:
     default: false
+  lifecore.commandlist:
+    default: true

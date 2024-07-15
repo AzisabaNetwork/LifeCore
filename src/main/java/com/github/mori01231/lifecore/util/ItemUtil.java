@@ -7,7 +7,6 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -71,6 +70,17 @@ public class ItemUtil {
         ItemStack stack = new ItemStack(material, amount);
         action.accept(stack);
         return stack;
+    }
+
+    public static @NotNull ItemStack createItemStack(@NotNull Material material, @NotNull String displayName, @NotNull List<String> lore) {
+        return createItemStack(material, 1, item -> {
+            ItemMeta meta = item.getItemMeta();
+            meta.setDisplayName(displayName);
+            if (!lore.isEmpty()) {
+                meta.setLore(lore);
+            }
+            item.setItemMeta(meta);
+        });
     }
 
     public static boolean addToStashIfEnabled(@NotNull UUID uuid, @NotNull ItemStack item) {
