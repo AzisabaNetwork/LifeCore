@@ -48,7 +48,7 @@ public class DamageLogListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onDamaged(EntityDamageEvent e) {
 
-        if ( !(e.getEntity() instanceof Player) ) return;
+        if ( !(e.getEntity() instanceof Player) || e.isCancelled()) return;
 
         Player player = (Player) e.getEntity();
 
