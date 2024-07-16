@@ -7,20 +7,21 @@ import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer
 import org.bukkit.entity.Player
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import java.util.function.Consumer
 
 object PromptSign {
 
     private val awaitingSign = ConcurrentHashMap<UUID, (List<String>) -> Unit>()
 
     @JvmStatic
-    fun promptSign(player: Player, action: (List<String>) -> Unit) {
+    fun promptSign(player: Player, action: Consumer<List<String>>) {
         val loc0 = player.location.clone().apply { y = 0.0 }
         val origBlockData = loc0.block.blockData
         player.sendBlockChange(loc0, Material.AIR.createBlockData())
         player.sendBlockChange(loc0, Material.OAK_SIGN.createBlockData())
         awaitingSign[player.uniqueId] = {
             player.sendBlockChange(loc0, origBlockData)
-            action(it)
+            action.accept(it)
         }
         (player as CraftPlayer).handle.playerConnection
             .sendPacket(PacketPlayOutOpenSignEditor(BlockPosition(loc0.blockX, loc0.blockY, loc0.blockZ)))
