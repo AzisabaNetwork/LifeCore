@@ -275,6 +275,7 @@ class LifeCore : JavaPlugin() {
         pm.registerEvents(KotlinLoveItemListener(this), this)
         pm.registerEvents(CommandListScreen.EventListener(), this)
         pm.registerEvents(UpdateInventoryOnCloseListener(this), this)
+        pm.registerEvents(PromptSignListener, this)
 
         // Items
         pm.registerEvents(OreOnlyItemListener(), this)
