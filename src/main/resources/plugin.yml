@@ -73,6 +73,10 @@ commands:
     description: Teleport to LifeEvent server.
     permission: lifecore.event
     usage: Syntax error! Simply type /event to teleport to LifeEvent server.
+  townserver:
+    description: Teleport to life town server.
+    permission: lifecore.townserver
+    aliases: [towns]
   rank:
     description: Show rank.
     permission: lifecore.rank
@@ -241,6 +245,8 @@ permissions:
     default: true
   lifecore.event:
     description: Allows you to go to event server.
+    default: true
+  lifecore.townserver:
     default: true
   lifecore.rank:
     description: Allows you to show your rank.
