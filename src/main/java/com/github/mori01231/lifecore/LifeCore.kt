@@ -299,6 +299,7 @@ class LifeCore : JavaPlugin() {
         // Items
         pm.registerEvents(OreOnlyItemListener(), this)
         pm.registerEvents(GlassHammerItemListener(), this)
+        pm.registerEvents(FlashLightListener(), this)
         pm.registerEvents(LavaSpongeItemListener(), this)
         if (config.getBoolean("destroy-experience-orb-on-chunk-load", false)) {
             pm.registerEvents(DestroyExperienceOrbListener(), this)
