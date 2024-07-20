@@ -97,10 +97,12 @@ class CustomBlockManager(val plugin: LifeCore) {
         plugin.server.pluginManager.registerEvents(CustomBlockListener(plugin), plugin)
 
         // add recipe
-        plugin.server.addRecipe(ShapedRecipe(NamespacedKey(plugin, "wrench"), getWrenchItem()).apply {
-            shape("I I", " I ", " I ")
-            setIngredient('I', Material.IRON_INGOT)
-        })
+        try {
+            plugin.server.addRecipe(ShapedRecipe(NamespacedKey(plugin, "wrench"), getWrenchItem()).apply {
+                shape("I I", " I ", " I ")
+                setIngredient('I', Material.IRON_INGOT)
+            })
+        } catch (_: Exception) {}
 
         reloadBlocks()
     }

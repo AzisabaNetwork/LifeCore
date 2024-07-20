@@ -2,8 +2,13 @@ package com.github.mori01231.lifecore.command
 
 import com.github.mori01231.lifecore.DBConnector
 import com.github.mori01231.lifecore.LifeCore
+import com.github.mori01231.lifecore.map.SerializedMapDataRenderer
+import com.github.mori01231.lifecore.util.EncodeUtil
 import com.github.mori01231.lifecore.util.ItemUtil
+import com.github.mori01231.lifecore.util.MapUtil
+import com.github.mori01231.lifecore.util.MapUtil.getCanvases
 import net.minecraft.server.v1_15_R1.MojangsonParser
+import net.minecraft.server.v1_15_R1.NBTTagByteArray
 import net.minecraft.server.v1_15_R1.NBTTagCompound
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
@@ -11,8 +16,12 @@ import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabExecutor
 import org.bukkit.craftbukkit.v1_15_R1.CraftServer
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer
 import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack
+import org.bukkit.craftbukkit.v1_15_R1.map.CraftMapRenderer
+import org.bukkit.craftbukkit.v1_15_R1.map.CraftMapView
 import org.bukkit.entity.Player
+import org.bukkit.inventory.meta.MapMeta
 import org.bukkit.util.Vector
 
 class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
@@ -40,6 +49,7 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
 
     private fun sendHelp(sender: CommandSender) {
         Commands.entries.forEach { cmd ->
+            if (!sender.hasPermission("lifecore.lifecoreutil.${cmd.name}"))
             if (cmd.description == null) {
                 sender.sendMessage("${ChatColor.AQUA}/lifecoreutil ${cmd.commandName}")
             } else {
@@ -408,6 +418,29 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
             override fun suggest(plugin: LifeCore, player: Player, args: Array<String>): List<String> {
                 if (args.size == 1) return suggestPlayers(args[0])
                 return super.suggest(plugin, player, args)
+            }
+        },
+        SaveMapData("地図をサーバー移動可能な形に変換します") {
+            override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
+                val meta = player.inventory.itemInMainHand.itemMeta as? MapMeta? ?: return player.sendMessage("this is not a map")
+                val mapView = meta.mapView ?: return player.sendMessage("mapView is null")
+                if (mapView.renderers.getOrNull(0) !is CraftMapRenderer) return player.sendMessage("renderers[0] is not an instance of CraftMapRenderer")
+                if (mapView is CraftMapView) mapView.render(player as CraftPlayer)
+                val canvas =
+                    mapView.getCanvases()[mapView.renderers.first()]?.get(player as CraftPlayer)
+                        ?: mapView.getCanvases()[mapView.renderers.first()]?.get(null as CraftPlayer?)
+                        ?: return player.sendMessage("canvas not found")
+                val data = MapUtil.serializeCanvasToString(canvas)
+                player.inventory.setItemInMainHand(ItemUtil.setTag(
+                    player.inventory.itemInMainHand,
+                    "SerializedMapData",
+                    NBTTagByteArray(EncodeUtil.encodeBase64AndGzip(data.toByteArray()))
+                ))
+            }
+        },
+        LoadMapData("地図を読み込みます") {
+            override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
+                MapUtil.initializeMapRenderer(player, player.inventory.itemInMainHand)
             }
         },
         ;

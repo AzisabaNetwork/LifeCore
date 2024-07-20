@@ -7,23 +7,21 @@ import com.github.mori01231.lifecore.gui.CommandListScreen
 import com.github.mori01231.lifecore.gui.DropProtectScreen
 import com.github.mori01231.lifecore.listener.*
 import com.github.mori01231.lifecore.listener.item.*
+import com.github.mori01231.lifecore.map.SerializedMapDataRenderer
 import com.github.mori01231.lifecore.network.PacketHandler
 import com.github.mori01231.lifecore.region.PlayerRegionManager
-import com.github.mori01231.lifecore.util.GCListener
-import com.github.mori01231.lifecore.util.NGWordsCache
-import com.github.mori01231.lifecore.util.PlayerUtil
+import com.github.mori01231.lifecore.util.*
 import com.github.mori01231.lifecore.util.YAML.yaml
-import com.github.mori01231.lifecore.util.decode
-import com.github.mori01231.lifecore.util.encode
-import com.github.mori01231.lifecore.util.getYamlMap
-import com.github.mori01231.lifecore.util.nonNull
-import com.github.mori01231.lifecore.util.runTaskTimerAsynchronously
-import com.github.mori01231.lifecore.util.toReadonlyNode
 import com.sun.net.httpserver.HttpServer
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandExecutor
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer
+import org.bukkit.craftbukkit.v1_15_R1.map.CraftMapRenderer
+import org.bukkit.craftbukkit.v1_15_R1.map.CraftMapView
+import org.bukkit.entity.ItemFrame
+import org.bukkit.inventory.meta.MapMeta
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.IOException
 import java.net.InetSocketAddress
@@ -174,6 +172,26 @@ class LifeCore : JavaPlugin() {
         Bukkit.getScheduler().runTaskTimer(this, Runnable {
             for (player in Bukkit.getOnlinePlayers()) {
                 DeathLoopListener.checkAttribute(this, player)
+            }
+        }, 100, 100)
+
+        // check for maps
+        Bukkit.getScheduler().runTaskTimer(this, Runnable {
+            Bukkit.getOnlinePlayers().forEach player@ { player ->
+                player.inventory.contents.forEach { item ->
+                    @Suppress("SENSELESS_COMPARISON")
+                    if (item != null) {
+                        MapUtil.initializeMapRenderer(player, item)
+                    }
+                }
+            }
+            if (Bukkit.getOnlinePlayers().isEmpty()) return@Runnable
+            Bukkit.getWorlds().forEach world@ { world ->
+                world.getEntitiesByClass(ItemFrame::class.java).forEach { itemFrame ->
+                    Bukkit.getOnlinePlayers().forEach { player ->
+                        MapUtil.initializeMapRenderer(player, itemFrame.item)
+                    }
+                }
             }
         }, 100, 100)
 

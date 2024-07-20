@@ -1,6 +1,7 @@
 package com.github.mori01231.lifecore.util;
 
 import net.azisaba.itemstash.ItemStash;
+import net.minecraft.server.v1_15_R1.NBTBase;
 import net.minecraft.server.v1_15_R1.NBTTagCompound;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -49,6 +50,30 @@ public class ItemUtil {
         NBTTagCompound tag = CraftItemStack.asNMSCopy(stack).getTag();
         if (tag == null) return null;
         return tag.getString(key);
+    }
+
+    @Contract("null, _ -> null")
+    public static @Nullable byte[] getByteArrayTag(@Nullable ItemStack stack, @NotNull String key) {
+        if (stack == null || stack.getType().isAir()) return null;
+        NBTTagCompound tag = CraftItemStack.asNMSCopy(stack).getTag();
+        if (tag == null) return null;
+        return tag.getByteArray(key);
+    }
+
+    public static @NotNull ItemStack setStringTag(@Nullable ItemStack stack, @NotNull String key, @NotNull String value) {
+        if (stack == null || stack.getType().isAir()) return new ItemStack(Material.AIR);
+        net.minecraft.server.v1_15_R1.ItemStack nms = CraftItemStack.asNMSCopy(stack);
+        NBTTagCompound tag = nms.getOrCreateTag();
+        tag.setString(key, value);
+        return CraftItemStack.asBukkitCopy(nms);
+    }
+
+    public static @NotNull ItemStack setTag(@Nullable ItemStack stack, @NotNull String key, @NotNull NBTBase nbt) {
+        if (stack == null || stack.getType().isAir()) return new ItemStack(Material.AIR);
+        net.minecraft.server.v1_15_R1.ItemStack nms = CraftItemStack.asNMSCopy(stack);
+        NBTTagCompound tag = nms.getOrCreateTag();
+        tag.set(key, nbt);
+        return CraftItemStack.asBukkitCopy(nms);
     }
 
     public static @NotNull String toString(@NotNull ItemStack stack) {
