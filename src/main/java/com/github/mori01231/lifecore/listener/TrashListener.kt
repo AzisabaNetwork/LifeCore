@@ -3,6 +3,9 @@ package com.github.mori01231.lifecore.listener
 import com.github.mori01231.lifecore.LifeCore
 import com.github.mori01231.lifecore.TrashInventory
 import com.github.mori01231.lifecore.util.ItemUtil
+import net.azisaba.itemstash.ItemStash
+import net.azisaba.rarity.api.Rarity
+import net.azisaba.rarity.api.RarityAPIProvider
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.event.EventHandler
@@ -12,14 +15,40 @@ import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.inventory.InventoryDragEvent
 import org.bukkit.inventory.ItemStack
 
+
 class TrashListener(private val plugin: LifeCore) : Listener {
+    private val rarityAPI = RarityAPIProvider.get()
+    private val itemStash = ItemStash.getInstance()
+
     @EventHandler
     fun onInventoryClick(e: InventoryClickEvent) {
         if (e.clickedInventory?.holder is TrashInventory) {
             if (e.slot == 53) {
                 e.isCancelled = true
+                e.inventory.setItem(53, null)
+                for (i in 0..<e.inventory.size) {
+                    val item = e.inventory.getItem(i) ?: continue
+                    val rarity: Rarity? = rarityAPI.getRarityByItemStack(item)
+                    val shouldCancel = if (rarity == null) {
+                        if (plugin.dropProtectConfig.contains(e.whoClicked.uniqueId, "no_rarity")) {
+                            true
+                        } else {
+                            continue
+                        }
+                    } else {
+                        plugin.dropProtectConfig.contains(e.whoClicked.uniqueId, rarity.id)
+                    }
+                    if (shouldCancel) {
+                        e.inventory.setItem(i, null)
+                        e.whoClicked.inventory.addItem(item).forEach { (_, s) ->
+                            itemStash.addItemToStash(e.whoClicked.uniqueId, s)
+                            e.whoClicked.sendMessage(ChatColor.RED.toString() + "インベントリがいっぱいのため、Stashに保管されました。")
+                            e.whoClicked.sendMessage(ChatColor.AQUA.toString() + "/pickupstash" + ChatColor.RED + "で回収できます。")
+                        }
+                    }
+                }
                 val trashMoneyPerItem = plugin.config.getInt("TrashMoneyPerItem", 0)
-                var moneyCounter = -1
+                var moneyCounter = 0
                 var moneyMultiplier = trashMoneyPerItem
                 val items: MutableList<ItemStack> = ArrayList()
                 for (item in e.inventory.contents) {
@@ -68,7 +97,11 @@ class TrashListener(private val plugin: LifeCore) : Listener {
             for (item in inv.contents) {
                 @Suppress("SENSELESS_COMPARISON")
                 if (item == null || item.type.isAir || item == TrashInventory.trashItem) continue
-                e.player.inventory.addItem(item)
+                e.player.inventory.addItem(item).forEach { (_, s) ->
+                    itemStash.addItemToStash(e.player.uniqueId, s)
+                    e.player.sendMessage(ChatColor.RED.toString() + "インベントリがいっぱいのため、Stashに保管されました。")
+                    e.player.sendMessage(ChatColor.AQUA.toString() + "/pickupstash" + ChatColor.RED + "で回収できます。")
+                }
             }
         }
     }
