@@ -2,7 +2,6 @@ package com.github.mori01231.lifecore.command
 
 import com.github.mori01231.lifecore.DBConnector
 import com.github.mori01231.lifecore.LifeCore
-import com.github.mori01231.lifecore.map.SerializedMapDataRenderer
 import com.github.mori01231.lifecore.util.EncodeUtil
 import com.github.mori01231.lifecore.util.ItemUtil
 import com.github.mori01231.lifecore.util.MapUtil
@@ -26,10 +25,6 @@ import org.bukkit.util.Vector
 
 class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
     override fun onCommand(sender: CommandSender, p1: Command, p2: String, args: Array<String>): Boolean {
-        if (sender !is Player) {
-            sender.sendMessage("${ChatColor.RED}You must be player to execute this command.")
-            return true
-        }
         if (args.isEmpty()) {
             sendHelp(sender)
             return true
@@ -76,14 +71,14 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
 
     enum class Commands(val description: String? = null) {
         UpdateCommands("コマンドの補完データを更新します") {
-            override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
+            override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
                 CraftServer::class.java.getDeclaredMethod("syncCommands")
                     .apply { isAccessible = true }
                     .invoke(plugin.server as CraftServer)
             }
         },
         Glowing("発光状態を切り替えます") {
-            override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
+            override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
                 if (args.isEmpty()) {
                     player.sendMessage("${ChatColor.RED}Usage: /lifecoreutil $commandName <true|false> [player]")
                     return
@@ -93,7 +88,7 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
             }
         },
         AddPassenger("<sender>の上に<player>を乗せます") {
-            override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
+            override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
                 if (args.size < 2) {
                     player.sendMessage("${ChatColor.RED}Usage: /lifecoreutil $commandName <player> [sender]")
                     return
@@ -111,7 +106,7 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
             }
         },
         Eject("<sender>からプレイヤーを降ろします") {
-            override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
+            override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
                 optionalPlayer(player, args, 0).eject()
             }
 
@@ -121,7 +116,7 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
             }
         },
         SetFallDistance {
-            override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
+            override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
                 val amount = args.getOrNull(0)?.toDoubleOrNull()
                 if (amount == null) {
                     player.sendMessage("${ChatColor.RED}Usage: /lifecoreutil $commandName <amount> [player]")
@@ -136,8 +131,8 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
             }
         },
         GetVelocity {
-            override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
-                optionalPlayer(player, args, 0).sendMessage(player.velocity.toString())
+            override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
+                optionalPlayer(player, args, 0).sendMessage((player as Player).velocity.toString())
             }
 
             override fun suggest(plugin: LifeCore, player: Player, args: Array<String>): List<String> {
@@ -146,7 +141,7 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
             }
         },
         SetVelocity {
-            override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
+            override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
                 if (args.size < 3) {
                     player.sendMessage("${ChatColor.RED}Usage: /lifecoreutil $commandName <x> <y> <z> [player]")
                     return
@@ -167,8 +162,8 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
             }
         },
         GetHealth("体力を取得します") {
-            override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
-                optionalPlayer(player, args, 0).sendMessage(player.health.toString())
+            override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
+                optionalPlayer(player, args, 0).sendMessage((player as Player).health.toString())
             }
 
             override fun suggest(plugin: LifeCore, player: Player, args: Array<String>): List<String> {
@@ -177,7 +172,7 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
             }
         },
         SetHealth("体力をセットします") {
-            override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
+            override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
                 if (args.isEmpty()) {
                     player.sendMessage("${ChatColor.RED}Usage: /lifecoreutil $commandName <amount> [player]")
                     return
@@ -196,7 +191,7 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
             }
         },
         IsEquippedInAnySlot {
-            override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
+            override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
                 if (args.isEmpty()) {
                     player.sendMessage("${ChatColor.RED}Usage: /lifecoreutil $commandName <mythic type> [player]")
                     return
@@ -210,8 +205,8 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
             }
         },
         GetTag {
-            override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
-                var tag = CraftItemStack.asNMSCopy(player.inventory.itemInMainHand).tag ?: run {
+            override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
+                var tag = CraftItemStack.asNMSCopy((player as Player).inventory.itemInMainHand).tag ?: run {
                     player.sendMessage("${ChatColor.RED}Item has no tag.")
                     return
                 }
@@ -230,30 +225,30 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
             }
         },
         MergeTag {
-            override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
+            override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
                 if (args.isEmpty()) {
                     player.sendMessage("${ChatColor.RED}Usage: /lifecoreutil $commandName <value>")
                     return
                 }
-                val item = CraftItemStack.asNMSCopy(player.inventory.itemInMainHand)
+                val item = CraftItemStack.asNMSCopy((player as Player).inventory.itemInMainHand)
                 val tag = item.tag ?: NBTTagCompound()
                 tag.a(MojangsonParser.parse(args.joinToString(" ")))
-                player.inventory.setItemInMainHand(CraftItemStack.asBukkitCopy(item))
+                (player as Player).inventory.setItemInMainHand(CraftItemStack.asBukkitCopy(item))
             }
         },
         SetTag {
-            override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
+            override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
                 if (args.isEmpty()) {
                     player.sendMessage("${ChatColor.RED}Usage: /lifecoreutil $commandName <value>")
                     return
                 }
-                val item = CraftItemStack.asNMSCopy(player.inventory.itemInMainHand)
+                val item = CraftItemStack.asNMSCopy((player as Player).inventory.itemInMainHand)
                 item.tag = MojangsonParser.parse(args.joinToString(" "))
-                player.inventory.setItemInMainHand(CraftItemStack.asBukkitCopy(item))
+                (player as Player).inventory.setItemInMainHand(CraftItemStack.asBukkitCopy(item))
             }
         },
         GetBlock {
-            override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
+            override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
                 if (args.isEmpty()) {
                     player.sendMessage("${ChatColor.RED}ブロック名を指定してください。")
                     return
@@ -263,7 +258,7 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
                     player.sendMessage("${ChatColor.RED}ブロックが見つかりませんでした。")
                     return
                 }
-                player.inventory.addItem(block.getItemStack(null))
+                (player as Player).inventory.addItem(block.getItemStack(null))
             }
 
             override fun suggest(plugin: LifeCore, player: Player, args: Array<String>): List<String> {
@@ -276,13 +271,13 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
             }
         },
         ReloadBlocks {
-            override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
+            override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
                 plugin.customBlockManager.reloadBlocks()
                 player.sendMessage("${ChatColor.GREEN}カスタムブロックを再読み込みしました。")
             }
         },
         ReloadConfig("指定したプラグインのconfig.ymlをリロードさせます") {
-            override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
+            override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
                 if (args.isEmpty()) {
                     player.sendMessage("${ChatColor.RED}Usage: /lifecoreutil $commandName <plugin>")
                     return
@@ -303,9 +298,9 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
             }
         },
         ClearPlot("イマサラタウンのplotを消し飛ばします") {
-            override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
-                val minX = player.chunk.x * 16
-                val minZ = player.chunk.z * 16
+            override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
+                val minX = (player as Player).chunk.x * 16
+                val minZ = (player as Player).chunk.z * 16
                 val maxX = minX + 15
                 val maxZ = minZ + 15
                 scheduleLater(plugin, 0) { Bukkit.dispatchCommand(player, "/chunk") }
@@ -327,7 +322,7 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
         },
         GetOfflineMoney("offline_moneyを取得します") {
             @Suppress("DEPRECATION")
-            override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
+            override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
                 if (args.isEmpty()) {
                     player.sendMessage("${ChatColor.RED}Usage: /lifecoreutil $commandName <player>")
                     return
@@ -362,7 +357,7 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
         },
         SetOfflineMoney("offline_moneyをセットします") {
             @Suppress("DEPRECATION")
-            override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
+            override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
                 if (args.size < 2) {
                     player.sendMessage("${ChatColor.RED}Usage: /lifecoreutil $commandName <player> <amount>")
                     return
@@ -392,7 +387,7 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
         },
         AddOfflineMoney("offline_moneyを追加(add)します") {
             @Suppress("DEPRECATION")
-            override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
+            override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
                 if (args.size < 2) {
                     player.sendMessage("${ChatColor.RED}Usage: /lifecoreutil $commandName <player> <amount>")
                     return
@@ -421,8 +416,8 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
             }
         },
         SaveMapData("地図をサーバー移動可能な形に変換します") {
-            override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
-                val meta = player.inventory.itemInMainHand.itemMeta as? MapMeta? ?: return player.sendMessage("this is not a map")
+            override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
+                val meta = (player as Player).inventory.itemInMainHand.itemMeta as? MapMeta? ?: return player.sendMessage("this is not a map")
                 val mapView = meta.mapView ?: return player.sendMessage("mapView is null")
                 if (mapView.renderers.getOrNull(0) !is CraftMapRenderer) return player.sendMessage("renderers[0] is not an instance of CraftMapRenderer")
                 if (mapView is CraftMapView) mapView.render(player as CraftPlayer)
@@ -439,21 +434,21 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
             }
         },
         LoadMapData("地図を読み込みます") {
-            override fun execute(plugin: LifeCore, player: Player, args: Array<String>) {
-                MapUtil.initializeMapRenderer(player, player.inventory.itemInMainHand)
+            override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
+                MapUtil.initializeMapRenderer((player as Player), player.inventory.itemInMainHand)
             }
         },
         ;
 
-        abstract fun execute(plugin: LifeCore, player: Player, args: Array<String>)
+        abstract fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>)
 
         open fun suggest(plugin: LifeCore, player: Player, args: Array<String>): List<String> = emptyList()
 
-        protected fun optionalPlayer(player: Player, args: Array<String>, index: Int): Player {
+        protected fun optionalPlayer(player: CommandSender, args: Array<String>, index: Int): Player {
             if (args.size > index) {
-                return Bukkit.getPlayerExact(args[index]) ?: player
+                return Bukkit.getPlayerExact(args[index]) ?: player as Player
             }
-            return player
+            return player as Player
         }
 
         protected fun suggestPlayers(partialName: String) =
