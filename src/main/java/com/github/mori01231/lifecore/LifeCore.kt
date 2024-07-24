@@ -5,9 +5,9 @@ import com.github.mori01231.lifecore.command.*
 import com.github.mori01231.lifecore.config.*
 import com.github.mori01231.lifecore.gui.CommandListScreen
 import com.github.mori01231.lifecore.gui.DropProtectScreen
+import com.github.mori01231.lifecore.gui.TrashProtectScreen
 import com.github.mori01231.lifecore.listener.*
 import com.github.mori01231.lifecore.listener.item.*
-import com.github.mori01231.lifecore.map.SerializedMapDataRenderer
 import com.github.mori01231.lifecore.network.PacketHandler
 import com.github.mori01231.lifecore.region.PlayerRegionManager
 import com.github.mori01231.lifecore.util.*
@@ -17,11 +17,7 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandExecutor
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer
-import org.bukkit.craftbukkit.v1_15_R1.map.CraftMapRenderer
-import org.bukkit.craftbukkit.v1_15_R1.map.CraftMapView
 import org.bukkit.entity.ItemFrame
-import org.bukkit.inventory.meta.MapMeta
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.IOException
 import java.net.InetSocketAddress
@@ -42,6 +38,8 @@ class LifeCore : JavaPlugin() {
         private set
     private var httpServer: HttpServer? = null
     lateinit var dropProtectConfig: DropProtectConfig
+        private set
+    lateinit var trashProtectConfig: TrashProtectConfig
         private set
     val customBlockManager = CustomBlockManager(this)
     var customModelDataWrench = 0
@@ -75,6 +73,12 @@ class LifeCore : JavaPlugin() {
                 it.writeText(yaml.encodeToString(DropProtectConfig()))
             }
             dropProtectConfig = yaml.decodeFromString(it.readText())
+        }
+        dataFolder.resolve("trash-protect.yml").let {
+            if (!it.exists()) {
+                it.writeText(yaml.encodeToString(TrashProtectConfig()))
+            }
+            trashProtectConfig = yaml.decodeFromString(it.readText())
         }
 
         // save every 5 minutes
@@ -134,6 +138,7 @@ class LifeCore : JavaPlugin() {
         registerCommand("ngword", NgWordCommand(this))
         registerCommand("dropnotify", DropNotifyCommand())
         registerCommand("dropprotect", DropProtectCommand(this))
+        registerCommand("trashprotect", TrashProtectCommand(this))
         registerCommand("damagelog", DamageLogCommand())
         registerCommand("servermoney", ServerMoneyCommand(this))
         registerCommand("fixtime", FixTimeCommand)
@@ -278,6 +283,7 @@ class LifeCore : JavaPlugin() {
         pm.registerEvents(DeathLoopListener(), this)
         pm.registerEvents(DropNotifyListener(), this)
         pm.registerEvents(DropProtectScreen.EventListener(this), this)
+        pm.registerEvents(TrashProtectScreen.EventListener(this), this)
         pm.registerEvents(UnableCraftListener(), this)
         pm.registerEvents(AZISAVIORListener(this), this)
         pm.registerEvents(DamageLogListener(), this)

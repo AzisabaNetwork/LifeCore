@@ -133,6 +133,11 @@ commands:
     description: "protect items from being dropped"
     permission: lifecore.dropprotect
     usage: "/dropprotect"
+  trashprotect:
+    description: "protect items from being gomi'd"
+    permission: lifecore.trashprotect
+    usage: "/trashprotect"
+    aliases: ['gomiprotect']
   damagelog:
     description: "view damage log"
     permission: lifecore.damagelog
@@ -292,6 +297,8 @@ permissions:
   lifecore.dropnotify:
     default: true
   lifecore.dropprotect:
+    default: true
+  lifecore.trashprotect:
     default: true
   lifecore.damagelog:
     default: true

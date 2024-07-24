@@ -42,6 +42,7 @@ class CommandListScreen(val player: Player) : InventoryHolder {
                 }
             },
             CommandInfo(CommandType.Toggle, "ドロップ保護", listOf("レア度別でアイテムをドロップできるようにするかを", "切り替えられます。"), "/dropprotect"),
+            CommandInfo(CommandType.Toggle, "ゴミ保護", listOf("レア度別でアイテムをゴミ箱できるようにするかを", "切り替えられます。"), "/trashprotect"),
             CommandInfo(CommandType.Toggle, "ドロップ通知", listOf("アイテムをドロップしたときに通知を表示します。"), "/dropnotify") {
                 if (DropNotifyFile.contains(it.uniqueId)) {
                     CommandInfo.State.Enabled

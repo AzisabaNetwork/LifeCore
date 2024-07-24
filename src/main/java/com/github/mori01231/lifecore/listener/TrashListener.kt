@@ -30,13 +30,13 @@ class TrashListener(private val plugin: LifeCore) : Listener {
                     val item = e.inventory.getItem(i) ?: continue
                     val rarity: Rarity? = rarityAPI.getRarityByItemStack(item)
                     val shouldCancel = if (rarity == null) {
-                        if (plugin.dropProtectConfig.contains(e.whoClicked.uniqueId, "no_rarity")) {
+                        if (plugin.trashProtectConfig.contains(e.whoClicked.uniqueId, "no_rarity")) {
                             true
                         } else {
                             continue
                         }
                     } else {
-                        plugin.dropProtectConfig.contains(e.whoClicked.uniqueId, rarity.id)
+                        plugin.trashProtectConfig.contains(e.whoClicked.uniqueId, rarity.id)
                     }
                     if (shouldCancel) {
                         e.inventory.setItem(i, null)
