@@ -3,6 +3,7 @@ package com.github.mori01231.lifecore
 import com.github.mori01231.lifecore.block.CustomBlockManager
 import com.github.mori01231.lifecore.command.*
 import com.github.mori01231.lifecore.config.*
+import com.github.mori01231.lifecore.data.DataLoader
 import com.github.mori01231.lifecore.gui.CommandListScreen
 import com.github.mori01231.lifecore.gui.DropProtectScreen
 import com.github.mori01231.lifecore.gui.TrashProtectScreen
@@ -19,10 +20,14 @@ import org.bukkit.Bukkit
 import org.bukkit.command.CommandExecutor
 import org.bukkit.entity.ItemFrame
 import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.plugin.java.PluginClassLoader
+import java.io.File
 import java.io.IOException
 import java.net.InetSocketAddress
+import java.nio.file.Files
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
+import java.util.stream.Collectors
 
 class LifeCore : JavaPlugin() {
     val gcListener = GCListener(this)
@@ -33,6 +38,7 @@ class LifeCore : JavaPlugin() {
     val asyncExecutor = Executor { Bukkit.getScheduler().runTaskAsynchronously(this, it) }
     val lifeCoreConfig = LifeCoreConfig.load(this)
     val playerRegionManager = PlayerRegionManager()
+    val dataLoader = DataLoader(slF4JLogger, getAsFileSystem().getPath("/data"))
     private var databaseConfig: DatabaseConfig? = null
     lateinit var voteConfig: VoteConfig
         private set
@@ -301,6 +307,7 @@ class LifeCore : JavaPlugin() {
         pm.registerEvents(CommandListScreen.EventListener(), this)
         pm.registerEvents(UpdateInventoryOnCloseListener(this), this)
         pm.registerEvents(PromptSignListener, this)
+        pm.registerEvents(PicksawItemListener(dataLoader), this)
 
         // Items
         pm.registerEvents(OreOnlyItemListener(), this)
@@ -357,4 +364,12 @@ class LifeCore : JavaPlugin() {
         lateinit var instance: LifeCore
             private set
     }
+
+    fun getAsFileSystem() =
+        this::class.java
+            .protectionDomain
+            .codeSource
+            .location
+            .file
+            .let { FileSystemUtil.openFileAsFileSystem(File(it)) }
 }

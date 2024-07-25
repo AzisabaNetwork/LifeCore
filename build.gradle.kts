@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "net.azisaba"
-version = "6.15.1"
+version = "1.15.2+6.16.0"
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(8))
@@ -119,6 +119,7 @@ tasks {
     }
 
     processResources {
+        doNotTrackState("plugin.yml should be updated every time")
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
 
         from(sourceSets.main.get().resources.srcDirs) {
