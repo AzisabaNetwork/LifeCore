@@ -204,7 +204,7 @@ class LifeCore : JavaPlugin() {
                     }
                 }
             }
-        }, 100, 100)
+        }, 200, 200)
 
         logger.info("LifeCore has been enabled.")
     }

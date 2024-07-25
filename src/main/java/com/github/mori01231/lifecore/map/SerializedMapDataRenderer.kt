@@ -12,6 +12,7 @@ class SerializedMapDataRenderer(private val canvas: SerializedMapCanvas) : MapRe
     private var init = false
 
     override fun render(view: MapView, canvas: MapCanvas, player: Player) {
+        if (init) return
         this.canvas.injectToCraftMapCanvas(canvas as CraftMapCanvas)
         for (i in 0 until canvas.cursors.size()) {
             canvas.cursors.removeCursor(canvas.cursors.getCursor(i))
@@ -23,5 +24,6 @@ class SerializedMapDataRenderer(private val canvas: SerializedMapCanvas) : MapRe
                 worldMap.flagDirty(x, y)
             }
         }
+        init = true
     }
 }
