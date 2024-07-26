@@ -28,6 +28,8 @@ class CommandListScreen(val player: Player) : InventoryHolder {
                     CommandInfo.State.Disabled
                 }
             },
+            CommandInfo(CommandType.Useful, "連絡一覧", listOf("Discordの連絡チャンネルのメッセージ一覧を表示します。"), "/viewpatchnotes 連絡｜life鯖", true),
+            CommandInfo(CommandType.Useful, "パッチノート一覧", listOf("Discordのパッチノートチャンネルのメッセージ一覧を表示します。"), "/viewpatchnotes パッチノート｜life鯖", true),
             CommandInfo(CommandType.Toggle, "建築可否", listOf("建築をできるようにするかどうかを設定します。誤クリック防止などに..."), "/togglebuild"),
             CommandInfo(CommandType.Toggle, "CoreProtectログ表示", listOf("オンにすると、ブロックなどをクリックすると", "ログが表示されるようになります。"), "/co i"),
             CommandInfo(CommandType.Toggle, "CoreProtectExtensionログ表示", listOf("オンにすると、チェストなどを右クリックすると", "ログが表示されるようになります。"), "/cpe i"),
