@@ -1,11 +1,11 @@
 package com.github.mori01231.lifecore.util;
 
 import net.azisaba.itemstash.ItemStash;
-import net.minecraft.server.v1_15_R1.NBTBase;
-import net.minecraft.server.v1_15_R1.NBTTagCompound;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -37,17 +37,17 @@ public class ItemUtil {
     @Contract("null -> null")
     public static @Nullable String getMythicType(@Nullable ItemStack stack) {
         if (stack == null || stack.getType().isAir()) return null;
-        NBTTagCompound tag = CraftItemStack.asNMSCopy(stack).getTag();
+        CompoundTag tag = CraftItemStack.asNMSCopy(stack).getTag();
         if (tag == null) return null;
         String type = tag.getString("MYTHIC_TYPE");
-        if (type == null || type.isEmpty()) return null;
+        if (type.isEmpty()) return null;
         return type;
     }
 
     @Contract("null, _ -> null")
     public static @Nullable String getStringTag(@Nullable ItemStack stack, @NotNull String key) {
         if (stack == null || stack.getType().isAir()) return null;
-        NBTTagCompound tag = CraftItemStack.asNMSCopy(stack).getTag();
+        CompoundTag tag = CraftItemStack.asNMSCopy(stack).getTag();
         if (tag == null) return null;
         return tag.getString(key);
     }
@@ -55,30 +55,30 @@ public class ItemUtil {
     @Contract("null, _ -> null")
     public static @Nullable byte[] getByteArrayTag(@Nullable ItemStack stack, @NotNull String key) {
         if (stack == null || stack.getType().isAir()) return null;
-        NBTTagCompound tag = CraftItemStack.asNMSCopy(stack).getTag();
+        CompoundTag tag = CraftItemStack.asNMSCopy(stack).getTag();
         if (tag == null) return null;
         return tag.getByteArray(key);
     }
 
     public static @NotNull ItemStack setStringTag(@Nullable ItemStack stack, @NotNull String key, @NotNull String value) {
         if (stack == null || stack.getType().isAir()) return new ItemStack(Material.AIR);
-        net.minecraft.server.v1_15_R1.ItemStack nms = CraftItemStack.asNMSCopy(stack);
-        NBTTagCompound tag = nms.getOrCreateTag();
-        tag.setString(key, value);
+        net.minecraft.world.item.ItemStack nms = CraftItemStack.asNMSCopy(stack);
+        CompoundTag tag = nms.getOrCreateTag();
+        tag.putString(key, value);
         return CraftItemStack.asBukkitCopy(nms);
     }
 
-    public static @NotNull ItemStack setTag(@Nullable ItemStack stack, @Nullable String key, @NotNull NBTBase nbt) {
+    public static @NotNull ItemStack setTag(@Nullable ItemStack stack, @Nullable String key, @NotNull Tag nbt) {
         if (stack == null || stack.getType().isAir()) return new ItemStack(Material.AIR);
-        net.minecraft.server.v1_15_R1.ItemStack nms = CraftItemStack.asNMSCopy(stack);
+        net.minecraft.world.item.ItemStack nms = CraftItemStack.asNMSCopy(stack);
         if (key == null) {
-            if (!(nbt instanceof NBTTagCompound)) {
+            if (!(nbt instanceof CompoundTag)) {
                 throw new IllegalArgumentException("key is null, but nbt is not NBTTagCompound");
             }
-            nms.setTag((NBTTagCompound) nbt);
+            nms.setTag((CompoundTag) nbt);
         } else {
-            NBTTagCompound tag = nms.getOrCreateTag();
-            tag.set(key, nbt);
+            CompoundTag tag = nms.getOrCreateTag();
+            tag.put(key, nbt);
         }
         return CraftItemStack.asBukkitCopy(nms);
     }
@@ -145,7 +145,7 @@ public class ItemUtil {
     @Contract("null -> null")
     public static ItemStack backupTag(@Nullable ItemStack stack) {
         if (stack == null || stack.getType().isAir()) return null;
-        NBTTagCompound tag = CraftItemStack.asNMSCopy(stack).getTag();
+        CompoundTag tag = CraftItemStack.asNMSCopy(stack).getTag();
         if (tag == null || tag.isEmpty()) return stack;
         return setTag(stack, "backup", tag);
     }
@@ -153,16 +153,16 @@ public class ItemUtil {
     @Contract("null -> null")
     public static ItemStack restoreTag(@Nullable ItemStack stack) {
         if (stack == null || stack.getType().isAir()) return null;
-        NBTTagCompound tag = CraftItemStack.asNMSCopy(stack).getTag();
+        CompoundTag tag = CraftItemStack.asNMSCopy(stack).getTag();
         if (tag == null) return stack;
-        NBTTagCompound backup = tag.getCompound("backup");
-        if (backup == null || backup.isEmpty()) return stack;
+        CompoundTag backup = tag.getCompound("backup");
+        if (backup.isEmpty()) return stack;
         return setTag(stack, null, backup);
     }
 
     public static boolean containsTag(@Nullable ItemStack stack, @NotNull String key) {
         if (stack == null || stack.getType().isAir()) return false;
-        NBTTagCompound tag = CraftItemStack.asNMSCopy(stack).getTag();
-        return tag != null && tag.hasKey(key);
+        CompoundTag tag = CraftItemStack.asNMSCopy(stack).getTag();
+        return tag != null && tag.contains(key);
     }
 }

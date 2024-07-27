@@ -6,7 +6,7 @@ import com.github.mori01231.lifecore.LifeCore;
 import com.github.mori01231.lifecore.TableKey;
 import io.netty.channel.Channel;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -72,6 +72,6 @@ public class PlayerUtil {
     @NotNull
     public static Channel getChannel(@NotNull Player player) {
         // channel field is set to non-null value after #channelActive is called
-        return Objects.requireNonNull(((CraftPlayer) player).getHandle().playerConnection.networkManager.channel, "inactive channel");
+        return Objects.requireNonNull(((CraftPlayer) player).getHandle().connection.connection.channel, "inactive channel");
     }
 }

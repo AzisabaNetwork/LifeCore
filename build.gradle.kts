@@ -1,18 +1,20 @@
+import io.papermc.paperweight.userdev.ReobfArtifactConfiguration
 import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     kotlin("jvm") version "1.9.22"
     kotlin("plugin.serialization") version "1.9.22"
-    id("com.github.johnrengelman.shadow") version "7.0.0"
+    id("io.github.goooler.shadow") version "8.1.8"
+    id("io.papermc.paperweight.userdev") version "1.7.1"
     java
     `maven-publish`
 }
 
 group = "net.azisaba"
-version = "1.15.2+6.16.6"
+version = "1.20.2+6.16.6"
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(8))
+    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 
     withJavadocJar()
     withSourcesJar()
@@ -69,19 +71,21 @@ dependencies {
     compileOnly("net.azisaba:RyuZUPluginChat:4.2.0")
     compileOnly("net.azisaba.rarity:api:1.0.1-SNAPSHOT")
     compileOnly("net.azisaba:ItemStash:1.0.0-SNAPSHOT")
-    //noinspection VulnerableLibrariesLocal
-    compileOnly("com.destroystokyo.paper:paper-api:1.15.2-R0.1-SNAPSHOT")
-    compileOnly("org.spigotmc:spigot:1.15.2-R0.1-SNAPSHOT")
     compileOnly("io.lumine:Mythic-Dist:4.13.0")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7")
     compileOnly("com.github.MyPetORG.MyPet:mypet-api:5c8ceeac6a")
     compileOnly("de.keyle:knbt:0.0.5")
     compileOnly("com.github.Staartvin:Autorank-2:4.5.1")
+    //compileOnly("org.spigotmc:spigot-api:1.20.2-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.20.2-R0.1-SNAPSHOT")
     compileOnly("com.github.Staartvin:Statz:v1.5.5") {
         exclude("nl.lolmewn.stats", "Stats")
         exclude("me.staartvin", "PluginLibrary")
     }
+    paperweight.paperDevBundle("1.20.2-R0.1-SNAPSHOT")
 }
+
+paperweight.reobfArtifactConfiguration.set(ReobfArtifactConfiguration.REOBF_PRODUCTION)
 
 publishing {
     repositories {

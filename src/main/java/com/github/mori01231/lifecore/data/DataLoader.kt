@@ -2,9 +2,9 @@ package com.github.mori01231.lifecore.data
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import org.slf4j.Logger
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.logging.Logger
 import kotlin.io.path.isDirectory
 import kotlin.io.path.readText
 import kotlin.io.path.relativeTo

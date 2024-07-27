@@ -15,11 +15,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class VoteListener implements Listener {
     private final LifeCore plugin;
-    
+
     public VoteListener(@NotNull LifeCore plugin) {
         this.plugin = plugin;
     }
-    
+
     @EventHandler
     public void onVote(@NotNull VotifierEvent e) {
         processVotePacket(plugin, e.getVote().getUsername(), e.getVote().getServiceName());
@@ -33,11 +33,11 @@ public class VoteListener implements Listener {
         if (player == null) {
             PlayerUtil.resolveUUIDAsync(plugin, username).thenAcceptAsync(uuid -> {
                 if (uuid == null) {
-                    plugin.getSLF4JLogger().warn("Could not resolve UUID for player " + username);
+                    plugin.getLogger().warning("Could not resolve UUID for player " + username);
                     return;
                 }
                 VotesFile.increase(uuid.toString());
-                plugin.getSLF4JLogger().info("Queued vote from {} (UUID: {}, service name: {})", username, uuid, serviceName);
+                plugin.getLogger().info("Queued vote from " + username + " (UUID: " + uuid + ", service name: " + serviceName + ")");
             }, plugin.asyncExecutor);
             return;
         }

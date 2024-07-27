@@ -1,6 +1,5 @@
 package com.github.mori01231.lifecore.event
 
-import net.minecraft.server.v1_15_R1.BlockPosition
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
@@ -17,7 +16,7 @@ data class AsyncPreSignChangeEvent(
     val player: Player,
     val pos: Location,
     val lines: List<String>,
-) : Event(true), Cancellable {
+) : CallableEvent(true), Cancellable {
     private var cancelled = false
 
     override fun getHandlers() = handlerList

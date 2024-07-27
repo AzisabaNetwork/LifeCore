@@ -12,7 +12,7 @@ data class WorldLocation(
     val z: Int,
 ) {
     constructor(location: Location) : this(
-        location.world.name,
+        location.world?.name ?: error("World is null"),
         location.blockX,
         location.blockY,
         location.blockZ,

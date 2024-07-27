@@ -5,11 +5,11 @@ import net.azisaba.itemstash.ItemStash;
 import net.azisaba.rarity.api.Rarity;
 import net.azisaba.rarity.api.RarityAPI;
 import net.azisaba.rarity.api.RarityAPIProvider;
-import net.minecraft.server.v1_15_R1.DataWatcherObject;
-import net.minecraft.server.v1_15_R1.EntityItem;
-import net.minecraft.server.v1_15_R1.Items;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.Items;
 import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftItem;
+import org.bukkit.craftbukkit.v1_20_R2.entity.CraftItem;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -47,17 +47,17 @@ public class DropProtectListener implements Listener {
 
             // set item to air via reflection and data watcher
             e.getItemDrop().remove();
-            EntityItem entityItem = (EntityItem) ((CraftItem) e.getItemDrop()).getHandle();
-            DataWatcherObject<net.minecraft.server.v1_15_R1.ItemStack> itemStackDataWatcherObject;
+            ItemEntity entityItem = (ItemEntity) ((CraftItem) e.getItemDrop()).getHandle();
+            EntityDataAccessor<net.minecraft.world.item.ItemStack> itemStackDataWatcherObject;
             try {
-                Field f = EntityItem.class.getDeclaredField("ITEM");
+                Field f = ItemEntity.class.getDeclaredField("DATA_ITEM");
                 f.setAccessible(true);
-                itemStackDataWatcherObject = (DataWatcherObject<net.minecraft.server.v1_15_R1.ItemStack>) f.get(null);
+                itemStackDataWatcherObject = (EntityDataAccessor<net.minecraft.world.item.ItemStack>) f.get(null);
             } catch (ReflectiveOperationException ex) {
                 return;
             }
-            entityItem.getDataWatcher().set(itemStackDataWatcherObject, new net.minecraft.server.v1_15_R1.ItemStack(Items.AIR));
-            entityItem.getDataWatcher().markDirty(itemStackDataWatcherObject);
+            entityItem.getEntityData().set(itemStackDataWatcherObject, new net.minecraft.world.item.ItemStack(Items.AIR));
+            entityItem.getEntityData().markDirty(itemStackDataWatcherObject);
 
             e.getPlayer().sendMessage(ChatColor.RED + "このレア度のアイテムはドロップできません。");
             e.getPlayer().sendMessage(ChatColor.AQUA + "/dropprotect" + ChatColor.GOLD + "で設定を変更できます。");

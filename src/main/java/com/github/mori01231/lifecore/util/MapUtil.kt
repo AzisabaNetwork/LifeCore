@@ -8,10 +8,10 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.encodeToJsonElement
 import org.bukkit.Material
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer
-import org.bukkit.craftbukkit.v1_15_R1.map.CraftMapCanvas
-import org.bukkit.craftbukkit.v1_15_R1.map.CraftMapRenderer
-import org.bukkit.craftbukkit.v1_15_R1.map.CraftMapView
+import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer
+import org.bukkit.craftbukkit.v1_20_R2.map.CraftMapCanvas
+import org.bukkit.craftbukkit.v1_20_R2.map.CraftMapRenderer
+import org.bukkit.craftbukkit.v1_20_R2.map.CraftMapView
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.MapMeta

@@ -1,40 +1,42 @@
 package com.github.mori01231.lifecore.event;
 
-import net.minecraft.server.v1_15_R1.Entity;
-import net.minecraft.server.v1_15_R1.PacketPlayInUseEntity;
+import net.minecraft.world.entity.Entity;
+import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.UUID;
 
-public class AsyncPlayerPreInteractEntityEvent extends PlayerEvent implements Cancellable {
+public class AsyncPlayerPreInteractEntityEvent extends CallableEvent implements Cancellable {
     private static final HandlerList HANDLER_LIST = new HandlerList();
-    private final PacketPlayInUseEntity.EnumEntityUseAction action;
-    private final Entity interactedEntity;
+    private final Player player;
+    private final int interactedEntity;
     private boolean cancelled = false;
 
-    public AsyncPlayerPreInteractEntityEvent(@NotNull Player player, @NotNull PacketPlayInUseEntity.EnumEntityUseAction action, @NotNull Entity interactedEntity) {
-        super(player, true);
-        this.action = action;
+    public AsyncPlayerPreInteractEntityEvent(@NotNull Player player, int interactedEntity) {
+        super(true);
+        this.player = player;
         this.interactedEntity = interactedEntity;
     }
 
-    @NotNull
-    public PacketPlayInUseEntity.EnumEntityUseAction getAction() {
-        return action;
+    public @NotNull Player getPlayer() {
+        return player;
     }
 
-    @NotNull
-    public Entity getInteractedEntity() {
+    public int getInteractedEntityId() {
         return interactedEntity;
     }
 
-    @NotNull
-    public UUID getEntityUniqueID() {
-        return interactedEntity.getUniqueID();
+    public @NotNull Entity getInteractedEntity() {
+        return Objects.requireNonNull(((CraftWorld) player.getWorld()).getHandle().getEntity(interactedEntity), "entity no longer exists or never existed");
+    }
+
+    public @Nullable UUID getEntityUniqueID() {
+        return getInteractedEntity().getBukkitEntity().getUniqueId();
     }
 
     @Override

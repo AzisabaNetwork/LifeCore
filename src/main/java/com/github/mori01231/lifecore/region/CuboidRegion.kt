@@ -63,7 +63,7 @@ data class CuboidRegion(
         if (pos2 == null) {
             error("This CuboidRegion is incomplete (pos2 is null)")
         }
-        if (location.world.name != world) {
+        if (location.world?.name != world) {
             return false
         }
         return contains(location.blockX, location.blockY, location.blockZ)

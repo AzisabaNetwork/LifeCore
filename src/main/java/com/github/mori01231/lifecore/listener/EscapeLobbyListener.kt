@@ -38,8 +38,9 @@ class EscapeLobbyListener(private val plugin: LifeCore) : Listener {
         if (e.player.hasPermission("lifecore.lobby-bypass")) return
         val lobby = plugin.lifeCoreConfig.lobbyRegion
         if (lobby.isIncomplete()) return
-        if (e.to.world.name != lobby?.world) return
-        if (lobby.contains(e.to)) return
+        val to = e.to ?: return
+        if (to.world!!.name != lobby?.world) return
+        if (lobby.contains(to)) return
         e.isCancelled = true
     }
 }

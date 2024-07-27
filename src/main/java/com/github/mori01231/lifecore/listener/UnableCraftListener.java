@@ -18,8 +18,8 @@ public class UnableCraftListener implements Listener {
     public void onCraft(PrepareGrindstoneEvent e) {
 
         if ( e.getView().getPlayer().hasPermission("lifecore.bypasscraft") ) return;
-        if ( checkItemStack(e.getInventory().getLowerItem()) ) e.setResult(null);
-        if ( checkItemStack(e.getInventory().getUpperItem()) ) e.setResult(null);
+        if ( checkItemStack(e.getInventory().getItem(0)) ) e.setResult(null);
+        if ( checkItemStack(e.getInventory().getItem(1)) ) e.setResult(null);
 
     }
     @EventHandler
@@ -27,8 +27,8 @@ public class UnableCraftListener implements Listener {
 
         if ( e.getView().getPlayer().hasPermission("lifecore.bypasscraft") ) return;
 
-        if ( checkItemStack(e.getInventory().getFirstItem()) ) e.setResult(null);
-        if ( checkItemStack(e.getInventory().getSecondItem()) ) e.setResult(null);
+        if ( checkItemStack(e.getInventory().getItem(0)) ) e.setResult(null);
+        if ( checkItemStack(e.getInventory().getItem(1)) ) e.setResult(null);
 
     }
 
@@ -39,7 +39,7 @@ public class UnableCraftListener implements Listener {
         ItemMeta meta = item.getItemMeta();
 
         if ( item.getType().isAir() ) return false;
-        if ( !meta.hasDisplayName() ) return false;
+        if ( meta == null || !meta.hasDisplayName() ) return false;
         if ( meta.hasLore() ) return true;
 
         for ( String c: LIST ) {

@@ -25,6 +25,7 @@ import java.io.IOException
 import java.net.InetSocketAddress
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
+import java.util.logging.Level
 
 class LifeCore : JavaPlugin() {
     val gcListener = GCListener(this)
@@ -35,7 +36,7 @@ class LifeCore : JavaPlugin() {
     val asyncExecutor = Executor { Bukkit.getScheduler().runTaskAsynchronously(this, it) }
     val lifeCoreConfig = LifeCoreConfig.load(this)
     val playerRegionManager = PlayerRegionManager()
-    val dataLoader = DataLoader(slF4JLogger, getAsFileSystem().getPath("/data"))
+    val dataLoader = DataLoader(logger, getAsFileSystem().getPath("/data"))
     private var databaseConfig: DatabaseConfig? = null
     lateinit var voteConfig: VoteConfig
         private set
@@ -172,7 +173,7 @@ class LifeCore : JavaPlugin() {
                 PlayerUtil.getChannel(player).pipeline()
                     .addBefore("packet_handler", "lifecore", PacketHandler(player))
             } catch (e: Exception) {
-                slF4JLogger.warn("Failed to inject channel handler to player " + player.name, e)
+                logger.log(Level.WARNING, "Failed to inject channel handler to player " + player.name, e)
             }
         }
 
@@ -319,13 +320,13 @@ class LifeCore : JavaPlugin() {
             Class.forName("de.Keyle.MyPet.MyPetApi")
             pm.registerEvents(CancelPetClickListener(), this)
         } catch (e: ClassNotFoundException) {
-            slF4JLogger.warn("MyPet not detected, skipping event listener registration")
+            logger.warning("MyPet not detected, skipping event listener registration")
         }
         try {
             Class.forName("com.vexsoftware.votifier.model.VotifierEvent")
             pm.registerEvents(VoteListener(this), this)
         } catch (e: ClassNotFoundException) {
-            slF4JLogger.warn("Votifier not detected, skipping event listener registration")
+            logger.warning("Votifier not detected, skipping event listener registration")
         }
         try {
             Class.forName("com.palmergames.bukkit.towny.TownyAPI")
@@ -334,21 +335,20 @@ class LifeCore : JavaPlugin() {
                 .apply { startTask() }
                 .apply { pm.registerEvents(this, this@LifeCore) }
         } catch (e: ClassNotFoundException) {
-            slF4JLogger.warn("Towny not detected, skipping event listener registration")
-            e.printStackTrace()
+            logger.log(Level.WARNING, "Towny not detected, skipping event listener registration", e)
         }
         try {
             Class.forName("net.azisaba.ryuzupluginchat.event.AsyncGlobalMessageEvent")
             pm.registerEvents(FilterNgWordsListener(this), this)
         } catch (e: ClassNotFoundException) {
-            slF4JLogger.warn("RyuZUPluginChat not detected, skipping event listener registration")
+            logger.warning("RyuZUPluginChat not detected, skipping event listener registration")
         }
         try {
             Class.forName("net.azisaba.rarity.api.RarityAPI")
             Class.forName("net.azisaba.itemstash.ItemStash")
             pm.registerEvents(DropProtectListener(this), this)
         } catch (e: ClassNotFoundException) {
-            slF4JLogger.warn("Rarity and/or ItemStash not detected, skipping event listener registration")
+            logger.warning("Rarity and/or ItemStash not detected, skipping event listener registration")
         }
     }
 

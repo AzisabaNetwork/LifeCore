@@ -1,11 +1,12 @@
 package com.github.mori01231.lifecore.listener
 
 import com.github.mori01231.lifecore.LifeCore
+import net.kyori.adventure.text.Component
 import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Sound
-import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack
+import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftItemStack
 import org.bukkit.entity.Arrow
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -30,7 +31,7 @@ class CustomBlockListener(val plugin: LifeCore) : Listener {
             destroyAt(e.player, e.clickedBlock!!.location)
         } else {
             if (!e.player.hasPermission("lifecore.customblock.interact.${state.blockName}")) {
-                e.player.sendActionBar("このブロックを使用する権限がありません。")
+                e.player.sendActionBar(Component.text("このブロックを使用する権限がありません。"))
                 return
             }
             state.getBlock().handleInteract(e, state)
@@ -43,14 +44,14 @@ class CustomBlockListener(val plugin: LifeCore) : Listener {
         if (!nms.hasTag()) {
             return
         }
-        if (!nms.tag!!.hasKey("BlockState")) {
+        if (!nms.tag!!.contains("BlockState")) {
             return
         }
         val blockState = nms.tag!!.getCompound("BlockState")
         val blockName = blockState.getString("blockName")
         val block = plugin.customBlockManager.findBlockByName(blockName) ?: return
         if (!e.player.hasPermission("lifecore.customblock.place.$blockName")) {
-            e.player.sendActionBar("このブロックを設置する権限がありません。")
+            e.player.sendActionBar(Component.text("このブロックを設置する権限がありません。"))
             return
         }
         val state = block.onPlace(e)
@@ -63,7 +64,7 @@ class CustomBlockListener(val plugin: LifeCore) : Listener {
         val state = plugin.customBlockManager.getState(e.block.location) ?: return
         e.isCancelled = true
         if (!e.player.hasPermission("lifecore.customblock.destroy.${state.blockName}")) {
-            e.player.sendActionBar("このブロックを破壊する権限がありません。")
+            e.player.sendActionBar(Component.text("このブロックを破壊する権限がありません。"))
             return
         }
         if (e.player.gameMode != GameMode.CREATIVE && !state.getBlock().canDestroy(state, false)) {
@@ -131,7 +132,7 @@ class CustomBlockListener(val plugin: LifeCore) : Listener {
         }
         if (!state.getBlock().canDestroy(state, true)) return
         if (!player.hasPermission("lifecore.customblock.destroy.${state.blockName}")) {
-            player.sendActionBar("このブロックを破壊する権限がありません。")
+            player.sendActionBar(Component.text("このブロックを破壊する権限がありません。"))
             return
         }
         val drop = state.getBlock().preDestroy(state)

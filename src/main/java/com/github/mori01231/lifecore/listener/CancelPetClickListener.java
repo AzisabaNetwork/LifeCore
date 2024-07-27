@@ -22,8 +22,8 @@ public class CancelPetClickListener implements Listener {
             if (!opt.isPresent()) {
                 continue;
             }
-            if (opt.get().getUniqueId().equals(e.getInteractedEntity().getUniqueID()) ||
-                    opt.get().getHandle().getUniqueID().equals(e.getInteractedEntity().getUniqueID())) {
+            if (opt.get().getUniqueId().equals(e.getEntityUniqueID()) ||
+                    opt.get().getHandle().getUniqueID().equals(e.getEntityUniqueID())) {
                 matched = true;
                 break;
             }

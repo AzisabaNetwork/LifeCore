@@ -1,36 +1,32 @@
 package com.github.mori01231.lifecore.event;
 
-import net.minecraft.server.v1_15_R1.Entity;
-import net.minecraft.server.v1_15_R1.PacketPlayInUseEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @deprecated misspelled
  */
 @Deprecated
-public class AsyncPlayerPreInteractEvent extends PlayerEvent implements Cancellable {
+public class AsyncPlayerPreInteractEvent extends CallableEvent implements Cancellable {
     private static final HandlerList HANDLER_LIST = new HandlerList();
-    private final PacketPlayInUseEntity.EnumEntityUseAction action;
-    private final Entity interactedEntity;
+    private final Player player;
+    private final int interactedEntity;
     private boolean cancelled = false;
 
-    public AsyncPlayerPreInteractEvent(@NotNull Player player, @NotNull PacketPlayInUseEntity.EnumEntityUseAction action, @NotNull Entity interactedEntity) {
-        super(player, true);
-        this.action = action;
+    public AsyncPlayerPreInteractEvent(@NotNull Player player, int interactedEntity) {
+        super(true);
+        this.player = player;
         this.interactedEntity = interactedEntity;
     }
 
     @NotNull
-    public PacketPlayInUseEntity.EnumEntityUseAction getAction() {
-        return action;
+    public Player getPlayer() {
+        return player;
     }
 
-    @NotNull
-    public Entity getInteractedEntity() {
+    public int getInteractedEntity() {
         return interactedEntity;
     }
 

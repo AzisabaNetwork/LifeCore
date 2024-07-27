@@ -6,19 +6,21 @@ import com.github.mori01231.lifecore.util.EncodeUtil
 import com.github.mori01231.lifecore.util.ItemUtil
 import com.github.mori01231.lifecore.util.MapUtil
 import com.github.mori01231.lifecore.util.MapUtil.getCanvases
-import net.minecraft.server.v1_15_R1.MojangsonParser
-import net.minecraft.server.v1_15_R1.NBTTagByteArray
-import net.minecraft.server.v1_15_R1.NBTTagCompound
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import net.minecraft.nbt.ByteArrayTag
+import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.TagParser
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabExecutor
-import org.bukkit.craftbukkit.v1_15_R1.CraftServer
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer
-import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack
-import org.bukkit.craftbukkit.v1_15_R1.map.CraftMapRenderer
-import org.bukkit.craftbukkit.v1_15_R1.map.CraftMapView
+import org.bukkit.craftbukkit.v1_20_R2.CraftServer
+import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer
+import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftItemStack
+import org.bukkit.craftbukkit.v1_20_R2.map.CraftMapRenderer
+import org.bukkit.craftbukkit.v1_20_R2.map.CraftMapView
 import org.bukkit.entity.Player
 import org.bukkit.inventory.meta.MapMeta
 import org.bukkit.util.Vector
@@ -207,7 +209,7 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
         GetTag {
             override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
                 var tag = CraftItemStack.asNMSCopy((player as Player).inventory.itemInMainHand).tag ?: run {
-                    player.sendMessage("${ChatColor.RED}Item has no tag.")
+                    player.sendMessage(Component.text("Item has no tag.", NamedTextColor.RED))
                     return
                 }
                 if (args.isEmpty()) {
@@ -231,31 +233,31 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
                     return
                 }
                 val item = CraftItemStack.asNMSCopy((player as Player).inventory.itemInMainHand)
-                val tag = item.tag ?: NBTTagCompound()
-                tag.a(MojangsonParser.parse(args.joinToString(" ")))
+                val tag = item.tag ?: CompoundTag()
+                tag.merge(TagParser.parseTag(args.joinToString(" ")))
                 player.inventory.setItemInMainHand(CraftItemStack.asBukkitCopy(item))
             }
         },
         SetTag {
             override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
                 if (args.isEmpty()) {
-                    player.sendMessage("${ChatColor.RED}Usage: /lifecoreutil $commandName <value>")
+                    player.sendMessage(Component.text("Usage: /lifecoreutil $commandName <value>", NamedTextColor.RED))
                     return
                 }
                 val item = CraftItemStack.asNMSCopy((player as Player).inventory.itemInMainHand)
-                item.tag = MojangsonParser.parse(args.joinToString(" "))
+                item.tag = TagParser.parseTag(args.joinToString(" "))
                 player.inventory.setItemInMainHand(CraftItemStack.asBukkitCopy(item))
             }
         },
         GetBlock {
             override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
                 if (args.isEmpty()) {
-                    player.sendMessage("${ChatColor.RED}ブロック名を指定してください。")
+                    player.sendMessage(Component.text("ブロック名を指定してください。", NamedTextColor.RED))
                     return
                 }
                 val block = plugin.customBlockManager.findBlockByName(args[0])
                 if (block == null) {
-                    player.sendMessage("${ChatColor.RED}ブロックが見つかりませんでした。")
+                    player.sendMessage(Component.text("ブロックが見つかりませんでした。", NamedTextColor.RED))
                     return
                 }
                 (player as Player).inventory.addItem(block.getItemStack(null))
@@ -429,7 +431,7 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
                 player.inventory.setItemInMainHand(ItemUtil.setTag(
                     player.inventory.itemInMainHand,
                     "SerializedMapData",
-                    NBTTagByteArray(EncodeUtil.encodeBase64AndGzip(data.toByteArray()))
+                    ByteArrayTag(EncodeUtil.encodeBase64AndGzip(data.toByteArray()))
                 ))
             }
         },

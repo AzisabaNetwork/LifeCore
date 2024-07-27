@@ -4,9 +4,10 @@ import com.github.mori01231.lifecore.util.AxisX
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
-import net.minecraft.server.v1_15_R1.NBTTagCompound
+import net.kyori.adventure.text.Component
+import net.minecraft.nbt.CompoundTag
 import org.bukkit.Material
-import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack
+import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftItemStack
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.player.PlayerInteractEvent
@@ -44,7 +45,7 @@ abstract class CustomBlock(
 
     open fun onPlace(e: BlockPlaceEvent): CustomBlockState {
         val nms = CraftItemStack.asNMSCopy(e.itemInHand)
-        val tagString = if (nms.hasTag() && nms.tag!!.hasKey("BlockState")) {
+        val tagString = if (nms.hasTag() && nms.tag!!.contains("BlockState")) {
             nms.tag!!.getCompound("BlockState").getString("tag")
         } else {
             ""
@@ -63,14 +64,16 @@ abstract class CustomBlock(
         val item = ItemStack(material)
         item.itemMeta = item.itemMeta?.apply {
             setCustomModelData(this@CustomBlock.customModelData)
-            setDisplayName(this@CustomBlock.displayName)
+            if (this@CustomBlock.displayName != null) {
+                displayName(Component.text(this@CustomBlock.displayName))
+            }
             lore = this@CustomBlock.lore
         }
         val nms = CraftItemStack.asNMSCopy(item)
-        nms.orCreateTag.set("BlockState", NBTTagCompound().apply {
-            setString("blockName", this@CustomBlock.name)
+        nms.orCreateTag.put("BlockState", CompoundTag().apply {
+            putString("blockName", this@CustomBlock.name)
             if (state != null) {
-                setString("tag", Json.encodeToString(state.tag))
+                putString("tag", Json.encodeToString(state.tag))
             }
         })
         return CraftItemStack.asCraftMirror(nms)

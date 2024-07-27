@@ -49,6 +49,7 @@ class TrashListener(private val plugin: LifeCore) : Listener {
                 var moneyMultiplier = trashMoneyPerItem
                 val items: MutableList<ItemStack> = ArrayList()
                 for (item in e.inventory.contents) {
+                    item ?: continue
                     try {
                         if (item.amount > 0) {
                             for (line in plugin.config.getStringList("Trash.Items")) {
