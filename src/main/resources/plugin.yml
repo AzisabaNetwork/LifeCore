@@ -41,26 +41,32 @@ commands:
     description: Teleport to travel.
     permission: lifecore.travel
     usage: Syntax error! Simply type /travel to teleport to travel.
+    aliases: ["lifetravel"]
   pve:
     description: Teleport to dungeon.
     permission: lifecore.pve
     usage: Syntax error! Simply type /pve to teleport to dungeon.
+    aliases: ["lifepve"]
   pve0:
     description: Teleport to dungeon.
     permission: lifecore.pve
     usage: Syntax error! Simply type /pve0 to teleport to dungeon.
+    aliases: ["lifepve0"]
   pve1:
     description: Teleport to dungeon.
     permission: lifecore.pve
     usage: Syntax error! Simply type /pve1 to teleport to dungeon.
+    aliases: ["lifepve1"]
   pve2:
     description: Teleport to dungeon.
     permission: lifecore.pve
     usage: Syntax error! Simply type /pve2 to teleport to dungeon.
+    aliases: ["lifepve2"]
   pve3:
     description: Teleport to dungeon.
     permission: lifecore.pve
     usage: Syntax error! Simply type /pve3 to teleport to dungeon.
+    aliases: ["lifepve3"]
   life:
     description: Teleport to Life server.
     permission: lifecore.life
@@ -69,14 +75,16 @@ commands:
     description: Teleport to LifeResource server.
     permission: lifecore.resource
     usage: Syntax error! Simply type /resource to teleport to LifeResource server.
+    aliases: ["liferesource"]
   event:
     description: Teleport to LifeEvent server.
     permission: lifecore.event
     usage: Syntax error! Simply type /event to teleport to LifeEvent server.
+    aliases: ["lifeevent"]
   townserver:
     description: Teleport to life town server.
     permission: lifecore.townserver
-    aliases: [towns]
+    aliases: [towns, "lifetown"]
   rank:
     description: Show rank.
     permission: lifecore.rank
