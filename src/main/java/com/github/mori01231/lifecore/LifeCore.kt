@@ -20,14 +20,11 @@ import org.bukkit.Bukkit
 import org.bukkit.command.CommandExecutor
 import org.bukkit.entity.ItemFrame
 import org.bukkit.plugin.java.JavaPlugin
-import org.bukkit.plugin.java.PluginClassLoader
 import java.io.File
 import java.io.IOException
 import java.net.InetSocketAddress
-import java.nio.file.Files
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
-import java.util.stream.Collectors
 
 class LifeCore : JavaPlugin() {
     val gcListener = GCListener(this)
@@ -308,6 +305,7 @@ class LifeCore : JavaPlugin() {
         pm.registerEvents(UpdateInventoryOnCloseListener(this), this)
         pm.registerEvents(PromptSignListener, this)
         pm.registerEvents(PicksawItemListener(dataLoader), this)
+        pm.registerEvents(BlockListener, this)
 
         // Items
         pm.registerEvents(OreOnlyItemListener(), this)

@@ -159,4 +159,10 @@ public class ItemUtil {
         if (backup == null || backup.isEmpty()) return stack;
         return setTag(stack, null, backup);
     }
+
+    public static boolean containsTag(@Nullable ItemStack stack, @NotNull String key) {
+        if (stack == null || stack.getType().isAir()) return false;
+        NBTTagCompound tag = CraftItemStack.asNMSCopy(stack).getTag();
+        return tag != null && tag.hasKey(key);
+    }
 }
