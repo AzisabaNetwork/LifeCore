@@ -68,11 +68,18 @@ public class ItemUtil {
         return CraftItemStack.asBukkitCopy(nms);
     }
 
-    public static @NotNull ItemStack setTag(@Nullable ItemStack stack, @NotNull String key, @NotNull NBTBase nbt) {
+    public static @NotNull ItemStack setTag(@Nullable ItemStack stack, @Nullable String key, @NotNull NBTBase nbt) {
         if (stack == null || stack.getType().isAir()) return new ItemStack(Material.AIR);
         net.minecraft.server.v1_15_R1.ItemStack nms = CraftItemStack.asNMSCopy(stack);
-        NBTTagCompound tag = nms.getOrCreateTag();
-        tag.set(key, nbt);
+        if (key == null) {
+            if (!(nbt instanceof NBTTagCompound)) {
+                throw new IllegalArgumentException("key is null, but nbt is not NBTTagCompound");
+            }
+            nms.setTag((NBTTagCompound) nbt);
+        } else {
+            NBTTagCompound tag = nms.getOrCreateTag();
+            tag.set(key, nbt);
+        }
         return CraftItemStack.asBukkitCopy(nms);
     }
 
@@ -133,5 +140,23 @@ public class ItemUtil {
             if (mythicType.equals(getMythicType(inventory.getItem(slot)))) return true;
         }
         return false;
+    }
+
+    @Contract("null -> null")
+    public static ItemStack backupTag(@Nullable ItemStack stack) {
+        if (stack == null || stack.getType().isAir()) return null;
+        NBTTagCompound tag = CraftItemStack.asNMSCopy(stack).getTag();
+        if (tag == null || tag.isEmpty()) return stack;
+        return setTag(stack, "backup", tag);
+    }
+
+    @Contract("null -> null")
+    public static ItemStack restoreTag(@Nullable ItemStack stack) {
+        if (stack == null || stack.getType().isAir()) return null;
+        NBTTagCompound tag = CraftItemStack.asNMSCopy(stack).getTag();
+        if (tag == null) return stack;
+        NBTTagCompound backup = tag.getCompound("backup");
+        if (backup == null || backup.isEmpty()) return stack;
+        return setTag(stack, null, backup);
     }
 }

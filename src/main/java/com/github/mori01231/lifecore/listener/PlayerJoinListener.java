@@ -2,8 +2,10 @@ package com.github.mori01231.lifecore.listener;
 
 import com.github.mori01231.lifecore.LifeCore;
 import com.github.mori01231.lifecore.network.PacketHandler;
+import com.github.mori01231.lifecore.util.ItemUtil;
 import com.github.mori01231.lifecore.util.PlayerUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -36,6 +38,35 @@ public class PlayerJoinListener implements Listener {
         // inject channel handler
         PlayerUtil.getChannel(e.getPlayer()).pipeline()
                 .addBefore("packet_handler", "lifecore", new PacketHandler(e.getPlayer()));
+
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            Player player = Bukkit.getPlayer(e.getPlayer().getUniqueId());
+            if (player == null || !player.isOnline()) {
+                return;
+            }
+
+            // restore item tags
+            if (plugin.getConfig().getBoolean("enable-backup-item-tag", true)) {
+                int size = player.getInventory().getSize();
+                for (int i = 0; i < size; i++) {
+                    player.getInventory().setItem(i, ItemUtil.restoreTag(player.getInventory().getItem(i)));
+                }
+            }
+        }, 20 * 2); // 2 seconds
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            Player player = Bukkit.getPlayer(e.getPlayer().getUniqueId());
+            if (player == null || !player.isOnline()) {
+                return;
+            }
+
+            // restore item tags
+            if (plugin.getConfig().getBoolean("enable-backup-item-tag", true)) {
+                int size = player.getInventory().getSize();
+                for (int i = 0; i < size; i++) {
+                    player.getInventory().setItem(i, ItemUtil.restoreTag(player.getInventory().getItem(i)));
+                }
+            }
+        }, 20 * 10); // 10 seconds
     }
 
     @EventHandler

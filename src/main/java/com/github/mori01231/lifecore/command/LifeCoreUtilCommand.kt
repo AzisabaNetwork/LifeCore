@@ -233,7 +233,7 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
                 val item = CraftItemStack.asNMSCopy((player as Player).inventory.itemInMainHand)
                 val tag = item.tag ?: NBTTagCompound()
                 tag.a(MojangsonParser.parse(args.joinToString(" ")))
-                (player as Player).inventory.setItemInMainHand(CraftItemStack.asBukkitCopy(item))
+                player.inventory.setItemInMainHand(CraftItemStack.asBukkitCopy(item))
             }
         },
         SetTag {
@@ -244,7 +244,7 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
                 }
                 val item = CraftItemStack.asNMSCopy((player as Player).inventory.itemInMainHand)
                 item.tag = MojangsonParser.parse(args.joinToString(" "))
-                (player as Player).inventory.setItemInMainHand(CraftItemStack.asBukkitCopy(item))
+                player.inventory.setItemInMainHand(CraftItemStack.asBukkitCopy(item))
             }
         },
         GetBlock {
@@ -300,7 +300,7 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
         ClearPlot("イマサラタウンのplotを消し飛ばします") {
             override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
                 val minX = (player as Player).chunk.x * 16
-                val minZ = (player as Player).chunk.z * 16
+                val minZ = player.chunk.z * 16
                 val maxX = minX + 15
                 val maxZ = minZ + 15
                 scheduleLater(plugin, 0) { Bukkit.dispatchCommand(player, "/chunk") }

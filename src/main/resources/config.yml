@@ -2,6 +2,9 @@
 
 lp-server-name: life
 
+# enable backup of item tag when executing /townserver, and restore when joining.
+enable-backup-item-tag: true
+
 use-pve-command-as-teleport: true
 
 website-url: https://azisaba.net/

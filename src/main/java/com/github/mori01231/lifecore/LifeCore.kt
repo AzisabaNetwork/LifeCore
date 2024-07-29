@@ -130,7 +130,7 @@ class LifeCore : JavaPlugin() {
         registerCommand("life", TransferCommand(this, "life"))
         registerCommand("resource", TransferCommand(this, "liferesource"))
         registerCommand("event", TransferCommand(this, "lifeevent"))
-        registerCommand("townserver", TransferCommand(this, "lifetown"))
+        registerCommand("townserver", TownServerCommand(this))
         registerCommand("rank", RankCommand(this))
         registerCommand("trash", TrashCommand())
         registerCommand("kiai", KiaiCommand())

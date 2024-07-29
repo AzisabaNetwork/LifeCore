@@ -12,6 +12,7 @@ softdepend:
   - Towny
   - MythicMobs
   - ItemStash
+  - JoinFilter
 api-version: 1.13
 
 commands:
