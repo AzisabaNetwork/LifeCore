@@ -12,6 +12,7 @@ object BlockListener : Listener {
         if (ItemUtil.containsTag(e.itemInHand, "backup") && !e.player.isSneaking) {
             e.player.sendMessage("${ChatColor.RED}このブロックを設置すると中身のアイテムが変質し、元の状態に戻らなくなる可能性があります。")
             e.player.sendMessage("${ChatColor.RED}この警告を無視して設置したい場合はスニークしながら設置してください。")
+            e.isCancelled = true
         }
     }
 }
