@@ -17,9 +17,6 @@ import org.bukkit.inventory.ItemStack
 
 
 class TrashListener(private val plugin: LifeCore) : Listener {
-    private val rarityAPI = RarityAPIProvider.get()
-    private val itemStash = ItemStash.getInstance()
-
     @EventHandler
     fun onInventoryClick(e: InventoryClickEvent) {
         if (e.clickedInventory?.holder is TrashInventory) {
@@ -28,7 +25,7 @@ class TrashListener(private val plugin: LifeCore) : Listener {
                 e.inventory.setItem(53, null)
                 for (i in 0..<e.inventory.size) {
                     val item = e.inventory.getItem(i) ?: continue
-                    val rarity: Rarity? = rarityAPI.getRarityByItemStack(item)
+                    val rarity: Rarity? = RarityAPIProvider.get().getRarityByItemStack(item)
                     val shouldCancel = if (rarity == null) {
                         if (plugin.trashProtectConfig.contains(e.whoClicked.uniqueId, "no_rarity")) {
                             true
@@ -41,7 +38,7 @@ class TrashListener(private val plugin: LifeCore) : Listener {
                     if (shouldCancel) {
                         e.inventory.setItem(i, null)
                         e.whoClicked.inventory.addItem(item).forEach { (_, s) ->
-                            itemStash.addItemToStash(e.whoClicked.uniqueId, s)
+                            ItemStash.getInstance().addItemToStash(e.whoClicked.uniqueId, s)
                             e.whoClicked.sendMessage(ChatColor.RED.toString() + "インベントリがいっぱいのため、Stashに保管されました。")
                             e.whoClicked.sendMessage(ChatColor.AQUA.toString() + "/pickupstash" + ChatColor.RED + "で回収できます。")
                         }
@@ -98,7 +95,7 @@ class TrashListener(private val plugin: LifeCore) : Listener {
                 @Suppress("SENSELESS_COMPARISON")
                 if (item == null || item.type.isAir || item == TrashInventory.trashItem) continue
                 e.player.inventory.addItem(item).forEach { (_, s) ->
-                    itemStash.addItemToStash(e.player.uniqueId, s)
+                    ItemStash.getInstance().addItemToStash(e.player.uniqueId, s)
                     e.player.sendMessage(ChatColor.RED.toString() + "インベントリがいっぱいのため、Stashに保管されました。")
                     e.player.sendMessage(ChatColor.AQUA.toString() + "/pickupstash" + ChatColor.RED + "で回収できます。")
                 }
