@@ -9,7 +9,7 @@ import org.bukkit.event.player.PlayerMoveEvent
 object VoidListener : Listener {
     @EventHandler
     fun onPlayerMove(e: PlayerMoveEvent) {
-        if ((e.player.gameMode == GameMode.SURVIVAL || e.player.gameMode == GameMode.ADVENTURE) && e.from.y < 0) {
+        if ((e.player.gameMode == GameMode.SURVIVAL || e.player.gameMode == GameMode.ADVENTURE) && e.from.y < -64) {
             e.player.lastDamageCause = EntityDamageEvent(e.player, EntityDamageEvent.DamageCause.VOID, 99999999.0)
             e.player.damage(99999999.0)
             e.player.health = 0.0
