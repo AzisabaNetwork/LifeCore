@@ -47,9 +47,13 @@ public class PlayerJoinListener implements Listener {
 
             // restore item tags
             if (plugin.getConfig().getBoolean("enable-backup-item-tag", true)) {
-                int size = player.getInventory().getSize();
-                for (int i = 0; i < size; i++) {
+                int inventorySize = player.getInventory().getSize();
+                for (int i = 0; i < inventorySize; i++) {
                     player.getInventory().setItem(i, ItemUtil.restoreTag(player.getInventory().getItem(i)));
+                }
+                int enderSize = player.getEnderChest().getSize();
+                for (int i = 0; i < enderSize; i++) {
+                    player.getEnderChest().setItem(i, ItemUtil.restoreTag(player.getEnderChest().getItem(i)));
                 }
             }
         }, 20 * 2); // 2 seconds
@@ -61,9 +65,13 @@ public class PlayerJoinListener implements Listener {
 
             // restore item tags
             if (plugin.getConfig().getBoolean("enable-backup-item-tag", true)) {
-                int size = player.getInventory().getSize();
-                for (int i = 0; i < size; i++) {
+                int inventorySize = player.getInventory().getSize();
+                for (int i = 0; i < inventorySize; i++) {
                     player.getInventory().setItem(i, ItemUtil.restoreTag(player.getInventory().getItem(i)));
+                }
+                int enderSize = player.getEnderChest().getSize();
+                for (int i = 0; i < enderSize; i++) {
+                    player.getEnderChest().setItem(i, ItemUtil.restoreTag(player.getEnderChest().getItem(i)));
                 }
             }
         }, 20 * 10); // 10 seconds
