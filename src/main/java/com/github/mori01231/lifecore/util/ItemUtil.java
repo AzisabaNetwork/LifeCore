@@ -147,6 +147,11 @@ public class ItemUtil {
         if (stack == null || stack.getType().isAir()) return null;
         CompoundTag tag = CraftItemStack.asNMSCopy(stack).getTag();
         if (tag == null || tag.isEmpty()) return stack;
+        if (!tag.getCompound("backup").isEmpty()) return stack;
+        // exclude some items
+        if (tag.getCompound("PublicBukkitValues").getInt("minecraft:admin_item") == 1) {
+            return stack;
+        }
         return setTag(stack, "backup", tag);
     }
 

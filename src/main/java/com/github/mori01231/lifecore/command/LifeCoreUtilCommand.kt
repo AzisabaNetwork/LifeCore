@@ -440,6 +440,24 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
                 MapUtil.initializeMapRenderer((player as Player), player.inventory.itemInMainHand)
             }
         },
+        FixItem("displayタグを修正します") {
+            override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
+                val item = (player as Player).inventory.itemInMainHand
+                val meta = item.itemMeta
+                if (meta.hasDisplayName()) {
+                    val origName = meta.displayName
+                    meta.setDisplayName(null)
+                    meta.setDisplayName(origName)
+                }
+                if (meta.hasLore()) {
+                    val origLore = meta.lore
+                    meta.lore = null
+                    meta.lore = origLore
+                }
+                item.itemMeta = meta
+                player.inventory.setItemInMainHand(item)
+            }
+        },
         ;
 
         abstract fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>)
