@@ -7,7 +7,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -16,7 +15,8 @@ import java.util.*;
 
 public class ScheduleRestartCommand implements TabExecutor {
     private static final Map<Integer, Set<Action>> ACTIONS = new HashMap<>();
-    private static final List<BukkitTask> tasks = new ArrayList<>();
+    private static final List<TimerTask> tasks = new ArrayList<>();
+    private static final Timer TIMER = new Timer();
     private static boolean whitelistWasOn = false;
     private final LifeCore plugin;
 
@@ -34,28 +34,36 @@ public class ScheduleRestartCommand implements TabExecutor {
             plugin.getGcListener().triggerNow();
             return true;
         }
+        if (args[0].endsWith("s")) {
+            int seconds = Integer.parseInt(args[0].substring(0, args[0].length() - 1));
+            schedule(seconds);
+            return true;
+        }
         int minutes = Integer.parseInt(args[0]);
-        schedule(minutes);
+        schedule(minutes * 60);
         return true;
     }
 
-    public static void schedule(int minutes) {
-        for (BukkitTask task : tasks) {
+    public static void schedule(int paramSeconds) {
+        for (TimerTask task : tasks) {
             task.cancel();
         }
         tasks.clear();
-        Bukkit.broadcastMessage("§6[§dお知らせ§6] §aこのサーバーは§d" + minutes + "分後" + "§aに再起動されます。");
-        int maxTicks = minutes * 60 * 20;
+        Bukkit.broadcastMessage("§6[§dお知らせ§6] §aこのサーバーは§d" + paramSeconds + "秒後" + "§aに再起動されます。");
         ACTIONS.forEach((seconds, actions) -> {
-            if (seconds < minutes * 60) {
-                BukkitTask task = Bukkit.getScheduler().runTaskLaterAsynchronously(LifeCore.getPlugin(LifeCore.class), () -> {
-                    Bukkit.getScheduler().runTask(LifeCore.getPlugin(LifeCore.class), () -> {
-                        for (Action action : actions) {
-                            action.execute(seconds);
-                        }
-                    });
-                }, maxTicks - seconds * 20);
-                tasks.add(task);
+            if (seconds <= paramSeconds) {
+                TimerTask timerTask = new TimerTask() {
+                    @Override
+                    public void run() {
+                        Bukkit.getScheduler().runTask(LifeCore.getPlugin(LifeCore.class), () -> {
+                            for (Action action : actions) {
+                                action.execute(seconds);
+                            }
+                        });
+                    }
+                };
+                TIMER.schedule(timerTask, (paramSeconds - seconds) * 1000L);
+                tasks.add(timerTask);
             }
         });
     }
@@ -69,28 +77,33 @@ public class ScheduleRestartCommand implements TabExecutor {
         BROADCAST {
             @Override
             public void execute(int seconds) {
-                if (seconds >= 60) {
-                    int minutes = seconds / 60;
-                    Bukkit.broadcastMessage("§6[§dお知らせ§6] §aこのサーバーは§d" + minutes + "分後" + "§aに再起動されます。");
-                } else {
-                    Bukkit.broadcastMessage("§6[§dお知らせ§6] §aこのサーバーは§c" + seconds + "秒後" + "§aに再起動されます。");
-                }
+                Bukkit.getScheduler().runTask(LifeCore.getPlugin(LifeCore.class), () -> {
+                    if (seconds >= 60) {
+                        int minutes = seconds / 60;
+                        Bukkit.broadcastMessage("§6[§dお知らせ§6] §aこのサーバーは§d" + minutes + "分後" + "§aに再起動されます。");
+                    } else {
+                        Bukkit.broadcastMessage("§6[§dお知らせ§6] §aこのサーバーは§c" + seconds + "秒後" + "§aに再起動されます。");
+                    }
+                });
             }
         },
         ENABLE_WHITELIST {
             @Override
             public void execute(int seconds) {
-                whitelistWasOn = Bukkit.hasWhitelist();
-                Bukkit.setWhitelist(true);
+                Bukkit.getScheduler().runTask(LifeCore.getPlugin(LifeCore.class), () -> {
+                    whitelistWasOn = Bukkit.hasWhitelist();
+                    Bukkit.setWhitelist(true);
+                });
             }
         },
         SAVE_AND_KICK_ALL_PLAYERS {
             @Override
             public void execute(int seconds) {
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mpdb saveAndKick");
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    player.kickPlayer("Server closed");
-                }
+                Bukkit.getScheduler().runTask(LifeCore.getPlugin(LifeCore.class), () -> {
+                    for (Player player : Bukkit.getOnlinePlayers()) {
+                        player.kickPlayer("Server closed");
+                    }
+                });
             }
         },
         SCHEDULE_SHUTDOWN_SERVER {
