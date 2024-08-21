@@ -437,7 +437,10 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
         },
         LoadMapData("地図を読み込みます") {
             override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
-                MapUtil.initializeMapRenderer((player as Player), player.inventory.itemInMainHand)
+                MapUtil.checkMapView((player as Player).inventory.itemInMainHand)?.let {
+                    player.inventory.setItemInMainHand(it)
+                }
+                MapUtil.initializeMapRenderer(player, player.inventory.itemInMainHand)
             }
         },
         FixItem("displayタグを修正します") {

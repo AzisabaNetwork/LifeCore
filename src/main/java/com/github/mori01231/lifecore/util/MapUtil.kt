@@ -7,6 +7,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.encodeToJsonElement
+import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer
 import org.bukkit.craftbukkit.v1_20_R2.map.CraftMapCanvas
@@ -41,6 +42,17 @@ object MapUtil {
     @Suppress("UNCHECKED_CAST")
     fun MapView.getCanvases() =
         CraftMapView::class.java.getDeclaredField("canvases").apply { isAccessible = true }[this] as Map<MapRenderer, Map<CraftPlayer, CraftMapCanvas>>
+
+    fun checkMapView(item: ItemStack): ItemStack? {
+        if (item.type != Material.FILLED_MAP) return null
+        val meta = item.itemMeta as? MapMeta ?: return null
+        if (meta.mapView == null) {
+            meta.mapView = Bukkit.createMap(Bukkit.getWorlds()[0])
+            item.itemMeta = meta
+            return item
+        }
+        return null
+    }
 
     fun initializeMapRenderer(player: Player, item: ItemStack) {
         if (item.type != Material.FILLED_MAP) return

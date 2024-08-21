@@ -187,9 +187,9 @@ class LifeCore : JavaPlugin() {
         // check for maps
         Bukkit.getScheduler().runTaskTimer(this, Runnable {
             Bukkit.getOnlinePlayers().forEach player@ { player ->
-                player.inventory.contents.forEach { item ->
-                    @Suppress("SENSELESS_COMPARISON")
+                player.inventory.contents.forEachIndexed { index, item ->
                     if (item != null) {
+                        MapUtil.checkMapView(item)?.let { player.inventory.setItem(index, it) }
                         MapUtil.initializeMapRenderer(player, item)
                     }
                 }
@@ -198,6 +198,7 @@ class LifeCore : JavaPlugin() {
             Bukkit.getWorlds().forEach world@ { world ->
                 world.getEntitiesByClass(ItemFrame::class.java).forEach { itemFrame ->
                     Bukkit.getOnlinePlayers().forEach { player ->
+                        MapUtil.checkMapView(itemFrame.item)?.let { itemFrame.setItem(it, false) }
                         MapUtil.initializeMapRenderer(player, itemFrame.item)
                     }
                 }
