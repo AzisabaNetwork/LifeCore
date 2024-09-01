@@ -1,17 +1,17 @@
 package com.github.mori01231.lifecore.block
 
+import com.github.mori01231.lifecore.region.WorldLocation
 import com.github.mori01231.lifecore.util.AxisX
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
-import net.kyori.adventure.text.Component
-import net.minecraft.nbt.CompoundTag
 import org.bukkit.Material
-import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftItemStack
+import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
+import kotlin.text.contains
 
 abstract class CustomBlock(
     val material: Material,
@@ -22,7 +22,7 @@ abstract class CustomBlock(
     open val lockFacing: Boolean = false
     open val axisShift: Int = 0
     open val backgroundBlock: Material = Material.BARRIER
-    var customModelData = 0
+    var customModelData: Int? = null
 
     internal fun handleInteract(e: PlayerInteractEvent, state: CustomBlockState) {
         if (state.blockName != name) error("Block name mismatch: state ${state.blockName} != block $name")
@@ -45,8 +45,8 @@ abstract class CustomBlock(
 
     open fun onPlace(e: BlockPlaceEvent): CustomBlockState {
         val nms = CraftItemStack.asNMSCopy(e.itemInHand)
-        val tagString = if (nms.hasTag() && nms.tag!!.contains("BlockState")) {
-            nms.tag!!.getCompound("BlockState").getString("tag")
+        val tagString = if (nms.hasTag() && nms.tag!!.contains("CustomBlockState")) {
+            nms.tag!!.getCompound("CustomBlockState").getString("tag")
         } else {
             ""
         }
@@ -70,7 +70,7 @@ abstract class CustomBlock(
             lore = this@CustomBlock.lore
         }
         val nms = CraftItemStack.asNMSCopy(item)
-        nms.orCreateTag.put("BlockState", CompoundTag().apply {
+        nms.orCreateTag.put("CustomBlockState", CompoundTag().apply {
             putString("blockName", this@CustomBlock.name)
             if (state != null) {
                 putString("tag", Json.encodeToString(state.tag))
@@ -78,4 +78,6 @@ abstract class CustomBlock(
         })
         return CraftItemStack.asCraftMirror(nms)
     }
+
+    open fun tick(manager: CustomBlockManager, pos: WorldLocation, state: CustomBlockState): CustomBlockState? = null
 }

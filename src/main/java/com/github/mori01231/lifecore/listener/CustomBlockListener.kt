@@ -1,12 +1,11 @@
 package com.github.mori01231.lifecore.listener
 
 import com.github.mori01231.lifecore.LifeCore
-import net.kyori.adventure.text.Component
 import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Sound
-import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftItemStack
+import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack
 import org.bukkit.entity.Arrow
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -14,13 +13,18 @@ import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockBreakEvent
+import org.bukkit.event.block.BlockPistonExtendEvent
+import org.bukkit.event.block.BlockPistonRetractEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.event.player.PlayerInteractAtEntityEvent
 import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
+import kotlin.text.contains
 
 class CustomBlockListener(val plugin: LifeCore) : Listener {
+    private var callingEvent = false
+
     @EventHandler
     fun onPlayerInteract(e: PlayerInteractEvent) {
         if (e.clickedBlock == null) return
@@ -44,10 +48,10 @@ class CustomBlockListener(val plugin: LifeCore) : Listener {
         if (!nms.hasTag()) {
             return
         }
-        if (!nms.tag!!.contains("BlockState")) {
+        if (!nms.tag!!.contains("CustomBlockState")) {
             return
         }
-        val blockState = nms.tag!!.getCompound("BlockState")
+        val blockState = nms.tag!!.getCompound("CustomBlockState")
         val blockName = blockState.getString("blockName")
         val block = plugin.customBlockManager.findBlockByName(blockName) ?: return
         if (!e.player.hasPermission("lifecore.customblock.place.$blockName")) {
@@ -61,6 +65,7 @@ class CustomBlockListener(val plugin: LifeCore) : Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onBlockBreak(e: BlockBreakEvent) {
+        if (callingEvent) return
         val state = plugin.customBlockManager.getState(e.block.location) ?: return
         e.isCancelled = true
         if (!e.player.hasPermission("lifecore.customblock.destroy.${state.blockName}")) {
@@ -113,6 +118,22 @@ class CustomBlockListener(val plugin: LifeCore) : Listener {
         }
     }
 
+    @EventHandler
+    fun onPistonExtend(e: BlockPistonExtendEvent) {
+        e.blocks.forEach { block ->
+            plugin.customBlockManager.getState(block.location) ?: return
+            e.isCancelled = true
+        }
+    }
+
+    @EventHandler
+    fun onPistonRetract(e: BlockPistonRetractEvent) {
+        e.blocks.forEach { block ->
+            plugin.customBlockManager.getState(block.location) ?: return
+            e.isCancelled = true
+        }
+    }
+
     private fun destroyAt(player: Player, location: Location, callEvent: Boolean = true) {
         val state = plugin.customBlockManager.getState(location) ?: return
         if (callEvent) {
@@ -121,10 +142,12 @@ class CustomBlockListener(val plugin: LifeCore) : Listener {
                 location.block.type = Material.BARRIER
             }
             try {
+                callingEvent = true
                 if (!BlockBreakEvent(location.block, player).callEvent()) {
                     return
                 }
             } finally {
+                callingEvent = false
                 if (wasAir) {
                     location.block.type = Material.AIR
                 }

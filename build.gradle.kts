@@ -1,4 +1,3 @@
-import io.papermc.paperweight.userdev.ReobfArtifactConfiguration
 import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
@@ -11,7 +10,7 @@ plugins {
 }
 
 group = "net.azisaba"
-version = "1.20.2+6.16.9"
+version = "1.20.2+6.17.0"
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(17))

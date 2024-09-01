@@ -205,6 +205,14 @@ class LifeCore : JavaPlugin() {
             }
         }, 200, 200)
 
+        Bukkit.getScheduler().runTaskTimer(this, Runnable {
+            customBlockManager.getLoadedStates().forEach { (location, state) ->
+                state.getBlock().tick(customBlockManager, location, state)?.let {
+                    customBlockManager.setState(location.toBukkitLocation(), it)
+                }
+            }
+        }, 1, 1)
+
         logger.info("LifeCore has been enabled.")
     }
 
@@ -235,6 +243,7 @@ class LifeCore : JavaPlugin() {
         runCatching { executorService.shutdownNow() }
         runCatching { httpServer?.stop(1) }
         runCatching { gcListener.unregister() }
+        runCatching { customBlockManager.saveAll() }
 
         runCatching {
             // unregister all channel handlers
@@ -256,8 +265,10 @@ class LifeCore : JavaPlugin() {
             preloadClass("com.github.mori01231.lifecore.LifeCore\$onDisable\$$i", false)
         }
         preloadClass("com.github.mori01231.lifecore.lib.com.charleskorn.kaml.Yaml\$encodeToString\$writer\$1")
+        preloadClass("com.github.mori01231.lifecore.lib.com.charleskorn.kaml.YamlOutput")
         preloadClass("com.github.mori01231.lifecore.lib.org.yaml.snakeyaml.Yaml")
         preloadClass("com.github.mori01231.lifecore.lib.org.yaml.snakeyaml.nodes.CollectionNode")
+        preloadClass("com.github.mori01231.lifecore.lib.org.yaml.snakeyaml.nodes.SequenceNode")
     }
 
     private fun preloadClass(name: String, required: Boolean = true) {

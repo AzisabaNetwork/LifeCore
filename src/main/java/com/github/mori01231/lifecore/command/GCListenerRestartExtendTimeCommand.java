@@ -33,7 +33,7 @@ public class GCListenerRestartExtendTimeCommand implements TabExecutor {
         players.add(player.getUniqueId());
         sender.sendMessage(ChatColor.GREEN + "投票しました。");
         if (sender.hasPermission("lifecore.extend-time-immediately") || players.size() == 5) {
-            ScheduleRestartCommand.schedule(30);
+            ScheduleRestartCommand.schedule(30 * 60);
         }
         return true;
     }

@@ -96,8 +96,8 @@ public class GCListener implements NotificationListener {
                     }
                 } else if (command.startsWith("@schedulerestart ")) {
                     try {
-                        int delayMinutes = Integer.parseInt(command.substring("@schedulerestart ".length()));
-                        ScheduleRestartCommand.schedule(delayMinutes);
+                        int delaySeconds = Integer.parseInt(command.substring("@schedulerestart ".length()));
+                        ScheduleRestartCommand.schedule(delaySeconds);
                         TextComponent component = new TextComponent("再起動までの時間を延長するには、このメッセージをクリックしてください。");
                         component.setColor(ChatColor.AQUA);
                         component.setUnderlined(true);
