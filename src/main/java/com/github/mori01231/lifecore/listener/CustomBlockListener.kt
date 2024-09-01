@@ -43,10 +43,10 @@ class CustomBlockListener(val plugin: LifeCore) : Listener {
         if (!nms.hasTag()) {
             return
         }
-        if (!nms.tag!!.hasKey("BlockState")) {
+        if (!nms.tag!!.hasKey("CustomBlockState")) {
             return
         }
-        val blockState = nms.tag!!.getCompound("BlockState")
+        val blockState = nms.tag!!.getCompound("CustomBlockState")
         val blockName = blockState.getString("blockName")
         val block = plugin.customBlockManager.findBlockByName(blockName) ?: return
         if (!e.player.hasPermission("lifecore.customblock.place.$blockName")) {

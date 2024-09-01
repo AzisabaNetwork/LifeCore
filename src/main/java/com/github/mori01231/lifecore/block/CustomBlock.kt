@@ -44,8 +44,8 @@ abstract class CustomBlock(
 
     open fun onPlace(e: BlockPlaceEvent): CustomBlockState {
         val nms = CraftItemStack.asNMSCopy(e.itemInHand)
-        val tagString = if (nms.hasTag() && nms.tag!!.hasKey("BlockState")) {
-            nms.tag!!.getCompound("BlockState").getString("tag")
+        val tagString = if (nms.hasTag() && nms.tag!!.hasKey("CustomBlockState")) {
+            nms.tag!!.getCompound("CustomBlockState").getString("tag")
         } else {
             ""
         }
@@ -67,7 +67,7 @@ abstract class CustomBlock(
             lore = this@CustomBlock.lore
         }
         val nms = CraftItemStack.asNMSCopy(item)
-        nms.orCreateTag.set("BlockState", NBTTagCompound().apply {
+        nms.orCreateTag.set("CustomBlockState", NBTTagCompound().apply {
             setString("blockName", this@CustomBlock.name)
             if (state != null) {
                 setString("tag", Json.encodeToString(state.tag))
