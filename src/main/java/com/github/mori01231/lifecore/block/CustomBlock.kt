@@ -5,13 +5,14 @@ import com.github.mori01231.lifecore.util.AxisX
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
+import net.kyori.adventure.text.Component
+import net.minecraft.nbt.CompoundTag
 import org.bukkit.Material
-import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack
+import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftItemStack
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
-import kotlin.text.contains
 
 abstract class CustomBlock(
     val material: Material,

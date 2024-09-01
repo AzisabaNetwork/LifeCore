@@ -1,11 +1,12 @@
 package com.github.mori01231.lifecore.listener
 
 import com.github.mori01231.lifecore.LifeCore
+import net.kyori.adventure.text.Component
 import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Sound
-import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack
+import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftItemStack
 import org.bukkit.entity.Arrow
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
