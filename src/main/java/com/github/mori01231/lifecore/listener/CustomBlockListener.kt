@@ -13,6 +13,8 @@ import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockBreakEvent
+import org.bukkit.event.block.BlockPistonExtendEvent
+import org.bukkit.event.block.BlockPistonRetractEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.event.player.PlayerInteractAtEntityEvent
@@ -109,6 +111,22 @@ class CustomBlockListener(val plugin: LifeCore) : Listener {
     fun onProjectileHit(e: ProjectileHitEvent) {
         if (e.entity is Arrow && plugin.customBlockManager.isCustomBlockEntity(e.hitEntity)) {
             e.entity.remove()
+        }
+    }
+
+    @EventHandler
+    fun onPistonExtend(e: BlockPistonExtendEvent) {
+        e.blocks.forEach { block ->
+            plugin.customBlockManager.getState(block.location) ?: return
+            e.isCancelled = true
+        }
+    }
+
+    @EventHandler
+    fun onPistonRetract(e: BlockPistonRetractEvent) {
+        e.blocks.forEach { block ->
+            plugin.customBlockManager.getState(block.location) ?: return
+            e.isCancelled = true
         }
     }
 

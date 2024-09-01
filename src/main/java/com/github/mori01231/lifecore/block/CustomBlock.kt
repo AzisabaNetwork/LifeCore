@@ -1,5 +1,6 @@
 package com.github.mori01231.lifecore.block
 
+import com.github.mori01231.lifecore.region.WorldLocation
 import com.github.mori01231.lifecore.util.AxisX
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -21,7 +22,7 @@ abstract class CustomBlock(
     open val lockFacing: Boolean = false
     open val axisShift: Int = 0
     open val backgroundBlock: Material = Material.BARRIER
-    var customModelData = 0
+    var customModelData: Int? = null
 
     internal fun handleInteract(e: PlayerInteractEvent, state: CustomBlockState) {
         if (state.blockName != name) error("Block name mismatch: state ${state.blockName} != block $name")
@@ -74,5 +75,11 @@ abstract class CustomBlock(
             }
         })
         return CraftItemStack.asCraftMirror(nms)
+    }
+
+    open fun tick(manager: CustomBlockManager, pos: WorldLocation, state: CustomBlockState): CustomBlockState? = null
+
+    fun scheduleTick(manager: CustomBlockManager, pos: WorldLocation, state: CustomBlockState) {
+        manager.scheduleTick(pos, state)
     }
 }

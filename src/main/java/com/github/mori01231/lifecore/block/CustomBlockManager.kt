@@ -2,9 +2,11 @@ package com.github.mori01231.lifecore.block
 
 import com.github.mori01231.lifecore.LifeCore
 import com.github.mori01231.lifecore.listener.CustomBlockListener
+import com.github.mori01231.lifecore.region.WorldLocation
 import com.github.mori01231.lifecore.util.AxisX
 import com.github.mori01231.lifecore.util.LRUCache
 import kotlinx.serialization.json.Json
+import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Location
 import org.bukkit.Material
@@ -17,6 +19,7 @@ import org.bukkit.entity.Entity
 import org.bukkit.event.HandlerList
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.ShapedRecipe
+import org.bukkit.potion.PotionEffectType
 import java.io.File
 import java.util.*
 
@@ -50,6 +53,15 @@ class CustomBlockManager(val plugin: LifeCore) {
 
     private fun getRegionPos(worldPos: Int) = worldPos shr 9
 
+    fun getLoadedStates(): Map<WorldLocation, CustomBlockState> =
+        region.flatMap { (world, wld) ->
+            wld.flatMap { (_, region) ->
+                region.getAllStates().map { (pos, state) ->
+                    WorldLocation(world, pos.first, pos.second, pos.third) to state
+                }
+            }
+        }.toMap()
+
     fun getState(location: Location): CustomBlockState? {
         val region = loadRegion(location.world, getRegionPos(location.blockX), getRegionPos(location.blockZ))
         return region.getState(location.blockX, location.blockY, location.blockZ)
@@ -70,13 +82,21 @@ class CustomBlockManager(val plugin: LifeCore) {
         val wld = region.getOrPut(world.name) { LRUCache(100) }
         val loaded = wld.getOrPut(x to z) {
             val file = File(regionDir, "${world.name}/$x.$z.json")
-            if (file.exists()) {
+            val loaded = if (file.exists()) {
                 plugin.logger.info("Loading region $x, $z")
                 Json.decodeFromString(CustomBlockRegion.serializer(), file.readText())
             } else {
                 plugin.logger.info("Creating region $x, $z")
                 CustomBlockRegion(world.name, x, z)
             }
+            loaded.getAllStates().forEach { (pos, state) ->
+                // tick
+                val newState = state.getBlock().tick(this, WorldLocation(world.name, pos.first, pos.second, pos.third), state)
+                if (newState != null) {
+                    loaded.setState(pos.first, pos.second, pos.third, newState)
+                }
+            }
+            loaded
         }
         if (loaded.dirty) {
             plugin.logger.warning("Region $x, $z was not saved properly")
@@ -117,18 +137,28 @@ class CustomBlockManager(val plugin: LifeCore) {
 
         // add blocks
         plugin.config.getMapList("custom-blocks").forEach { map ->
+            val type = map["type"]?.toString() ?: "command"
             val blockName = map["name"]?.toString() ?: return plugin.logger.warning("name is required")
             val axisShift = map["axisShift"]?.toString()?.toIntOrNull() ?: 0
-            val lockFacing = map["lockFacing"]?.toString()?.toBoolean() ?: false
+            val lockFacing = map["lockFacing"]?.toString()?.toBoolean() == true
             val backgroundBlock = Material.valueOf(map["backgroundBlock"]?.toString()?.uppercase() ?: "BARRIER")
-            val material = Material.valueOf(map["material"]?.toString()?.uppercase() ?: return plugin.logger.warning("material is required"))
+            val material = Material.valueOf(map["material"]?.toString()?.uppercase() ?: return plugin.logger.warning("material is required @ $blockName"))
             val displayName = map["displayName"]?.toString()?.let { ChatColor.translateAlternateColorCodes('&', it) }
             val lore = map["lore"]?.toString()?.let { ChatColor.translateAlternateColorCodes('&', it) }?.split("\n")
-            val customModelData = map["customModelData"]?.toString()?.toIntOrNull() ?: 0
-            val commands = map["commands"] as List<String>?
-            val consoleCommands = map["consoleCommands"] as List<String>?
-            val destroyWithoutWrench = map["destroyWithoutWrench"]?.toString()?.toBoolean() ?: false
-            val block = CommandCustomBlock(blockName, lockFacing, axisShift, backgroundBlock, material, displayName, lore, commands ?: emptyList(), consoleCommands ?: emptyList(), destroyWithoutWrench)
+            val destroyWithoutWrench = map["destroyWithoutWrench"]?.toString()?.toBoolean() == true
+            val customModelData = map["customModelData"]?.toString()?.toIntOrNull()
+            val block = if (type == "command") {
+                val commands = map["commands"] as List<String>?
+                val consoleCommands = map["consoleCommands"] as List<String>?
+                CommandCustomBlock(blockName, lockFacing, axisShift, backgroundBlock, material, displayName, lore, commands ?: emptyList(), consoleCommands ?: emptyList(), destroyWithoutWrench)
+            } else if (type == "beacon") {
+                val effect = PotionEffectType.getByName(map["effect"]?.toString() ?: return plugin.logger.warning("effect is required @ $blockName"))
+                    ?: return plugin.logger.warning("Unknown effect: ${map["effect"]} @ $blockName")
+                val amplifier = map["amplifier"]?.toString()?.toIntOrNull() ?: 0
+                BeaconCustomBlock(blockName, lockFacing, axisShift, backgroundBlock, material, displayName, lore, effect, amplifier, destroyWithoutWrench)
+            } else {
+                error("Unknown block type: $type")
+            }
             block.customModelData = customModelData
             registerCustomBlock(block)
         }
@@ -187,4 +217,23 @@ class CustomBlockManager(val plugin: LifeCore) {
 
     fun isCustomBlockEntity(e: Entity?) =
         e is ArmorStand && e.customName == "custom_block" && !e.isVisible && e.isInvulnerable && e.isSmall
+
+    fun scheduleTick(location: WorldLocation, state: CustomBlockState) {
+        Bukkit.getScheduler().runTaskLater(plugin, Runnable {
+            val newState = state.getBlock().tick(this, location, state)
+            if (newState != null) {
+                setState(location.toBukkitLocation(), newState)
+            }
+        }, 1)
+    }
+
+    init {
+        Bukkit.getScheduler().runTaskLater(plugin, Runnable {
+            getLoadedStates().forEach { (location, state) ->
+                state.getBlock().tick(this, location, state)?.let {
+                    setState(location.toBukkitLocation(), it)
+                }
+            }
+        }, 1)
+    }
 }
