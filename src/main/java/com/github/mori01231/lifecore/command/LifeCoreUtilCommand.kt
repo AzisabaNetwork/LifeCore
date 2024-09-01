@@ -438,6 +438,18 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
                 MapUtil.initializeMapRenderer((player as Player), player.inventory.itemInMainHand)
             }
         },
+        ResetMapId("地図IDをリセットします") {
+            override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
+                player as Player
+                val meta = player.inventory.itemInMainHand.itemMeta as? MapMeta? ?: return player.sendMessage("this is not a map")
+                val mapView = meta.mapView ?: return player.sendMessage("mapView is null")
+                if (mapView.renderers.isEmpty() || mapView.renderers.filterIsInstance<CraftMapRenderer>().isNotEmpty()) {
+                    return player.sendMessage("renderers[0] is an instance of CraftMapRenderer or is null")
+                }
+                meta.mapView = Bukkit.createMap(player.world)
+                player.inventory.setItemInMainHand(player.inventory.itemInMainHand.apply { itemMeta = meta })
+            }
+        },
         FixItem("displayタグを修正します") {
             override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
                 val item = (player as Player).inventory.itemInMainHand

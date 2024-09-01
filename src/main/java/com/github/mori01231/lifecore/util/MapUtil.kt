@@ -46,7 +46,8 @@ object MapUtil {
         if (item.type != Material.FILLED_MAP) return
         val meta = item.itemMeta as? MapMeta? ?: return
         val mapView = meta.mapView ?: return
-        if (mapView.renderers.getOrNull(0) !is CraftMapRenderer) {
+        val hasRenderer = mapView.renderers.isNotEmpty()
+        if (hasRenderer && mapView.renderers[0] !is CraftMapRenderer) {
             if (mapView is CraftMapView) mapView.render(player as CraftPlayer)
             return
         }
@@ -59,7 +60,9 @@ object MapUtil {
             } catch (_: Exception) {
                 return
             }
-        mapView.removeRenderer(mapView.renderers[0])
+        if (hasRenderer) {
+            mapView.removeRenderer(mapView.renderers[0])
+        }
         mapView.addRenderer(SerializedMapDataRenderer(serializedMapData))
         if (mapView is CraftMapView) mapView.render(player as CraftPlayer)
     }
