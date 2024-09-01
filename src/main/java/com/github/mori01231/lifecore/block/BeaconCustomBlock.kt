@@ -22,10 +22,9 @@ class BeaconCustomBlock(
     var ticks = 0
 
     override fun tick(manager: CustomBlockManager, pos: WorldLocation, state: CustomBlockState): CustomBlockState? {
-        scheduleTick(manager, pos, state)
         if (ticks++ % 80 == 0) {
             pos.toBukkitLocation().getNearbyEntitiesByType(Player::class.java, 250.0).forEach { player ->
-                player.addPotionEffect(effect.createEffect(20 * 16, amplifier))
+                player.addPotionEffect(effect.createEffect(20 * 60, amplifier))
             }
         }
         return super.tick(manager, pos, state)

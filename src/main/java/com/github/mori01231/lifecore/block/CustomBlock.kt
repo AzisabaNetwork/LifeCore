@@ -78,8 +78,4 @@ abstract class CustomBlock(
     }
 
     open fun tick(manager: CustomBlockManager, pos: WorldLocation, state: CustomBlockState): CustomBlockState? = null
-
-    fun scheduleTick(manager: CustomBlockManager, pos: WorldLocation, state: CustomBlockState) {
-        manager.scheduleTick(pos, state)
-    }
 }

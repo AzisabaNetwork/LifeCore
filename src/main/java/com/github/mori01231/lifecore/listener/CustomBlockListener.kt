@@ -22,6 +22,8 @@ import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 
 class CustomBlockListener(val plugin: LifeCore) : Listener {
+    private var callingEvent = false
+
     @EventHandler
     fun onPlayerInteract(e: PlayerInteractEvent) {
         if (e.clickedBlock == null) return
@@ -62,6 +64,7 @@ class CustomBlockListener(val plugin: LifeCore) : Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onBlockBreak(e: BlockBreakEvent) {
+        if (callingEvent) return
         val state = plugin.customBlockManager.getState(e.block.location) ?: return
         e.isCancelled = true
         if (!e.player.hasPermission("lifecore.customblock.destroy.${state.blockName}")) {
@@ -138,10 +141,12 @@ class CustomBlockListener(val plugin: LifeCore) : Listener {
                 location.block.type = Material.BARRIER
             }
             try {
+                callingEvent = true
                 if (!BlockBreakEvent(location.block, player).callEvent()) {
                     return
                 }
             } finally {
+                callingEvent = false
                 if (wasAir) {
                     location.block.type = Material.AIR
                 }

@@ -6,7 +6,6 @@ import com.github.mori01231.lifecore.region.WorldLocation
 import com.github.mori01231.lifecore.util.AxisX
 import com.github.mori01231.lifecore.util.LRUCache
 import kotlinx.serialization.json.Json
-import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Location
 import org.bukkit.Material
@@ -78,32 +77,23 @@ class CustomBlockManager(val plugin: LifeCore) {
         region.setState(location.blockX, location.blockY, location.blockZ, state)
     }
 
-    private fun loadRegion(world: World, x: Int, z: Int): CustomBlockRegion {
-        val wld = region.getOrPut(world.name) { LRUCache(100) }
-        val loaded = wld.getOrPut(x to z) {
-            val file = File(regionDir, "${world.name}/$x.$z.json")
-            val loaded = if (file.exists()) {
-                plugin.logger.info("Loading region $x, $z")
-                Json.decodeFromString(CustomBlockRegion.serializer(), file.readText())
-            } else {
-                plugin.logger.info("Creating region $x, $z")
-                CustomBlockRegion(world.name, x, z)
-            }
-            loaded.getAllStates().forEach { (pos, state) ->
-                // tick
-                val newState = state.getBlock().tick(this, WorldLocation(world.name, pos.first, pos.second, pos.third), state)
-                if (newState != null) {
-                    loaded.setState(pos.first, pos.second, pos.third, newState)
+    private fun loadRegion(world: World, x: Int, z: Int): CustomBlockRegion =
+        region.getOrPut(world.name) { LRUCache(100) }
+            .getOrPut(x to z) {
+                val file = File(regionDir, "${world.name}/$x.$z.json")
+                val loaded = if (file.exists()) {
+                    plugin.logger.info("Loading region $x, $z")
+                    Json.decodeFromString(CustomBlockRegion.serializer(), file.readText())
+                } else {
+                    plugin.logger.info("Creating region $x, $z")
+                    CustomBlockRegion(world.name, x, z)
                 }
+                if (loaded.dirty) {
+                    plugin.logger.warning("Region $x, $z was not saved properly")
+                    loaded.save()
+                }
+                loaded
             }
-            loaded
-        }
-        if (loaded.dirty) {
-            plugin.logger.warning("Region $x, $z was not saved properly")
-            loaded.save()
-        }
-        return loaded
-    }
 
     fun getWrenchItem() = ItemStack(Material.STICK).apply {
         itemMeta = itemMeta?.apply {
@@ -217,23 +207,4 @@ class CustomBlockManager(val plugin: LifeCore) {
 
     fun isCustomBlockEntity(e: Entity?) =
         e is ArmorStand && e.customName == "custom_block" && !e.isVisible && e.isInvulnerable && e.isSmall
-
-    fun scheduleTick(location: WorldLocation, state: CustomBlockState) {
-        Bukkit.getScheduler().runTaskLater(plugin, Runnable {
-            val newState = state.getBlock().tick(this, location, state)
-            if (newState != null) {
-                setState(location.toBukkitLocation(), newState)
-            }
-        }, 1)
-    }
-
-    init {
-        Bukkit.getScheduler().runTaskLater(plugin, Runnable {
-            getLoadedStates().forEach { (location, state) ->
-                state.getBlock().tick(this, location, state)?.let {
-                    setState(location.toBukkitLocation(), it)
-                }
-            }
-        }, 1)
-    }
 }
