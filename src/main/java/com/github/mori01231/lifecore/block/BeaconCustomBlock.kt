@@ -17,13 +17,14 @@ class BeaconCustomBlock(
     lore: List<String>? = null,
     private val effect: PotionEffectType,
     private val amplifier: Int,
+    private val radius: Double = 250.0,
     private val destroyWithoutWrench: Boolean,
 ) : CustomBlock(material, displayName, lore) {
     var ticks = 0
 
     override fun tick(manager: CustomBlockManager, pos: WorldLocation, state: CustomBlockState): CustomBlockState? {
         if (ticks++ % 80 == 0) {
-            pos.toBukkitLocation().getNearbyEntitiesByType(Player::class.java, 250.0).forEach { player ->
+            pos.toBukkitLocation().getNearbyEntitiesByType(Player::class.java, radius).forEach { player ->
                 player.addPotionEffect(effect.createEffect(20 * 60, amplifier))
             }
         }
