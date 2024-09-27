@@ -145,7 +145,8 @@ class CustomBlockManager(val plugin: LifeCore) {
                 val effect = PotionEffectType.getByName(map["effect"]?.toString() ?: return plugin.logger.warning("effect is required @ $blockName"))
                     ?: return plugin.logger.warning("Unknown effect: ${map["effect"]} @ $blockName")
                 val amplifier = map["amplifier"]?.toString()?.toIntOrNull() ?: 0
-                BeaconCustomBlock(blockName, lockFacing, axisShift, backgroundBlock, material, displayName, lore, effect, amplifier, destroyWithoutWrench)
+                val radius = map["radius"]?.toString()?.toDouble() ?: 250.0
+                BeaconCustomBlock(blockName, lockFacing, axisShift, backgroundBlock, material, displayName, lore, effect, amplifier, radius, destroyWithoutWrench)
             } else {
                 error("Unknown block type: $type")
             }
