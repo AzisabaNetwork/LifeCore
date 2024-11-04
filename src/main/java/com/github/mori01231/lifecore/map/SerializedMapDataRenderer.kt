@@ -1,8 +1,8 @@
 package com.github.mori01231.lifecore.map
 
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData
-import org.bukkit.craftbukkit.v1_20_R2.map.CraftMapCanvas
-import org.bukkit.craftbukkit.v1_20_R2.map.CraftMapView
+import org.bukkit.craftbukkit.map.CraftMapCanvas
+import org.bukkit.craftbukkit.map.CraftMapView
 import org.bukkit.entity.Player
 import org.bukkit.map.MapCanvas
 import org.bukkit.map.MapRenderer

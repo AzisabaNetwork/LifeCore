@@ -1,7 +1,7 @@
 package com.github.mori01231.lifecore.event;
 
 import net.minecraft.world.entity.Entity;
-import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
+import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;

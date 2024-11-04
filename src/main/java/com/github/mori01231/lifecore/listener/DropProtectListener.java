@@ -9,7 +9,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Items;
 import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.v1_20_R2.entity.CraftItem;
+import org.bukkit.craftbukkit.entity.CraftItem;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerDropItemEvent;

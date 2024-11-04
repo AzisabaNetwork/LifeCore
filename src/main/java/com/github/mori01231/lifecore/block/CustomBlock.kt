@@ -2,13 +2,16 @@ package com.github.mori01231.lifecore.block
 
 import com.github.mori01231.lifecore.region.WorldLocation
 import com.github.mori01231.lifecore.util.AxisX
+import com.github.mori01231.lifecore.util.ItemUtil
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import net.kyori.adventure.text.Component
+import net.minecraft.core.component.DataComponents
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.world.item.component.CustomData
 import org.bukkit.Material
-import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftItemStack
+import org.bukkit.craftbukkit.inventory.CraftItemStack
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.player.PlayerInteractEvent
@@ -45,9 +48,9 @@ abstract class CustomBlock(
     }
 
     open fun onPlace(e: BlockPlaceEvent): CustomBlockState {
-        val nms = CraftItemStack.asNMSCopy(e.itemInHand)
-        val tagString = if (nms.hasTag() && nms.tag!!.contains("CustomBlockState")) {
-            nms.tag!!.getCompound("CustomBlockState").getString("tag")
+        val itemTag = ItemUtil.getCustomData(e.itemInHand)
+        val tagString = if (itemTag != null && itemTag.contains("CustomBlockState")) {
+            itemTag.getCompound("CustomBlockState").getString("tag")
         } else {
             ""
         }
@@ -71,12 +74,14 @@ abstract class CustomBlock(
             lore = this@CustomBlock.lore
         }
         val nms = CraftItemStack.asNMSCopy(item)
-        nms.orCreateTag.put("CustomBlockState", CompoundTag().apply {
+        val itemTag = ItemUtil.getCustomData(item) ?: CompoundTag()
+        itemTag.put("CustomBlockState", CompoundTag().apply {
             putString("blockName", this@CustomBlock.name)
             if (state != null) {
                 putString("tag", Json.encodeToString(state.tag))
             }
         })
+        nms.set(DataComponents.CUSTOM_DATA, CustomData.of(itemTag))
         return CraftItemStack.asCraftMirror(nms)
     }
 

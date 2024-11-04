@@ -1,12 +1,13 @@
 package com.github.mori01231.lifecore.listener
 
 import com.github.mori01231.lifecore.LifeCore
+import com.github.mori01231.lifecore.util.ItemUtil
 import net.kyori.adventure.text.Component
 import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Sound
-import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftItemStack
+import org.bukkit.craftbukkit.inventory.CraftItemStack
 import org.bukkit.entity.Arrow
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -45,14 +46,11 @@ class CustomBlockListener(val plugin: LifeCore) : Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onBlockPlace(e: BlockPlaceEvent) {
-        val nms = CraftItemStack.asNMSCopy(e.itemInHand)
-        if (!nms.hasTag()) {
+        val itemTag = ItemUtil.getCustomData(e.itemInHand)
+        if (itemTag == null || !itemTag.contains("CustomBlockState")) {
             return
         }
-        if (!nms.tag!!.contains("CustomBlockState")) {
-            return
-        }
-        val blockState = nms.tag!!.getCompound("CustomBlockState")
+        val blockState = itemTag.getCompound("CustomBlockState")
         val blockName = blockState.getString("blockName")
         val block = plugin.customBlockManager.findBlockByName(blockName) ?: return
         if (!e.player.hasPermission("lifecore.customblock.place.$blockName")) {

@@ -3,7 +3,7 @@ package com.github.mori01231.lifecore.listener.item
 import com.github.mori01231.lifecore.data.DataLoader
 import com.github.mori01231.lifecore.util.ItemUtil
 import org.bukkit.Material
-import org.bukkit.craftbukkit.v1_20_R2.block.data.CraftBlockData
+import org.bukkit.craftbukkit.block.data.CraftBlockData
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
@@ -23,17 +23,17 @@ class PicksawItemListener(private val dataLoader: DataLoader) : Listener {
         if (ItemUtil.getStringTag(item, "LifeItemId") != ITEM_ID) return
         val minecraftName = "minecraft:" + ((e.clickedBlock ?: return).blockData as CraftBlockData).state.block.asItem().toString()
         if (dataLoader.findTag("minecraft:mineable/axe")?.resolve()?.contains(minecraftName) == true) {
-            item.type = Material.valueOf(item.type.name.substring(0, item.type.name.lastIndexOf('_')) + "_AXE")
-            e.player.inventory.setItemInMainHand(item)
+            val type = Material.valueOf(item.type.name.substring(0, item.type.name.lastIndexOf('_')) + "_AXE")
+            e.player.inventory.setItemInMainHand(ItemUtil.cloneWithNewMaterial(item, type))
         } else if (dataLoader.findTag("minecraft:mineable/pickaxe")?.resolve()?.contains(minecraftName) == true) {
-            item.type = Material.valueOf(item.type.name.substring(0, item.type.name.lastIndexOf('_')) + "_PICKAXE")
-            e.player.inventory.setItemInMainHand(item)
+            val type = Material.valueOf(item.type.name.substring(0, item.type.name.lastIndexOf('_')) + "_PICKAXE")
+            e.player.inventory.setItemInMainHand(ItemUtil.cloneWithNewMaterial(item, type))
         } else if (dataLoader.findTag("minecraft:mineable/shovel")?.resolve()?.contains(minecraftName) == true) {
-            item.type = Material.valueOf(item.type.name.substring(0, item.type.name.lastIndexOf('_')) + "_SHOVEL")
-            e.player.inventory.setItemInMainHand(item)
+            val type = Material.valueOf(item.type.name.substring(0, item.type.name.lastIndexOf('_')) + "_SHOVEL")
+            e.player.inventory.setItemInMainHand(ItemUtil.cloneWithNewMaterial(item, type))
         } else if (dataLoader.findTag("minecraft:mineable/hoe")?.resolve()?.contains(minecraftName) == true) {
-            item.type = Material.valueOf(item.type.name.substring(0, item.type.name.lastIndexOf('_')) + "_HOE")
-            e.player.inventory.setItemInMainHand(item)
+            val type = Material.valueOf(item.type.name.substring(0, item.type.name.lastIndexOf('_')) + "_HOE")
+            e.player.inventory.setItemInMainHand(ItemUtil.cloneWithNewMaterial(item, type))
         }
     }
 }

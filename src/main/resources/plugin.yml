@@ -6,6 +6,8 @@ description: Core plugin for Life Server in Azi Server Network
 depend:
   - AziPluginMessaging
 softdepend:
+  - Autorank
+  - Statz
   - RyuZUPluginChat
   - Votifier
   - MyPet

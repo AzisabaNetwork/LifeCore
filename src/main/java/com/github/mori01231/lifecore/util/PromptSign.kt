@@ -5,7 +5,7 @@ import net.minecraft.core.BlockPos
 import net.minecraft.network.protocol.game.ClientboundOpenSignEditorPacket
 import org.bukkit.Bukkit
 import org.bukkit.Material
-import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer
+import org.bukkit.craftbukkit.entity.CraftPlayer
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.*

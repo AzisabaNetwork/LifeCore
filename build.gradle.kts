@@ -3,17 +3,17 @@ import org.apache.tools.ant.filters.ReplaceTokens
 plugins {
     kotlin("jvm") version "1.9.22"
     kotlin("plugin.serialization") version "1.9.22"
-    id("io.github.goooler.shadow") version "8.1.8"
+    id("com.gradleup.shadow") version "8.3.3"
     id("io.papermc.paperweight.userdev") version "1.7.1"
     java
     `maven-publish`
 }
 
 group = "net.azisaba"
-version = "1.20.2+6.17.2"
+version = "1.21.1+6.17.2"
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
 
     withJavadocJar()
     withSourcesJar()
@@ -60,9 +60,9 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
     implementation("com.charleskorn.kaml:kaml:0.57.0")
     //noinspection GradlePackageUpdate
-    implementation("com.zaxxer:HikariCP:4.0.3")
-    implementation("org.mariadb.jdbc:mariadb-java-client:3.0.6")
-    implementation("org.yaml:snakeyaml:2.0")
+    implementation("com.zaxxer:HikariCP:6.0.0")
+    implementation("org.mariadb.jdbc:mariadb-java-client:3.5.0")
+    implementation("org.yaml:snakeyaml:2.3")
     implementation("xyz.acrylicstyle.java-util:expression:2.0.0-SNAPSHOT")
     compileOnly("net.azisaba:JoinFilter:1.0.0")
     compileOnly("net.azisaba.ballotbox:receiver:1.0.1")
@@ -75,13 +75,13 @@ dependencies {
     compileOnly("com.github.MyPetORG.MyPet:mypet-api:5c8ceeac6a")
     compileOnly("de.keyle:knbt:0.0.5")
     compileOnly("com.github.Staartvin:Autorank-2:4.5.1")
-    //compileOnly("org.spigotmc:spigot-api:1.20.2-R0.1-SNAPSHOT")
-    compileOnly("io.papermc.paper:paper-api:1.20.2-R0.1-SNAPSHOT")
+    //compileOnly("org.spigotmc:spigot-api:1.21.1-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT")
     compileOnly("com.github.Staartvin:Statz:v1.5.5") {
         exclude("nl.lolmewn.stats", "Stats")
         exclude("me.staartvin", "PluginLibrary")
     }
-    paperweight.paperDevBundle("1.20.2-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.21.1-R0.1-SNAPSHOT")
 }
 
 paperweight.reobfArtifactConfiguration.set(io.papermc.paperweight.userdev.ReobfArtifactConfiguration.REOBF_PRODUCTION)

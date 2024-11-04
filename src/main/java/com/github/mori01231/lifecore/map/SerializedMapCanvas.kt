@@ -1,7 +1,7 @@
 package com.github.mori01231.lifecore.map
 
 import kotlinx.serialization.Serializable
-import org.bukkit.craftbukkit.v1_20_R2.map.CraftMapCanvas
+import org.bukkit.craftbukkit.map.CraftMapCanvas
 
 @Serializable
 data class SerializedMapCanvas(val buffer: ByteArray, val base: ByteArray) {

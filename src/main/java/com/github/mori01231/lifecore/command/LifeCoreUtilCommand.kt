@@ -8,19 +8,21 @@ import com.github.mori01231.lifecore.util.MapUtil
 import com.github.mori01231.lifecore.util.MapUtil.getCanvases
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
+import net.minecraft.core.component.DataComponents
 import net.minecraft.nbt.ByteArrayTag
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.TagParser
+import net.minecraft.world.item.component.CustomData
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabExecutor
-import org.bukkit.craftbukkit.v1_20_R2.CraftServer
-import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer
-import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftItemStack
-import org.bukkit.craftbukkit.v1_20_R2.map.CraftMapRenderer
-import org.bukkit.craftbukkit.v1_20_R2.map.CraftMapView
+import org.bukkit.craftbukkit.CraftServer
+import org.bukkit.craftbukkit.entity.CraftPlayer
+import org.bukkit.craftbukkit.inventory.CraftItemStack
+import org.bukkit.craftbukkit.map.CraftMapRenderer
+import org.bukkit.craftbukkit.map.CraftMapView
 import org.bukkit.entity.Player
 import org.bukkit.inventory.meta.MapMeta
 import org.bukkit.util.Vector
@@ -208,7 +210,7 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
         },
         GetTag {
             override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
-                var tag = CraftItemStack.asNMSCopy((player as Player).inventory.itemInMainHand).tag ?: run {
+                var tag = ItemUtil.getCustomData((player as Player).inventory.itemInMainHand) ?: run {
                     player.sendMessage(Component.text("Item has no tag.", NamedTextColor.RED))
                     return
                 }
@@ -233,8 +235,9 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
                     return
                 }
                 val item = CraftItemStack.asNMSCopy((player as Player).inventory.itemInMainHand)
-                val tag = item.tag ?: CompoundTag()
+                val tag = ItemUtil.getCustomData((player as Player).inventory.itemInMainHand) ?: CompoundTag()
                 tag.merge(TagParser.parseTag(args.joinToString(" ")))
+                item.set(DataComponents.CUSTOM_DATA, CustomData.of(tag))
                 player.inventory.setItemInMainHand(CraftItemStack.asBukkitCopy(item))
             }
         },
@@ -244,8 +247,9 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
                     player.sendMessage(Component.text("Usage: /lifecoreutil $commandName <value>", NamedTextColor.RED))
                     return
                 }
+                val tag = TagParser.parseTag(args.joinToString(" "))
                 val item = CraftItemStack.asNMSCopy((player as Player).inventory.itemInMainHand)
-                item.tag = TagParser.parseTag(args.joinToString(" "))
+                item.set(DataComponents.CUSTOM_DATA, CustomData.of(tag))
                 player.inventory.setItemInMainHand(CraftItemStack.asBukkitCopy(item))
             }
         },
