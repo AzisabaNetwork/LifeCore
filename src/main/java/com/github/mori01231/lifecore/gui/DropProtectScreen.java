@@ -1,24 +1,19 @@
 package com.github.mori01231.lifecore.gui;
 
 import com.github.mori01231.lifecore.LifeCore;
-import com.github.mori01231.lifecore.util.ItemUtil;
 import net.azisaba.rarity.api.RarityAPIProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
-
 public class DropProtectScreen implements InventoryHolder {
-    private final Inventory inventory = Bukkit.createInventory(this, 9, "DropProtect");
+    private final Inventory inventory = Bukkit.createInventory(this, 18, "DropProtect");
     private final LifeCore plugin;
     private final Player player;
 
@@ -44,77 +39,8 @@ public class DropProtectScreen implements InventoryHolder {
         String mythicLore = plugin.getDropProtectConfig().contains(player.getUniqueId(), "mythic") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
         String specialName = RarityAPIProvider.get().getRarityById("special").getDisplayName(player);
         String specialLore = plugin.getDropProtectConfig().contains(player.getUniqueId(), "special") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
-        inventory.setItem(0, ItemUtil.createItemStack(Material.PAPER, 1, item -> {
-            ItemMeta meta = item.getItemMeta();
-            if (meta != null) {
-                meta.setDisplayName(ChatColor.WHITE + "レア度が付与されていないアイテム");
-                meta.setLore(Collections.singletonList(noRarityLore));
-                item.setItemMeta(meta);
-            }
-        }));
-        inventory.setItem(1, ItemUtil.createItemStack(Material.COBBLESTONE, 1, item -> {
-            ItemMeta meta = item.getItemMeta();
-            if (meta != null) {
-                meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', commonName));
-                meta.setLore(Collections.singletonList(commonLore));
-                item.setItemMeta(meta);
-            }
-        }));
-        inventory.setItem(2, ItemUtil.createItemStack(Material.IRON_BLOCK, 1, item -> {
-            ItemMeta meta = item.getItemMeta();
-            if (meta != null) {
-                meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', uncommonName));
-                meta.setLore(Collections.singletonList(uncommonLore));
-                item.setItemMeta(meta);
-            }
-        }));
-        inventory.setItem(3, ItemUtil.createItemStack(Material.GOLD_BLOCK, 1, item -> {
-            ItemMeta meta = item.getItemMeta();
-            if (meta != null) {
-                meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', rareName));
-                meta.setLore(Collections.singletonList(rareLore));
-                item.setItemMeta(meta);
-            }
-        }));
-        inventory.setItem(4, ItemUtil.createItemStack(Material.EMERALD_BLOCK, 1, item -> {
-            ItemMeta meta = item.getItemMeta();
-            if (meta != null) {
-                meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', epicName));
-                meta.setLore(Collections.singletonList(epicLore));
-                item.setItemMeta(meta);
-            }
-        }));
-        inventory.setItem(5, ItemUtil.createItemStack(Material.DIAMOND_BLOCK, 1, item -> {
-            ItemMeta meta = item.getItemMeta();
-            if (meta != null) {
-                meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', legendaryName));
-                meta.setLore(Collections.singletonList(legendaryLore));
-                item.setItemMeta(meta);
-            }
-        }));
-        inventory.setItem(6, ItemUtil.createItemStack(Material.ENCHANTED_GOLDEN_APPLE, 1, item -> {
-            ItemMeta meta = item.getItemMeta();
-            if (meta != null) {
-                meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', mythicName));
-                meta.setLore(Collections.singletonList(mythicLore));
-                item.setItemMeta(meta);
-            }
-        }));
-        inventory.setItem(7, ItemUtil.createItemStack(Material.NETHER_STAR, 1, item -> {
-            ItemMeta meta = item.getItemMeta();
-            if (meta != null) {
-                meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', specialName));
-                meta.setLore(Collections.singletonList(specialLore));
-                item.setItemMeta(meta);
-            }
-        }));
-        inventory.setItem(8, ItemUtil.createItemStack(Material.BARRIER, 1, item -> {
-            ItemMeta meta = item.getItemMeta();
-            if (meta != null) {
-                meta.setDisplayName(ChatColor.RED + "閉じる");
-                item.setItemMeta(meta);
-            }
-        }));
+        String hasPvELevelLore = plugin.getDropProtectConfig().contains(player.getUniqueId(), "has_pve_level") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
+        TrashProtectScreen.setItems(noRarityLore, commonName, commonLore, uncommonName, uncommonLore, rareName, rareLore, epicName, epicLore, legendaryName, legendaryLore, mythicName, mythicLore, specialName, specialLore, hasPvELevelLore, inventory);
     }
 
     @NotNull
@@ -174,6 +100,10 @@ public class DropProtectScreen implements InventoryHolder {
                     break;
                 }
                 case 8: {
+                    plugin.getDropProtectConfig().toggle(screen.player.getUniqueId(), "has_pve_level");
+                    break;
+                }
+                case 17: {
                     screen.player.closeInventory();
                     return;
                 }

@@ -4,6 +4,7 @@ import com.github.mori01231.lifecore.LifeCore
 import com.github.mori01231.lifecore.TrashInventory
 import com.github.mori01231.lifecore.util.ItemUtil
 import net.azisaba.itemstash.ItemStash
+import net.azisaba.lifepvelevel.util.Util
 import net.azisaba.rarity.api.Rarity
 import net.azisaba.rarity.api.RarityAPIProvider
 import org.bukkit.Bukkit
@@ -26,15 +27,20 @@ class TrashListener(private val plugin: LifeCore) : Listener {
                 for (i in 0..<e.inventory.size) {
                     val item = e.inventory.getItem(i) ?: continue
                     val rarity: Rarity? = RarityAPIProvider.get().getRarityByItemStack(item)
-                    val shouldCancel = if (rarity == null) {
-                        if (plugin.trashProtectConfig.contains(e.whoClicked.uniqueId, "no_rarity")) {
+                    val shouldCancel =
+                        if (plugin.trashProtectConfig.contains(e.whoClicked.uniqueId, "has_pve_level") && Util.getRequiredLevel(item) > 0) {
                             true
                         } else {
-                            continue
+                            if (rarity == null) {
+                                if (plugin.trashProtectConfig.contains(e.whoClicked.uniqueId, "no_rarity")) {
+                                    true
+                                } else {
+                                    continue
+                                }
+                            } else {
+                                plugin.trashProtectConfig.contains(e.whoClicked.uniqueId, rarity.id)
+                            }
                         }
-                    } else {
-                        plugin.trashProtectConfig.contains(e.whoClicked.uniqueId, rarity.id)
-                    }
                     if (shouldCancel) {
                         e.inventory.setItem(i, null)
                         e.whoClicked.inventory.addItem(item).forEach { (_, s) ->
