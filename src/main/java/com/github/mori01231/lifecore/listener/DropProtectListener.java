@@ -2,6 +2,7 @@ package com.github.mori01231.lifecore.listener;
 
 import com.github.mori01231.lifecore.LifeCore;
 import net.azisaba.itemstash.ItemStash;
+import net.azisaba.lifepvelevel.util.Util;
 import net.azisaba.rarity.api.Rarity;
 import net.azisaba.rarity.api.RarityAPI;
 import net.azisaba.rarity.api.RarityAPIProvider;
@@ -32,14 +33,18 @@ public class DropProtectListener implements Listener {
     public void onDrop(PlayerDropItemEvent e) {
         Rarity rarity = rarityAPI.getRarityByItemStack(e.getItemDrop().getItemStack());
         boolean shouldCancel;
-        if (rarity == null) {
-            if (plugin.getDropProtectConfig().contains(e.getPlayer().getUniqueId(), "no_rarity")) {
-                shouldCancel = true;
-            } else {
-                return;
-            }
+        if (plugin.getDropProtectConfig().contains(e.getPlayer().getUniqueId(), "has_pve_level") && Util.getRequiredLevel(e.getItemDrop().getItemStack()) > 0) {
+            shouldCancel = true;
         } else {
-            shouldCancel = plugin.getDropProtectConfig().contains(e.getPlayer().getUniqueId(), rarity.getId());
+            if (rarity == null) {
+                if (plugin.getDropProtectConfig().contains(e.getPlayer().getUniqueId(), "no_rarity")) {
+                    shouldCancel = true;
+                } else {
+                    return;
+                }
+            } else {
+                shouldCancel = plugin.getDropProtectConfig().contains(e.getPlayer().getUniqueId(), rarity.getId());
+            }
         }
         if (shouldCancel) {
             ItemStack stack = e.getItemDrop().getItemStack();
@@ -59,7 +64,7 @@ public class DropProtectListener implements Listener {
             entityItem.getEntityData().set(itemStackDataWatcherObject, new net.minecraft.world.item.ItemStack(Items.AIR));
             entityItem.getEntityData().markDirty(itemStackDataWatcherObject);
 
-            e.getPlayer().sendMessage(ChatColor.RED + "このレア度のアイテムはドロップできません。");
+            e.getPlayer().sendMessage(ChatColor.RED + "このアイテムはドロップできません。");
             e.getPlayer().sendMessage(ChatColor.AQUA + "/dropprotect" + ChatColor.GOLD + "で設定を変更できます。");
             e.getPlayer().getInventory().addItem(stack).forEach((i, s) -> {
                 itemStash.addItemToStash(e.getPlayer().getUniqueId(), s);

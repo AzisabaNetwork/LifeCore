@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 
 public class TrashProtectScreen implements InventoryHolder {
-    private final Inventory inventory = Bukkit.createInventory(this, 9, "TrashProtect");
+    private final Inventory inventory = Bukkit.createInventory(this, 18, "TrashProtect");
     private final LifeCore plugin;
     private final Player player;
 
@@ -44,6 +44,11 @@ public class TrashProtectScreen implements InventoryHolder {
         String mythicLore = plugin.getTrashProtectConfig().contains(player.getUniqueId(), "mythic") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
         String specialName = RarityAPIProvider.get().getRarityById("special").getDisplayName(player);
         String specialLore = plugin.getTrashProtectConfig().contains(player.getUniqueId(), "special") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
+        String hasPvELevelLore = plugin.getTrashProtectConfig().contains(player.getUniqueId(), "has_pve_level") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
+        setItems(noRarityLore, commonName, commonLore, uncommonName, uncommonLore, rareName, rareLore, epicName, epicLore, legendaryName, legendaryLore, mythicName, mythicLore, specialName, specialLore, hasPvELevelLore, inventory);
+    }
+
+    static void setItems(String noRarityLore, String commonName, String commonLore, String uncommonName, String uncommonLore, String rareName, String rareLore, String epicName, String epicLore, String legendaryName, String legendaryLore, String mythicName, String mythicLore, String specialName, String specialLore, String hasPvELevelLore, Inventory inventory) {
         inventory.setItem(0, ItemUtil.createItemStack(Material.PAPER, 1, item -> {
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
@@ -108,7 +113,15 @@ public class TrashProtectScreen implements InventoryHolder {
                 item.setItemMeta(meta);
             }
         }));
-        inventory.setItem(8, ItemUtil.createItemStack(Material.BARRIER, 1, item -> {
+        inventory.setItem(8, ItemUtil.createItemStack(Material.MAP, 1, item -> {
+            ItemMeta meta = item.getItemMeta();
+            if (meta != null) {
+                meta.setDisplayName(ChatColor.YELLOW + "PvEレベルが付与されているアイテム");
+                meta.setLore(Collections.singletonList(hasPvELevelLore));
+                item.setItemMeta(meta);
+            }
+        }));
+        inventory.setItem(17, ItemUtil.createItemStack(Material.BARRIER, 1, item -> {
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
                 meta.setDisplayName(ChatColor.RED + "閉じる");
@@ -174,6 +187,10 @@ public class TrashProtectScreen implements InventoryHolder {
                     break;
                 }
                 case 8: {
+                    plugin.getTrashProtectConfig().toggle(screen.player.getUniqueId(), "has_pve_level");
+                    break;
+                }
+                case 17: {
                     screen.player.closeInventory();
                     return;
                 }
