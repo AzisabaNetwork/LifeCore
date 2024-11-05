@@ -42,9 +42,9 @@ public class ItemUtil {
     }
 
     @Contract("null, _ -> null")
-    public static @Nullable NBTBase getTag(@Nullable ItemStack stack, @NotNull String key) {
+    public static @Nullable Tag getTag(@Nullable ItemStack stack, @NotNull String key) {
         if (stack == null || stack.getType().isAir()) return null;
-        NBTTagCompound tag = CraftItemStack.asNMSCopy(stack).getTag();
+        CompoundTag tag = CraftItemStack.asNMSCopy(stack).getTag();
         if (tag == null) return null;
         return tag.get(key);
     }
@@ -59,7 +59,7 @@ public class ItemUtil {
 
     public static int getIntTag(@Nullable ItemStack stack, @NotNull String key) {
         if (stack == null || stack.getType().isAir()) return 0;
-        NBTTagCompound tag = CraftItemStack.asNMSCopy(stack).getTag();
+        CompoundTag tag = CraftItemStack.asNMSCopy(stack).getTag();
         if (tag == null) return 0;
         return tag.getInt(key);
     }
@@ -179,7 +179,7 @@ public class ItemUtil {
         ItemStack newStack = setTag(stack, null, backup);
         for (String bypassTag : RESTORE_BYPASS_SET) {
             if (containsTag(stack, bypassTag)) {
-                NBTBase value = getTag(stack, bypassTag);
+                Tag value = getTag(stack, bypassTag);
                 assert value != null;
                 newStack = setTag(newStack, bypassTag, value);
             }
