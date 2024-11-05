@@ -15,10 +15,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class ItemUtil {
@@ -45,11 +42,26 @@ public class ItemUtil {
     }
 
     @Contract("null, _ -> null")
+    public static @Nullable NBTBase getTag(@Nullable ItemStack stack, @NotNull String key) {
+        if (stack == null || stack.getType().isAir()) return null;
+        NBTTagCompound tag = CraftItemStack.asNMSCopy(stack).getTag();
+        if (tag == null) return null;
+        return tag.get(key);
+    }
+
+    @Contract("null, _ -> null")
     public static @Nullable String getStringTag(@Nullable ItemStack stack, @NotNull String key) {
         if (stack == null || stack.getType().isAir()) return null;
         CompoundTag tag = CraftItemStack.asNMSCopy(stack).getTag();
         if (tag == null) return null;
         return tag.getString(key);
+    }
+
+    public static int getIntTag(@Nullable ItemStack stack, @NotNull String key) {
+        if (stack == null || stack.getType().isAir()) return 0;
+        NBTTagCompound tag = CraftItemStack.asNMSCopy(stack).getTag();
+        if (tag == null) return 0;
+        return tag.getInt(key);
     }
 
     @Contract("null, _ -> null")
@@ -155,6 +167,8 @@ public class ItemUtil {
         return setTag(stack, "backup", tag);
     }
 
+    private static final Set<String> RESTORE_BYPASS_SET = new HashSet<>(Collections.singletonList("Damage"));
+
     @Contract("null -> null")
     public static ItemStack restoreTag(@Nullable ItemStack stack) {
         if (stack == null || stack.getType().isAir()) return null;
@@ -162,7 +176,15 @@ public class ItemUtil {
         if (tag == null) return stack;
         CompoundTag backup = tag.getCompound("backup");
         if (backup.isEmpty()) return stack;
-        return setTag(stack, null, backup);
+        ItemStack newStack = setTag(stack, null, backup);
+        for (String bypassTag : RESTORE_BYPASS_SET) {
+            if (containsTag(stack, bypassTag)) {
+                NBTBase value = getTag(stack, bypassTag);
+                assert value != null;
+                newStack = setTag(newStack, bypassTag, value);
+            }
+        }
+        return newStack;
     }
 
     public static boolean containsTag(@Nullable ItemStack stack, @NotNull String key) {
