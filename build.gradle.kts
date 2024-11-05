@@ -67,7 +67,9 @@ dependencies {
     compileOnly("net.azisaba:JoinFilter:1.0.0")
     compileOnly("net.azisaba.ballotbox:receiver:1.0.1")
     compileOnly("net.azisaba.azipluginmessaging:api:4.0.3")
-    compileOnly("net.azisaba:RyuZUPluginChat:4.2.0")
+    compileOnly("net.azisaba:RyuZUPluginChat:4.2.0") {
+        exclude("co.aikar", "taskchain-core")
+    }
     compileOnly("net.azisaba.rarity:api:1.0.1-SNAPSHOT")
     compileOnly("net.azisaba:ItemStash:1.0.0-SNAPSHOT")
     //noinspection VulnerableLibrariesLocal
