@@ -2,7 +2,7 @@ package com.github.mori01231.lifecore.util
 
 import com.github.mori01231.lifecore.DBConnector
 import com.github.mori01231.lifecore.LifeCore
-import net.minecraft.server.v1_15_R1.NBTTagByteArray
+import net.minecraft.nbt.ByteArrayTag
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Material
@@ -141,7 +141,7 @@ object MapDatabaseUtil {
     ) {
         fun toItemStack() =
             ItemStack(Material.FILLED_MAP, amount.toInt())
-                .let { ItemUtil.setTag(it, "SerializedMapData", NBTTagByteArray(data)) }
+                .let { ItemUtil.setTag(it, "SerializedMapData", ByteArrayTag(data)) }
                 .apply {
                     itemMeta = (itemMeta as MapMeta).apply {
                         mapView = Bukkit.createMap(Bukkit.getWorlds()[0])
