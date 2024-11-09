@@ -22,6 +22,7 @@ import org.bukkit.map.MapRenderer
 import org.bukkit.map.MapView
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.Collections
+import java.util.UUID
 
 object MapUtil {
     private fun convertCanvasToSerializable(canvas: MapCanvas) =
@@ -57,7 +58,7 @@ object MapUtil {
         return null
     }
 
-    private val renderedMapViews = Collections.synchronizedList(mutableListOf<Pair<Player, CraftMapView>>())
+    val renderedMapViews = Collections.synchronizedList(mutableListOf<Pair<UUID, Int>>())
 
     fun initializeMapRenderer(player: Player, item: ItemStack) {
         if (item.type != Material.FILLED_MAP) return
@@ -66,8 +67,8 @@ object MapUtil {
         val hasRenderer = mapView.renderers.isNotEmpty()
         if (hasRenderer && mapView.renderers[0] !is CraftMapRenderer) {
             if (mapView is CraftMapView) {
-                if (renderedMapViews.contains(player to mapView)) return
-                renderedMapViews.add(player to mapView)
+                if (renderedMapViews.contains(player.uniqueId to mapView.id)) return
+                renderedMapViews.add(player.uniqueId to mapView.id)
                 Bukkit.getScheduler().runTask(JavaPlugin.getPlugin(LifeCore::class.java), Runnable {
                     mapView.render(player as CraftPlayer)
                 })
