@@ -9,6 +9,6 @@ import org.bukkit.event.Listener
 object PromptSignListener : Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onSign(e: AsyncPreSignChangeEvent) {
-        PromptSign.awaitingSign[e.player.uniqueId]?.invoke(e.lines.toList())
+        PromptSign.awaitingSign.remove(e.player.uniqueId)?.invoke(e.lines.toList())
     }
 }
