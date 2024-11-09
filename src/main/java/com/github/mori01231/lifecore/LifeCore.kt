@@ -332,6 +332,7 @@ class LifeCore : JavaPlugin() {
         pm.registerEvents(PicksawItemListener(dataLoader), this)
         pm.registerEvents(BlockListener, this)
         pm.registerEvents(MapListScreen.EventListener, this)
+        pm.registerEvents(PlayerQuitListener, this)
 
         // Items
         pm.registerEvents(OreOnlyItemListener(), this)
