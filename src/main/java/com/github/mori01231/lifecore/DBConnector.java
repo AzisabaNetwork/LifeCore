@@ -38,6 +38,14 @@ public class DBConnector {
                     "  `word` VARCHAR(255) NOT NULL," +
                     "  UNIQUE KEY `id_word` (`id`, `word`)" +
                     ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS `player_maps` (" +
+                    "  `owner` VARCHAR(36) NOT NULL," +
+                    "  `name` VARCHAR(128) NOT NULL," +
+                    "  `data` MEDIUMBLOB NOT NULL," +
+                    "  `amount` BIGINT NOT NULL DEFAULT 1," +
+                    "  `hash` VARCHAR(256) NOT NULL," +
+                    "  PRIMARY KEY (`owner`, `hash`)" +
+                    ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
         });
     }
 

@@ -6,6 +6,7 @@ import com.github.mori01231.lifecore.config.*
 import com.github.mori01231.lifecore.data.DataLoader
 import com.github.mori01231.lifecore.gui.CommandListScreen
 import com.github.mori01231.lifecore.gui.DropProtectScreen
+import com.github.mori01231.lifecore.gui.MapListScreen
 import com.github.mori01231.lifecore.gui.TrashProtectScreen
 import com.github.mori01231.lifecore.listener.*
 import com.github.mori01231.lifecore.listener.item.*
@@ -153,6 +154,7 @@ class LifeCore : JavaPlugin() {
         registerCommand("gclistenerrestartextendtimecommand", GCListenerRestartExtendTimeCommand(this))
         registerCommand("lifecoreutil", LifeCoreUtilCommand(this))
         registerCommand("commandlist", CommandListCommand)
+        registerCommand("maplist", MapListCommand)
         registerCommand("respawn") { _, _, _, args ->
             args.getOrNull(0)?.let { Bukkit.getPlayerExact(it)?.spigot()?.respawn() }
             true
@@ -253,7 +255,7 @@ class LifeCore : JavaPlugin() {
                     if (pipeline["lifecore"] != null) {
                         pipeline.remove("lifecore")
                     }
-                } catch (ignored: NoSuchElementException) {
+                } catch (_: NoSuchElementException) {
                 }
             }
         }
@@ -261,7 +263,7 @@ class LifeCore : JavaPlugin() {
     }
 
     private fun preloadClasses() {
-        for (i in 0..5) {
+        for (i in 0..10) {
             preloadClass("com.github.mori01231.lifecore.LifeCore\$onDisable\$$i", false)
         }
         preloadClass("com.github.mori01231.lifecore.lib.com.charleskorn.kaml.Yaml\$encodeToString\$writer\$1")
@@ -269,6 +271,13 @@ class LifeCore : JavaPlugin() {
         preloadClass("com.github.mori01231.lifecore.lib.org.yaml.snakeyaml.Yaml")
         preloadClass("com.github.mori01231.lifecore.lib.org.yaml.snakeyaml.nodes.CollectionNode")
         preloadClass("com.github.mori01231.lifecore.lib.org.yaml.snakeyaml.nodes.SequenceNode")
+        preloadClass("com.github.mori01231.lifecore.lib.org.snakeyaml.engine.v2.api.DumpSettings")
+        preloadClass("com.github.mori01231.lifecore.lib.org.snakeyaml.engine.v2.api.DumpSettingsBuilder")
+        preloadClass("com.github.mori01231.lifecore.lib.org.yaml.snakeyaml.nodes.MappingNode")
+        preloadClass("com.github.mori01231.lifecore.lib.org.snakeyaml.engine.v2.serializer.NumberAnchorGenerator")
+        preloadClass("com.github.mori01231.lifecore.lib.org.snakeyaml.engine.v2.common.NonPrintableStyle")
+        preloadClass("com.github.mori01231.lifecore.lib.org.snakeyaml.engine.v2.emitter.Emitter")
+        preloadClass("com.github.mori01231.lifecore.lib.org.yaml.snakeyaml.constructor.ConstructorException")
     }
 
     private fun preloadClass(name: String, required: Boolean = true) {
@@ -319,6 +328,7 @@ class LifeCore : JavaPlugin() {
         pm.registerEvents(PromptSignListener, this)
         pm.registerEvents(PicksawItemListener(dataLoader), this)
         pm.registerEvents(BlockListener, this)
+        pm.registerEvents(MapListScreen.EventListener, this)
 
         // Items
         pm.registerEvents(OreOnlyItemListener(), this)

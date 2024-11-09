@@ -417,9 +417,9 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
         },
         SaveMapData("地図をサーバー移動可能な形に変換します") {
             override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
-                val meta = (player as Player).inventory.itemInMainHand.itemMeta as? MapMeta? ?: return player.sendMessage("this is not a map")
+                val meta = (player as Player).inventory.itemInMainHand.itemMeta as? MapMeta? ?: return player.sendMessage("地図を手に持って再度実行してください")
                 val mapView = meta.mapView ?: return player.sendMessage("mapView is null")
-                if (mapView.renderers.getOrNull(0) !is CraftMapRenderer) return player.sendMessage("renderers[0] is not an instance of CraftMapRenderer")
+                if (mapView.renderers.getOrNull(0) !is CraftMapRenderer) return player.sendMessage("すでに変換済みのようです")
                 if (mapView is CraftMapView) mapView.render(player as CraftPlayer)
                 val canvas =
                     mapView.getCanvases()[mapView.renderers.first()]?.get(player as CraftPlayer)
