@@ -1,4 +1,4 @@
-package com.github.mori01231.lifecore.command
+package com.github.mori01231.lifecore.listener
 
 import com.github.mori01231.lifecore.util.ItemUtil
 import org.bukkit.ChatColor
