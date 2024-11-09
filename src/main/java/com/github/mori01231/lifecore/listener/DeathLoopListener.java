@@ -40,8 +40,8 @@ public class DeathLoopListener implements Listener {
             return false;
         }
         for (AttributeModifier modifier : attr.getModifiers()) {
-            if (modifier.getName().equals("lifecore.temp_health_boost_scalar") ||
-                    modifier.getName().equals("lifecore.temp_health_boost_number")) {
+            if (modifier.getKey().equals(new NamespacedKey("lifecore", "temp_health_boost_scalar")) ||
+                    modifier.getKey().equals(new NamespacedKey("lifecore", "temp_health_boost_number"))) {
                 return true;
             }
         }
