@@ -183,6 +183,9 @@ commands:
   commandlist:
     permission: lifecore.commandlist
     aliases: ["commands"]
+  maplist:
+    permission: lifecore.maplist
+    aliases: ["maps"]
 
 permissions:
   lifecore.*:
