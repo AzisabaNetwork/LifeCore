@@ -197,6 +197,7 @@ class LifeCore : JavaPlugin() {
                 }
             }
             if (Bukkit.getOnlinePlayers().isEmpty()) return@Runnable
+            if (config.getBoolean("disable-item-frame-map-update", false)) return@Runnable
             Bukkit.getWorlds().forEach world@ { world ->
                 world.getEntitiesByClass(ItemFrame::class.java).forEach { itemFrame ->
                     Bukkit.getScheduler().runTaskAsynchronously(this, Runnable {
