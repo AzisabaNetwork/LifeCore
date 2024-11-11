@@ -77,7 +77,7 @@ dependencies {
     compileOnly("com.destroystokyo.paper:paper-api:1.15.2-R0.1-SNAPSHOT")
     compileOnly("org.spigotmc:spigot:1.15.2-R0.1-SNAPSHOT")
     compileOnly("io.lumine:Mythic-Dist:4.13.0")
-    compileOnly("com.onarandombox.multiversecore:multiverse-core:4.3.12")
+    compileOnly("com.onarandombox.multiversecore:multiverse-core:4.3.1")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7")
     compileOnly("com.github.MyPetORG.MyPet:mypet-api:5c8ceeac6a")
     compileOnly("de.keyle:knbt:0.0.5")
