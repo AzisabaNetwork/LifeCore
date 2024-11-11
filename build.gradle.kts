@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "net.azisaba"
-version = "6.18.4+1.15.2"
+version = "6.19.0+1.15.2"
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(8))
@@ -52,6 +52,7 @@ repositories {
         name = "mypet"
         url = uri("https://repo.mypet-plugin.de/")
     }
+    maven("https://repo.onarandombox.com/content/groups/public/")
 }
 
 dependencies {
@@ -76,6 +77,7 @@ dependencies {
     compileOnly("com.destroystokyo.paper:paper-api:1.15.2-R0.1-SNAPSHOT")
     compileOnly("org.spigotmc:spigot:1.15.2-R0.1-SNAPSHOT")
     compileOnly("io.lumine:Mythic-Dist:4.13.0")
+    compileOnly("com.onarandombox.multiversecore:multiverse-core:4.3.12")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7")
     compileOnly("com.github.MyPetORG.MyPet:mypet-api:5c8ceeac6a")
     compileOnly("de.keyle:knbt:0.0.5")

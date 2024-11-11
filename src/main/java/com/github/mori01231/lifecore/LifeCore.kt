@@ -155,6 +155,7 @@ class LifeCore : JavaPlugin() {
         registerCommand("lifecoreutil", LifeCoreUtilCommand(this))
         registerCommand("commandlist", CommandListCommand)
         registerCommand("maplist", MapListCommand)
+        registerCommand("worldcreate", WorldCreateCommand())
         registerCommand("respawn") { _, _, _, args ->
             args.getOrNull(0)?.let { Bukkit.getPlayerExact(it)?.spigot()?.respawn() }
             true
