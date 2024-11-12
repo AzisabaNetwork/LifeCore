@@ -12,7 +12,7 @@ group = "net.azisaba"
 version = "6.19.0+1.15.2"
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(8))
+    toolchain.languageVersion.set(JavaLanguageVersion.of(11))
 
     withJavadocJar()
     withSourcesJar()
