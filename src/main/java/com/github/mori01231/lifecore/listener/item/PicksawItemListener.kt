@@ -21,7 +21,7 @@ class PicksawItemListener(private val dataLoader: DataLoader) : Listener {
         if (e.action != Action.LEFT_CLICK_BLOCK) return
         val item = e.player.inventory.itemInMainHand
         if (ItemUtil.getStringTag(item, "LifeItemId") != ITEM_ID) return
-        val minecraftName = "minecraft:" + ((e.clickedBlock ?: return).blockData as CraftBlockData).state.block.asItem().toString()
+        val minecraftName = ((e.clickedBlock ?: return).blockData as CraftBlockData).state.block.asItem().toString()
         if (dataLoader.findTag("minecraft:mineable/axe")?.resolve()?.contains(minecraftName) == true) {
             val type = Material.valueOf(item.type.name.substring(0, item.type.name.lastIndexOf('_')) + "_AXE")
             e.player.inventory.setItemInMainHand(ItemUtil.cloneWithNewMaterial(item, type))
