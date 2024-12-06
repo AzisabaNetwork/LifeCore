@@ -12,6 +12,7 @@ import java.util.List;
 
 public class UnableCraftListener implements Listener {
 
+    /*for lifenewpve
     private static final List <String> LIST = Arrays.asList( "§a", "§b","§c","§d","§e","§f", "§0","§1","§2","§3","§4","§5","§6","§7","§8", "§9", "§n", "§m", "§o", "§k", "§l");
 
     @EventHandler
@@ -48,4 +49,6 @@ public class UnableCraftListener implements Listener {
 
         return false;
     }
+
+     */
 }
