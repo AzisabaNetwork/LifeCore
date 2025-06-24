@@ -332,6 +332,7 @@ class LifeCore : JavaPlugin() {
         pm.registerEvents(WandItemListener(this), this)
         pm.registerEvents(EscapeLobbyListener(this), this)
         pm.registerEvents(PreventOpenMerchantMenuListener(), this)
+        pm.registerEvents(PreventStorageBoxSellListener(this), this)
         pm.registerEvents(CancelMythicItemPlaceListener(), this)
         pm.registerEvents(GameModeChangeLoggerListener(this), this)
         pm.registerEvents(FixMythicItemListener, this)
