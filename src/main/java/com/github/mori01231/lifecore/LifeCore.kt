@@ -200,16 +200,17 @@ class LifeCore : JavaPlugin() {
             }
             if (Bukkit.getOnlinePlayers().isEmpty()) return@Runnable
             Bukkit.getWorlds().forEach world@ { world ->
-                world.getEntitiesByClass(ItemFrame::class.java).forEach { itemFrame ->
-                    Bukkit.getScheduler().runTaskAsynchronously(this, Runnable {
+                val list = world.getEntitiesByClass(ItemFrame::class.java)
+                Bukkit.getScheduler().runTaskAsynchronously(this, Runnable {
+                    list.forEach { itemFrame ->
                         val item = itemFrame.item
                         Bukkit.getOnlinePlayers().forEach { player ->
                             MapUtil.initializeMapRenderer(player, item)
                         }
-                    })
-                }
+                    }
+                })
             }
-        }, 200, 200)
+        }, 20 * 30, 20 * 30)
 
         Bukkit.getScheduler().runTaskTimer(this, Runnable {
             customBlockManager.getLoadedStates().forEach { (location, state) ->

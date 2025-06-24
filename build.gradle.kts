@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "net.azisaba"
-version = "6.19.0+1.15.2"
+version = "6.19.1+1.15.2"
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(11))
@@ -81,10 +81,13 @@ dependencies {
     compileOnly("com.github.MilkBowl:VaultAPI:1.7")
     compileOnly("com.github.MyPetORG.MyPet:mypet-api:5c8ceeac6a")
     compileOnly("de.keyle:knbt:0.0.5")
-    compileOnly("com.github.Staartvin:Autorank-2:4.5.1")
+    compileOnly("com.github.Staartvin:Autorank-2:4.5.1") {
+        exclude("org.bukkit", "bukkit")
+    }
     compileOnly("com.github.Staartvin:Statz:v1.5.5") {
         exclude("nl.lolmewn.stats", "Stats")
         exclude("me.staartvin", "PluginLibrary")
+        exclude("org.bukkit", "bukkit")
     }
 }
 
