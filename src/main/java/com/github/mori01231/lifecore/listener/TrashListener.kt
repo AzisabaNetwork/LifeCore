@@ -42,8 +42,11 @@ class TrashListener(private val plugin: LifeCore) : Listener {
                     }
                     
                     val rarity: Rarity? = RarityAPIProvider.get().getRarityByItemStack(item)
+                    val requiredLevel = Util.getRequiredLevel(item)
                     val shouldCancel =
-                        if (plugin.trashProtectConfig.contains(e.whoClicked.uniqueId, "has_pve_level") && Util.getRequiredLevel(item) > 0) {
+                        if (plugin.trashProtectConfig.contains(e.whoClicked.uniqueId, "has_pve_level") && requiredLevel > 0) {
+                            true
+                        } else if (plugin.trashProtectConfig.contains(e.whoClicked.uniqueId, "has_no_pve_level") && requiredLevel == 0L) {
                             true
                         } else {
                             if (rarity == null) {

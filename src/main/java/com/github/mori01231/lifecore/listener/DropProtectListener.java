@@ -43,7 +43,11 @@ public class DropProtectListener implements Listener {
         
         Rarity rarity = rarityAPI.getRarityByItemStack(itemStack);
         boolean shouldCancel;
-        if (plugin.getDropProtectConfig().contains(e.getPlayer().getUniqueId(), "has_pve_level") && Util.getRequiredLevel(itemStack) > 0) {
+        long requiredLevel = Util.getRequiredLevel(itemStack);
+        
+        if (plugin.getDropProtectConfig().contains(e.getPlayer().getUniqueId(), "has_pve_level") && requiredLevel > 0) {
+            shouldCancel = true;
+        } else if (plugin.getDropProtectConfig().contains(e.getPlayer().getUniqueId(), "has_no_pve_level") && requiredLevel == 0) {
             shouldCancel = true;
         } else {
             if (rarity == null) {

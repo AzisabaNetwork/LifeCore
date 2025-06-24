@@ -13,7 +13,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.jetbrains.annotations.NotNull;
 
 public class DropProtectScreen implements InventoryHolder {
-    private final Inventory inventory = Bukkit.createInventory(this, 18, "DropProtect");
+    private final Inventory inventory = Bukkit.createInventory(this, 27, "DropProtect");
     private final LifeCore plugin;
     private final Player player;
 
@@ -40,7 +40,8 @@ public class DropProtectScreen implements InventoryHolder {
         String specialName = RarityAPIProvider.get().getRarityById("special").getDisplayName(player);
         String specialLore = plugin.getDropProtectConfig().contains(player.getUniqueId(), "special") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
         String hasPvELevelLore = plugin.getDropProtectConfig().contains(player.getUniqueId(), "has_pve_level") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
-        TrashProtectScreen.setItems(noRarityLore, commonName, commonLore, uncommonName, uncommonLore, rareName, rareLore, epicName, epicLore, legendaryName, legendaryLore, mythicName, mythicLore, specialName, specialLore, hasPvELevelLore, inventory);
+        String hasNoPvELevelLore = plugin.getDropProtectConfig().contains(player.getUniqueId(), "has_no_pve_level") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
+        TrashProtectScreen.setItems(noRarityLore, commonName, commonLore, uncommonName, uncommonLore, rareName, rareLore, epicName, epicLore, legendaryName, legendaryLore, mythicName, mythicLore, specialName, specialLore, hasPvELevelLore, hasNoPvELevelLore, inventory);
     }
 
     @NotNull
@@ -103,7 +104,11 @@ public class DropProtectScreen implements InventoryHolder {
                     plugin.getDropProtectConfig().toggle(screen.player.getUniqueId(), "has_pve_level");
                     break;
                 }
-                case 17: {
+                case 9: {
+                    plugin.getDropProtectConfig().toggle(screen.player.getUniqueId(), "has_no_pve_level");
+                    break;
+                }
+                case 26: {
                     screen.player.closeInventory();
                     return;
                 }
