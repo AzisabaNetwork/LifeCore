@@ -1,6 +1,7 @@
 package com.github.mori01231.lifecore.listener;
 
 import com.github.mori01231.lifecore.LifeCore;
+import com.github.mori01231.lifecore.util.ItemUtil;
 import net.azisaba.itemstash.ItemStash;
 import net.azisaba.lifepvelevel.util.Util;
 import net.azisaba.rarity.api.Rarity;
@@ -31,9 +32,18 @@ public class DropProtectListener implements Listener {
     @SuppressWarnings("unchecked")
     @EventHandler(ignoreCancelled = true)
     public void onDrop(PlayerDropItemEvent e) {
-        Rarity rarity = rarityAPI.getRarityByItemStack(e.getItemDrop().getItemStack());
+        ItemStack itemStack = e.getItemDrop().getItemStack();
+        
+        // Check MythicMobs item protection first
+        String mythicType = ItemUtil.getMythicType(itemStack);
+        if (mythicType != null && plugin.getMythicItemProtectConfig().contains(e.getPlayer().getUniqueId(), mythicType)) {
+            cancelDrop(e, itemStack, "MythicMobsアイテム保護");
+            return;
+        }
+        
+        Rarity rarity = rarityAPI.getRarityByItemStack(itemStack);
         boolean shouldCancel;
-        if (plugin.getDropProtectConfig().contains(e.getPlayer().getUniqueId(), "has_pve_level") && Util.getRequiredLevel(e.getItemDrop().getItemStack()) > 0) {
+        if (plugin.getDropProtectConfig().contains(e.getPlayer().getUniqueId(), "has_pve_level") && Util.getRequiredLevel(itemStack) > 0) {
             shouldCancel = true;
         } else {
             if (rarity == null) {
@@ -47,30 +57,39 @@ public class DropProtectListener implements Listener {
             }
         }
         if (shouldCancel) {
-            ItemStack stack = e.getItemDrop().getItemStack();
-            e.setCancelled(true);
-
-            // set item to air via reflection and data watcher
-            e.getItemDrop().remove();
-            EntityItem entityItem = (EntityItem) ((CraftItem) e.getItemDrop()).getHandle();
-            DataWatcherObject<net.minecraft.server.v1_15_R1.ItemStack> itemStackDataWatcherObject;
-            try {
-                Field f = EntityItem.class.getDeclaredField("ITEM");
-                f.setAccessible(true);
-                itemStackDataWatcherObject = (DataWatcherObject<net.minecraft.server.v1_15_R1.ItemStack>) f.get(null);
-            } catch (ReflectiveOperationException ex) {
-                return;
-            }
-            entityItem.getDataWatcher().set(itemStackDataWatcherObject, new net.minecraft.server.v1_15_R1.ItemStack(Items.AIR));
-            entityItem.getDataWatcher().markDirty(itemStackDataWatcherObject);
-
-            e.getPlayer().sendMessage(ChatColor.RED + "このアイテムはドロップできません。");
-            e.getPlayer().sendMessage(ChatColor.AQUA + "/dropprotect" + ChatColor.GOLD + "で設定を変更できます。");
-            e.getPlayer().getInventory().addItem(stack).forEach((i, s) -> {
-                itemStash.addItemToStash(e.getPlayer().getUniqueId(), s);
-                e.getPlayer().sendMessage(ChatColor.RED + "インベントリがいっぱいのため、Stashに保管されました。");
-                e.getPlayer().sendMessage(ChatColor.AQUA + "/pickupstash" + ChatColor.RED + "で回収できます。");
-            });
+            cancelDrop(e, itemStack, null);
         }
+    }
+    
+    @SuppressWarnings("unchecked")
+    private void cancelDrop(PlayerDropItemEvent e, ItemStack stack, String reason) {
+        e.setCancelled(true);
+
+        // set item to air via reflection and data watcher
+        e.getItemDrop().remove();
+        EntityItem entityItem = (EntityItem) ((CraftItem) e.getItemDrop()).getHandle();
+        DataWatcherObject<net.minecraft.server.v1_15_R1.ItemStack> itemStackDataWatcherObject;
+        try {
+            Field f = EntityItem.class.getDeclaredField("ITEM");
+            f.setAccessible(true);
+            itemStackDataWatcherObject = (DataWatcherObject<net.minecraft.server.v1_15_R1.ItemStack>) f.get(null);
+        } catch (ReflectiveOperationException ex) {
+            return;
+        }
+        entityItem.getDataWatcher().set(itemStackDataWatcherObject, new net.minecraft.server.v1_15_R1.ItemStack(Items.AIR));
+        entityItem.getDataWatcher().markDirty(itemStackDataWatcherObject);
+
+        e.getPlayer().sendMessage(ChatColor.RED + "このアイテムはドロップできません。");
+        if (reason != null) {
+            e.getPlayer().sendMessage(ChatColor.YELLOW + "理由: " + reason);
+            e.getPlayer().sendMessage(ChatColor.AQUA + "/protect" + ChatColor.GOLD + "でMythicMobsアイテムの保護設定を変更できます。");
+        } else {
+            e.getPlayer().sendMessage(ChatColor.AQUA + "/dropprotect" + ChatColor.GOLD + "で設定を変更できます。");
+        }
+        e.getPlayer().getInventory().addItem(stack).forEach((i, s) -> {
+            itemStash.addItemToStash(e.getPlayer().getUniqueId(), s);
+            e.getPlayer().sendMessage(ChatColor.RED + "インベントリがいっぱいのため、Stashに保管されました。");
+            e.getPlayer().sendMessage(ChatColor.AQUA + "/pickupstash" + ChatColor.RED + "で回収できます。");
+        });
     }
 }

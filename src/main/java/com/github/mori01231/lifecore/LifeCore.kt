@@ -47,6 +47,8 @@ class LifeCore : JavaPlugin() {
         private set
     lateinit var trashProtectConfig: TrashProtectConfig
         private set
+    lateinit var mythicItemProtectConfig: MythicItemProtectConfig
+        private set
     val customBlockManager = CustomBlockManager(this)
     var customModelDataWrench = 0
     var customModelDataBlank = 0
@@ -86,10 +88,18 @@ class LifeCore : JavaPlugin() {
             }
             trashProtectConfig = yaml.decodeFromString(it.readText())
         }
+        dataFolder.resolve("mythic-item-protect.yml").let {
+            if (!it.exists()) {
+                it.writeText(yaml.encodeToString(MythicItemProtectConfig()))
+            }
+            mythicItemProtectConfig = yaml.decodeFromString(it.readText())
+        }
 
         // save every 5 minutes
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, 20 * 60 * 5, 20 * 60 * 5) {
             dataFolder.resolve("drop-protect.yml").writeText(dropProtectConfig.encode())
+            dataFolder.resolve("trash-protect.yml").writeText(trashProtectConfig.encode())
+            dataFolder.resolve("mythic-item-protect.yml").writeText(mythicItemProtectConfig.encode())
         }
 
         // save every 10 seconds
@@ -145,6 +155,7 @@ class LifeCore : JavaPlugin() {
         registerCommand("dropnotify", DropNotifyCommand())
         registerCommand("dropprotect", DropProtectCommand(this))
         registerCommand("trashprotect", TrashProtectCommand(this))
+        registerCommand("protect", ProtectCommand(this))
         registerCommand("damagelog", DamageLogCommand())
         registerCommand("servermoney", ServerMoneyCommand(this))
         registerCommand("fixtime", FixTimeCommand)

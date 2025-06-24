@@ -147,6 +147,10 @@ commands:
     permission: lifecore.trashprotect
     usage: "/trashprotect"
     aliases: ['gomiprotect']
+  protect:
+    description: "protect MythicMobs items from being dropped or trashed"
+    permission: lifecore.protect
+    usage: "/protect"
   damagelog:
     description: "view damage log"
     permission: lifecore.damagelog
@@ -218,6 +222,7 @@ permissions:
       lifecore.debugvote: true
       lifecore.petclick: true
       lifecore.dropprotect: true
+      lifecore.protect: true
       lifecore.ngword: true
       lifecore.respawn: true
       lifecore.servermoney: true
@@ -316,6 +321,8 @@ permissions:
   lifecore.dropprotect:
     default: true
   lifecore.trashprotect:
+    default: true
+  lifecore.protect:
     default: true
   lifecore.damagelog:
     default: true

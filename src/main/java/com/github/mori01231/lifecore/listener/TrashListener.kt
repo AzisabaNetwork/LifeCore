@@ -26,6 +26,21 @@ class TrashListener(private val plugin: LifeCore) : Listener {
                 e.inventory.setItem(53, null)
                 for (i in 0..<e.inventory.size) {
                     val item = e.inventory.getItem(i) ?: continue
+                    
+                    // Check MythicMobs item protection first
+                    val mythicType = ItemUtil.getMythicType(item)
+                    if (mythicType != null && plugin.mythicItemProtectConfig.contains(e.whoClicked.uniqueId, mythicType)) {
+                        e.inventory.setItem(i, null)
+                        e.whoClicked.inventory.addItem(item).forEach { (_, s) ->
+                            ItemStash.getInstance().addItemToStash(e.whoClicked.uniqueId, s)
+                            e.whoClicked.sendMessage(ChatColor.RED.toString() + "インベントリがいっぱいのため、Stashに保管されました。")
+                            e.whoClicked.sendMessage(ChatColor.AQUA.toString() + "/pickupstash" + ChatColor.RED + "で回収できます。")
+                        }
+                        e.whoClicked.sendMessage(ChatColor.YELLOW.toString() + "MythicMobsアイテム \"$mythicType\" は保護されています。")
+                        e.whoClicked.sendMessage(ChatColor.AQUA.toString() + "/protect" + ChatColor.GOLD + "で保護設定を変更できます。")
+                        continue
+                    }
+                    
                     val rarity: Rarity? = RarityAPIProvider.get().getRarityByItemStack(item)
                     val shouldCancel =
                         if (plugin.trashProtectConfig.contains(e.whoClicked.uniqueId, "has_pve_level") && Util.getRequiredLevel(item) > 0) {
