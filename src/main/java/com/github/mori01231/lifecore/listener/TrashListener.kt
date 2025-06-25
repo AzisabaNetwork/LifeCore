@@ -11,6 +11,7 @@ import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.inventory.InventoryDragEvent
@@ -46,7 +47,7 @@ class TrashListener(private val plugin: LifeCore) : Listener {
                     val shouldCancel =
                         if (plugin.trashProtectConfig.contains(e.whoClicked.uniqueId, "has_pve_level") && requiredLevel > 0) {
                             true
-                        } else if (plugin.trashProtectConfig.contains(e.whoClicked.uniqueId, "has_no_pve_level") && requiredLevel == 0L) {
+                        } else if (plugin.trashProtectConfig.contains(e.whoClicked.uniqueId, "has_no_pve_level") && requiredLevel == 0L && !isVanillaItem(item)) {
                             true
                         } else {
                             if (rarity == null) {
@@ -125,5 +126,10 @@ class TrashListener(private val plugin: LifeCore) : Listener {
                 }
             }
         }
+    }
+    
+    private fun isVanillaItem(itemStack: ItemStack): Boolean {
+        val tag = CraftItemStack.asNMSCopy(itemStack).tag
+        return tag == null
     }
 }

@@ -10,8 +10,10 @@ import net.azisaba.rarity.api.RarityAPIProvider;
 import net.minecraft.server.v1_15_R1.DataWatcherObject;
 import net.minecraft.server.v1_15_R1.EntityItem;
 import net.minecraft.server.v1_15_R1.Items;
+import net.minecraft.server.v1_15_R1.NBTTagCompound;
 import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftItem;
+import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -47,7 +49,7 @@ public class DropProtectListener implements Listener {
         
         if (plugin.getDropProtectConfig().contains(e.getPlayer().getUniqueId(), "has_pve_level") && requiredLevel > 0) {
             shouldCancel = true;
-        } else if (plugin.getDropProtectConfig().contains(e.getPlayer().getUniqueId(), "has_no_pve_level") && requiredLevel == 0) {
+        } else if (plugin.getDropProtectConfig().contains(e.getPlayer().getUniqueId(), "has_no_pve_level") && requiredLevel == 0 && !isVanillaItem(itemStack)) {
             shouldCancel = true;
         } else {
             if (rarity == null) {
@@ -95,5 +97,10 @@ public class DropProtectListener implements Listener {
             e.getPlayer().sendMessage(ChatColor.RED + "インベントリがいっぱいのため、Stashに保管されました。");
             e.getPlayer().sendMessage(ChatColor.AQUA + "/pickupstash" + ChatColor.RED + "で回収できます。");
         });
+    }
+    
+    private boolean isVanillaItem(@NotNull ItemStack itemStack) {
+        NBTTagCompound tag = CraftItemStack.asNMSCopy(itemStack).getTag();
+        return tag == null;
     }
 }
