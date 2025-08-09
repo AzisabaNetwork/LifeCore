@@ -347,6 +347,7 @@ class LifeCore : JavaPlugin() {
         pm.registerEvents(BlockListener, this)
         pm.registerEvents(MapListScreen.EventListener, this)
         pm.registerEvents(PlayerQuitListener, this)
+        pm.registerEvents(WorkaroundLuckPerms, this)
 
         // Items
         pm.registerEvents(OreOnlyItemListener(), this)
