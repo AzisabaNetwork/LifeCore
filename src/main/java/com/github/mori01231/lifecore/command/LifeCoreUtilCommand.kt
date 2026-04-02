@@ -44,7 +44,7 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
 
     private fun sendHelp(sender: CommandSender) {
         Commands.entries.forEach { cmd ->
-            if (!sender.hasPermission("lifecore.lifecoreutil.${cmd.name}"))
+            if (!sender.hasPermission("lifecore.lifecoreutil.${cmd.name}")) return@forEach
             if (cmd.description == null) {
                 sender.sendMessage("${ChatColor.AQUA}/lifecoreutil ${cmd.commandName}")
             } else {
