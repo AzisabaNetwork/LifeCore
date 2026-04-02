@@ -6,9 +6,11 @@ import com.github.mori01231.lifecore.util.EncodeUtil
 import com.github.mori01231.lifecore.util.ItemUtil
 import com.github.mori01231.lifecore.util.MapUtil
 import com.github.mori01231.lifecore.util.MapUtil.getCanvases
+import net.minecraft.server.v1_15_R1.ChunkCoordIntPair
 import net.minecraft.server.v1_15_R1.MojangsonParser
 import net.minecraft.server.v1_15_R1.NBTTagByteArray
 import net.minecraft.server.v1_15_R1.NBTTagCompound
+import net.minecraft.server.v1_15_R1.RegionFileCache
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.command.Command
@@ -21,9 +23,20 @@ import org.bukkit.craftbukkit.v1_15_R1.map.CraftMapRenderer
 import org.bukkit.craftbukkit.v1_15_R1.map.CraftMapView
 import org.bukkit.entity.Player
 import org.bukkit.inventory.meta.MapMeta
+import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.util.Vector
+import java.io.File
+import java.util.UUID
+import java.util.concurrent.Executors
+import java.util.concurrent.atomic.AtomicLong
+import kotlin.math.ceil
 
 class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
+    companion object {
+        var tempChunkProcessingStats: Pair<Long, AtomicLong>? = null
+        val chunkScannerExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())!!
+    }
+
     override fun onCommand(sender: CommandSender, p1: Command, p2: String, args: Array<String>): Boolean {
         if (args.isEmpty()) {
             sendHelp(sender)
@@ -466,6 +479,143 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
                 }
                 item.itemMeta = meta
                 player.inventory.setItemInMainHand(item)
+            }
+        },
+        FixEveryFilledMapInTheWorld {
+            fun <T> List<T>.split(toSize: Int): List<List<T>> =
+                chunked(ceil(size / toSize.toDouble()).toInt())
+
+            override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
+                player as Player
+                if (tempChunkProcessingStats != null) {
+                    player.sendMessage("${ChatColor.RED}すでにスキャン中です。")
+                    return
+                }
+                if (args.isEmpty()) {
+                    player.sendMessage("${ChatColor.RED}Usage: /lifecoreutil $commandName <world>")
+                    return
+                }
+                val world = Bukkit.getWorld(args[0]) ?: run {
+                    player.sendMessage("${ChatColor.RED}World not found: ${args[0]}")
+                    return
+                }
+                if (world.loadedChunks.size != 0) {
+                    player.sendMessage("${ChatColor.RED}チャンクが読み込まれているため、処理できません")
+                    return
+                }
+                val worldName = player.world.name
+                val regionContainer = File(Bukkit.getWorldContainer(), "${player.world.name}/region")
+                val referenceRegionContainer = File(Bukkit.getWorldContainer(), "${player.world.name}/region.backup_exclude")
+                val newRegionContainer = File(Bukkit.getWorldContainer(), "${player.world.name}/region-new.backup_exclude")
+                val chunkLocations = mutableListOf<ChunkCoordIntPair>()
+                val regex = Regex("^r.(-?\\d+).(-?\\d+).mca$")
+                regionContainer.listFiles()!!.forEach { file ->
+                    try {
+                        val groups = regex.find(file.name)?.groupValues ?: return@forEach
+                        val regionX = groups[1].toInt()
+                        val regionZ = groups[2].toInt()
+                        for (x in 0..31) {
+                            for (z in 0..31) {
+                                val chunkX = regionX * 32 + x
+                                val chunkZ = regionZ * 32 + z
+                                chunkLocations.add(ChunkCoordIntPair(chunkX, chunkZ))
+                            }
+                        }
+                    } catch (_: Exception) {}
+                }
+                val mapCount = AtomicLong(0)
+                val count = AtomicLong(0)
+                val ignoredChunks = AtomicLong(0)
+                tempChunkProcessingStats = Pair(chunkLocations.size.toLong(), count)
+                val regionFileCacheConstructor = RegionFileCache::class.java.getDeclaredConstructor(File::class.java).apply { isAccessible = true }
+                val regionFileCacheWrite = RegionFileCache::class.java.getDeclaredMethod("write", ChunkCoordIntPair::class.java, NBTTagCompound::class.java).apply { isAccessible = true }
+                player.sendMessage("${ChatColor.GREEN}${chunkLocations.size}個のチャンクをスキャン中です。")
+                JavaPlugin.getPlugin(LifeCore::class.java).logger.info("Starting scan of $worldName (${chunkLocations.size} chunks) using up to ${Runtime.getRuntime().availableProcessors()} threads")
+                Bukkit.getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(LifeCore::class.java), Runnable {
+                    try {
+                        chunkLocations.split(Runtime.getRuntime().availableProcessors()).map split@ { chunksToProcess ->
+                            chunkScannerExecutor.submit {
+                                regionFileCacheConstructor.newInstance(regionContainer).use { cache ->
+                                    regionFileCacheConstructor.newInstance(referenceRegionContainer).use { referenceCache ->
+                                        regionFileCacheConstructor.newInstance(newRegionContainer).use { newCache ->
+                                            chunksToProcess.forEach { pair ->
+                                                if (Thread.currentThread().isInterrupted) {
+                                                    return@forEach
+                                                }
+                                                try {
+                                                    val pair = ChunkCoordIntPair(pair.x, pair.z)
+                                                    val nbt = cache.read(pair)
+                                                        ?: run {
+                                                            ignoredChunks.incrementAndGet()
+                                                            return@forEach
+                                                        }
+                                                    val root = nbt.getCompound("Level")
+                                                    val entitiesTag = root.getList("Entities", 10)
+                                                    if (entitiesTag.isEmpty()) {
+                                                        ignoredChunks.incrementAndGet()
+                                                        return@forEach
+                                                    }
+                                                    val referenceNbt = referenceCache.read(pair)
+                                                        ?: run {
+                                                            ignoredChunks.incrementAndGet()
+                                                            return@forEach
+                                                        }
+                                                    val referenceRoot = referenceNbt.getCompound("Level")
+                                                    val referenceEntitiesTag = referenceRoot.getList("Entities", 10)
+                                                    if (referenceEntitiesTag.isEmpty()) {
+                                                        ignoredChunks.incrementAndGet()
+                                                        return@forEach
+                                                    }
+                                                    val refEntitiesMap =
+                                                        referenceEntitiesTag.map { it as NBTTagCompound }
+                                                            .associate e@{ entityTag ->
+                                                                val uuidMost = entityTag.getLong("UUIDMost")
+                                                                val uuidLeast = entityTag.getLong("UUIDLeast")
+                                                                val uuid = UUID(uuidMost, uuidLeast)
+                                                                Pair(uuid, entityTag)
+                                                            }
+                                                    // process entities
+                                                    entitiesTag.map { it as NBTTagCompound }.forEach e@{ entityTag ->
+                                                        if (entityTag.getString("id") != "minecraft:item_frame") {
+                                                            return@e
+                                                        }
+                                                        val itemTag = entityTag.getCompound("Item")
+                                                        if (itemTag.getString("id") != "minecraft:filled_map") {
+                                                            return@e
+                                                        }
+                                                        val uuidMost = entityTag.getLong("UUIDMost")
+                                                        val uuidLeast = entityTag.getLong("UUIDLeast")
+                                                        val uuid = UUID(uuidMost, uuidLeast)
+                                                        val refEntity = refEntitiesMap[uuid] ?: return@e
+                                                        entityTag.set("Item", refEntity.getCompound("Item"))
+                                                        mapCount.incrementAndGet()
+                                                    }
+                                                    // save chunk
+                                                    regionFileCacheWrite.invoke(newCache, pair, nbt)
+                                                } catch (e: Exception) {
+                                                    JavaPlugin.getPlugin(LifeCore::class.java).logger.severe("Failed to scan chunk ${pair.x}, ${pair.z}")
+                                                    e.printStackTrace()
+                                                } finally {
+                                                    count.incrementAndGet()
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }.forEach { it.get() }
+                    } catch (e: Throwable) {
+                        e.printStackTrace()
+                    } finally {
+                        tempChunkProcessingStats = null
+                        player.sendMessage("${ChatColor.GREEN}チャンクのスキャンが完了しました。${ignoredChunks.get()}/${chunkLocations.size}個のチャンクが無視されました。")
+                        Bukkit.getConsoleSender().sendMessage("${ChatColor.GREEN}チャンクのスキャンが完了しました。${ignoredChunks.get()}/${chunkLocations.size}個のチャンクが無視されました。(processed ${mapCount.get()} maps)")
+                    }
+                })
+            }
+
+            override fun suggest(plugin: LifeCore, player: Player, args: Array<String>): List<String> {
+                return Bukkit.getWorlds().filter { it.name.startsWith(args.getOrElse(0) { "" }, ignoreCase = true) }.map { it.name }
             }
         },
         ;
