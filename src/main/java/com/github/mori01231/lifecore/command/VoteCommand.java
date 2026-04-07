@@ -17,7 +17,7 @@ public class VoteCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&bJMS: &f" + plugin.getConfig().getString("vote-url-jms") ));
-        sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&aMonocraft: &f" + plugin.getConfig().getString("vote-url-monocraft") ));
+        sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&aMinePortal: &f" + plugin.getConfig().getString("vote-url-mineportal") ));
 
         return true;
     }
