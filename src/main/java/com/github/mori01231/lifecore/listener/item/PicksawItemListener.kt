@@ -12,6 +12,7 @@ import org.bukkit.inventory.EquipmentSlot
 
 class PicksawItemListener(private val dataLoader: DataLoader) : Listener {
     companion object {
+        val ALLOWED_WORLDS = listOf("art", "lifetownart")
         const val ITEM_ID = "2dd646f1-70a1-4613-92c3-431de7c0126f"
     }
 
@@ -21,7 +22,7 @@ class PicksawItemListener(private val dataLoader: DataLoader) : Listener {
         if (e.action != Action.LEFT_CLICK_BLOCK) return
         val item = e.player.inventory.itemInMainHand
         if (ItemUtil.getStringTag(item, "LifeItemId") != ITEM_ID) return
-        if (e.player.world.name != "art" && !e.player.hasPermission("lifecore.picksaw")) {
+        if (!ALLOWED_WORLDS.contains(e.player.world.name) && !e.player.hasPermission("lifecore.picksaw")) {
             e.player.health = 0.0
             return
         }
