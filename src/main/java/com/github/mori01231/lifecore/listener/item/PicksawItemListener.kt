@@ -17,23 +17,26 @@ class PicksawItemListener(private val dataLoader: DataLoader) : Listener {
 
     @EventHandler
     fun onPlayerInteract(e: PlayerInteractEvent) {
+        if (e.player.world.name != "art" && !e.player.hasPermission("lifecore.picksaw")) return
         if (e.hand != EquipmentSlot.HAND) return
         if (e.action != Action.LEFT_CLICK_BLOCK) return
         val item = e.player.inventory.itemInMainHand
         if (ItemUtil.getStringTag(item, "LifeItemId") != ITEM_ID) return
         val minecraftName = "minecraft:" + ((e.clickedBlock ?: return).blockData as CraftBlockData).state.block.item.toString()
         if (dataLoader.findTag("minecraft:mineable/axe")?.resolve()?.contains(minecraftName) == true) {
-            item.type = Material.valueOf(item.type.name.substring(0, item.type.name.lastIndexOf('_')) + "_AXE")
+            item.type = Material.DIAMOND_AXE
             e.player.inventory.setItemInMainHand(item)
         } else if (dataLoader.findTag("minecraft:mineable/pickaxe")?.resolve()?.contains(minecraftName) == true) {
-            item.type = Material.valueOf(item.type.name.substring(0, item.type.name.lastIndexOf('_')) + "_PICKAXE")
+            item.type = Material.DIAMOND_PICKAXE
             e.player.inventory.setItemInMainHand(item)
         } else if (dataLoader.findTag("minecraft:mineable/shovel")?.resolve()?.contains(minecraftName) == true) {
-            item.type = Material.valueOf(item.type.name.substring(0, item.type.name.lastIndexOf('_')) + "_SHOVEL")
+            item.type = Material.DIAMOND_SHOVEL
             e.player.inventory.setItemInMainHand(item)
         } else if (dataLoader.findTag("minecraft:mineable/hoe")?.resolve()?.contains(minecraftName) == true) {
-            item.type = Material.valueOf(item.type.name.substring(0, item.type.name.lastIndexOf('_')) + "_HOE")
+            item.type = Material.DIAMOND_HOE
             e.player.inventory.setItemInMainHand(item)
+        } else if (e.clickedBlock?.type?.name?.endsWith("_WOOL") == true) {
+            item.type = Material.SHEARS
         }
     }
 }
