@@ -17,14 +17,14 @@ class PicksawItemListener(private val dataLoader: DataLoader) : Listener {
 
     @EventHandler
     fun onPlayerInteract(e: PlayerInteractEvent) {
-        if (e.player.world.name != "art" && !e.player.hasPermission("lifecore.picksaw")) {
-            e.player.health = 0.0
-            return
-        }
         if (e.hand != EquipmentSlot.HAND) return
         if (e.action != Action.LEFT_CLICK_BLOCK) return
         val item = e.player.inventory.itemInMainHand
         if (ItemUtil.getStringTag(item, "LifeItemId") != ITEM_ID) return
+        if (e.player.world.name != "art" && !e.player.hasPermission("lifecore.picksaw")) {
+            e.player.health = 0.0
+            return
+        }
         val minecraftName = "minecraft:" + ((e.clickedBlock ?: return).blockData as CraftBlockData).state.block.item.toString()
         if (dataLoader.findTag("minecraft:mineable/axe")?.resolve()?.contains(minecraftName) == true) {
             item.type = Material.DIAMOND_AXE
