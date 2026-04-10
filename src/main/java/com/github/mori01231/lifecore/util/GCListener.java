@@ -103,7 +103,7 @@ public class GCListener implements NotificationListener {
                         component.setUnderlined(true);
                         component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/gclistenerrestartextendtimecommand"));
                         Bukkit.broadcast(component);
-                        Bukkit.broadcastMessage("§a5人が上のメッセージをクリックすると、30分に延長されます。");
+                        Bukkit.broadcastMessage("§a5人が上のメッセージをクリックすると、15分に延長されます。");
                     } catch (IllegalArgumentException e) {
                         plugin.getSLF4JLogger().warn("Invalid @schedulerestart: " + command, e);
                     }
