@@ -201,14 +201,6 @@ class LifeCore : JavaPlugin() {
 
         // check for maps
         Bukkit.getScheduler().runTaskTimer(this, Runnable {
-            Bukkit.getOnlinePlayers().forEach player@ { player ->
-                player.inventory.contents.forEach { item ->
-                    @Suppress("SENSELESS_COMPARISON")
-                    if (item != null) {
-                        MapUtil.initializeMapRenderer(player, item)
-                    }
-                }
-            }
             if (Bukkit.getOnlinePlayers().isEmpty()) return@Runnable
             Bukkit.getWorlds().forEach world@ { world ->
                 val list = world.getEntitiesByClass(ItemFrame::class.java)
