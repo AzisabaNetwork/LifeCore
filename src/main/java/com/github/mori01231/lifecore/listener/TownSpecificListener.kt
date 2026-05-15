@@ -16,7 +16,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.entity.PotionSplashEvent
 import org.bukkit.event.player.PlayerCommandPreprocessEvent
 import org.bukkit.potion.PotionEffectType
-import org.spigotmc.event.entity.EntityMountEvent
+import org.bukkit.event.entity.EntityMountEvent
 import java.lang.reflect.Field
 
 class TownSpecificListener(private val plugin: LifeCore) : Listener {

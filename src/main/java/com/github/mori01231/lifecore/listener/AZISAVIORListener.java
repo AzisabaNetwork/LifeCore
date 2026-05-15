@@ -46,7 +46,7 @@ public class AZISAVIORListener implements Listener {
         coolTime.add(e.getPlayer().getUniqueId());
         Bukkit.getScheduler().runTaskLater(plugin, ()-> coolTime.remove(e.getPlayer().getUniqueId()), 20 * 15);
 
-        double maxHealth = Objects.requireNonNull(e.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH)).getValue();
+        double maxHealth = Objects.requireNonNull(e.getPlayer().getAttribute(Attribute.MAX_HEALTH)).getValue();
 
         e.getPlayer().setHealth(Math.min(e.getPlayer().getHealth() + 50, maxHealth));
         e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 10000f, 2f);

@@ -223,7 +223,7 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
                     if (i == args.size - 1) {
                         player.sendMessage("$key: ${tag.get(key)}")
                     } else {
-                        tag = tag.getCompound(key)
+                        tag = tag.getCompoundOrEmpty(key)
                     }
                 }
             }
@@ -236,7 +236,7 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
                 }
                 val item = CraftItemStack.asNMSCopy((player as Player).inventory.itemInMainHand)
                 val tag = ItemUtil.getCustomData((player as Player).inventory.itemInMainHand) ?: CompoundTag()
-                tag.merge(TagParser.parseTag(args.joinToString(" ")))
+                tag.merge(TagParser.parseCompoundFully(args.joinToString(" ")))
                 item.set(DataComponents.CUSTOM_DATA, CustomData.of(tag))
                 player.inventory.setItemInMainHand(CraftItemStack.asBukkitCopy(item))
             }
@@ -247,7 +247,7 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
                     player.sendMessage(Component.text("Usage: /lifecoreutil $commandName <value>", NamedTextColor.RED))
                     return
                 }
-                val tag = TagParser.parseTag(args.joinToString(" "))
+                val tag = TagParser.parseCompoundFully(args.joinToString(" "))
                 val item = CraftItemStack.asNMSCopy((player as Player).inventory.itemInMainHand)
                 item.set(DataComponents.CUSTOM_DATA, CustomData.of(tag))
                 player.inventory.setItemInMainHand(CraftItemStack.asBukkitCopy(item))
@@ -459,24 +459,28 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
                 player.inventory.setItemInMainHand(player.inventory.itemInMainHand.apply { itemMeta = meta })
             }
         },
-        FixItem("displayタグを修正します") {
-            override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
-                val item = (player as Player).inventory.itemInMainHand
-                val meta = item.itemMeta
-                if (meta.hasDisplayName()) {
-                    val origName = meta.displayName
-                    meta.setDisplayName(null)
-                    meta.setDisplayName(origName)
-                }
-                if (meta.hasLore()) {
-                    val origLore = meta.lore
-                    meta.lore = null
-                    meta.lore = origLore
-                }
-                item.itemMeta = meta
-                player.inventory.setItemInMainHand(item)
-            }
-        },
+         FixItem("displayタグを修正します") {
+             override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
+                 val item = (player as Player).inventory.itemInMainHand
+                 if (item.type.isAir()) {
+                     player.sendMessage(Component.text("アイテムを持ってから実行してください。", NamedTextColor.RED))
+                     return
+                 }
+                 val meta = item.itemMeta ?: return player.sendMessage(Component.text("このアイテムはメタデータがありません。", NamedTextColor.RED))
+                 if (meta.hasDisplayName()) {
+                     val origName = meta.displayName
+                     meta.setDisplayName(null)
+                     meta.setDisplayName(origName)
+                 }
+                 if (meta.hasLore()) {
+                     val origLore = meta.lore
+                     meta.lore = null
+                     meta.lore = origLore
+                 }
+                 item.itemMeta = meta
+                 player.inventory.setItemInMainHand(item)
+             }
+         },
         ;
 
         abstract fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>)

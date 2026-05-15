@@ -35,7 +35,7 @@ public class DeathLoopListener implements Listener {
     }
 
     private boolean hasTempHealthBoost(LivingEntity entity) {
-        AttributeInstance attr = entity.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        AttributeInstance attr = entity.getAttribute(Attribute.MAX_HEALTH);
         if (attr == null) {
             return false;
         }
@@ -53,7 +53,7 @@ public class DeathLoopListener implements Listener {
     }
 
     private static void checkAttribute0(LivingEntity entity) {
-        AttributeInstance attr = entity.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        AttributeInstance attr = entity.getAttribute(Attribute.MAX_HEALTH);
         if (attr == null) {
             return;
         }

@@ -4,13 +4,13 @@ plugins {
     kotlin("jvm") version "1.9.22"
     kotlin("plugin.serialization") version "1.9.22"
     id("com.gradleup.shadow") version "8.3.3"
-    id("io.papermc.paperweight.userdev") version "1.7.1"
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.17"
     java
     `maven-publish`
 }
 
 group = "net.azisaba"
-version = "6.18.4b+1.21.1"
+version = "6.18.4+1.21.11"
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(21))
@@ -71,20 +71,24 @@ dependencies {
     compileOnly("net.azisaba:RyuZUPluginChat:4.2.0") {
         exclude("co.aikar", "taskchain-core")
     }
-    compileOnly("net.azisaba.rarity:api:1.0.1-SNAPSHOT")
+    compileOnly("net.azisaba.rarity:api:1.0.1-SNAPSHOT") {
+        exclude("org.spigotmc", "spigot-api")
+    }
     compileOnly("net.azisaba:ItemStash:1.0.0-SNAPSHOT")
     compileOnly("io.lumine:Mythic-Dist:4.13.0")
-    compileOnly("com.github.MilkBowl:VaultAPI:1.7")
+    compileOnly("com.github.MilkBowl:VaultAPI:1.7") {
+        exclude("org.bukkit", "bukkit")
+    }
     compileOnly("com.github.MyPetORG.MyPet:mypet-api:5c8ceeac6a")
     compileOnly("de.keyle:knbt:0.0.5")
     compileOnly("com.github.Staartvin:Autorank-2:4.5.1")
-    //compileOnly("org.spigotmc:spigot-api:1.21.1-R0.1-SNAPSHOT")
-    compileOnly("io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT")
     compileOnly("com.github.Staartvin:Statz:v1.5.5") {
         exclude("nl.lolmewn.stats", "Stats")
         exclude("me.staartvin", "PluginLibrary")
+        exclude("org.spigotmc", "spigot-api")
+        exclude("org.bukkit", "bukkit")
     }
-    paperweight.paperDevBundle("1.21.1-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.21.11-R0.1-SNAPSHOT")
 }
 
 paperweight.reobfArtifactConfiguration.set(io.papermc.paperweight.userdev.ReobfArtifactConfiguration.REOBF_PRODUCTION)

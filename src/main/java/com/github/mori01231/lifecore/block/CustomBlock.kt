@@ -40,7 +40,7 @@ abstract class CustomBlock(
     open fun canDestroy(state: CustomBlockState, wrench: Boolean) = wrench
 
     /**
-     * Executes the pre-destroy process, and returns whether the block can be dropped.
+     * Executes the pre-destruction process and returns whether the block can be dropped.
      * @return Whether the block can be dropped. `true` if the block can be dropped. `false` if the block drop will be cancelled.
      */
     open fun preDestroy(state: CustomBlockState): Boolean {
@@ -50,7 +50,7 @@ abstract class CustomBlock(
     open fun onPlace(e: BlockPlaceEvent): CustomBlockState {
         val itemTag = ItemUtil.getCustomData(e.itemInHand)
         val tagString = if (itemTag != null && itemTag.contains("CustomBlockState")) {
-            itemTag.getCompound("CustomBlockState").getString("tag")
+            itemTag.getCompoundOrEmpty("CustomBlockState").getStringOr("tag", "")
         } else {
             ""
         }

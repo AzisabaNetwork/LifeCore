@@ -50,8 +50,8 @@ class CustomBlockListener(val plugin: LifeCore) : Listener {
         if (itemTag == null || !itemTag.contains("CustomBlockState")) {
             return
         }
-        val blockState = itemTag.getCompound("CustomBlockState")
-        val blockName = blockState.getString("blockName")
+        val blockState = itemTag.getCompoundOrEmpty("CustomBlockState")
+        val blockName = blockState.getStringOr("blockName", "")
         val block = plugin.customBlockManager.findBlockByName(blockName) ?: return
         if (!e.player.hasPermission("lifecore.customblock.place.$blockName")) {
             e.player.sendActionBar(Component.text("このブロックを設置する権限がありません。"))

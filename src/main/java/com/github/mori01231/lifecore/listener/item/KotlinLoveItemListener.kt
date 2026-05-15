@@ -29,7 +29,7 @@ class KotlinLoveItemListener(plugin: LifeCore) : Listener {
         }, 20, 20)
     }
 
-    private fun getMaxHealth(player: Player) = player.getAttribute(Attribute.GENERIC_MAX_HEALTH)?.value ?: 0.0
+    private fun getMaxHealth(player: Player) = player.getAttribute(Attribute.MAX_HEALTH)?.value ?: 0.0
 
     private fun isHealthBelowThreshold(player: Player): Boolean {
         return player.health <= getMaxHealth(player) * HEALTH_THRESHOLD_PERCENT

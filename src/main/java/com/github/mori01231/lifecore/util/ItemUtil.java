@@ -21,21 +21,23 @@ import java.util.*;
 import java.util.function.Consumer;
 
 public class ItemUtil {
+
     @Contract("null -> false")
     public static boolean isProbablyAdminSword(@Nullable ItemStack stack) {
-        if (stack == null ||
-                stack.getType().isAir() ||
-                !stack.hasItemMeta() ||
-                !stack.getItemMeta().hasAttributeModifiers()) return false;
-        return Objects.requireNonNull(stack.getItemMeta().getAttributeModifiers())
-                .get(Attribute.GENERIC_ATTACK_DAMAGE)
-                .stream()
-                .anyMatch(mod -> mod.getAmount() >= 9999);
+        if (stack == null || stack.getType().isAir() || !stack.hasItemMeta()) return false;
+        ItemMeta meta = stack.getItemMeta();
+        if (meta == null || !meta.hasAttributeModifiers()) return false;
+
+        var modifiers = meta.getAttributeModifiers(Attribute.ATTACK_DAMAGE);
+        if (modifiers == null) return false;
+
+        return modifiers.stream().anyMatch(mod -> mod.getAmount() >= 9999);
     }
 
     public static @Nullable CompoundTag getCustomData(@Nullable ItemStack stack) {
         if (stack == null || stack.getType().isAir()) return null;
-        CustomData customData = CraftItemStack.asNMSCopy(stack).get(DataComponents.CUSTOM_DATA);
+        net.minecraft.world.item.ItemStack nmsStack = CraftItemStack.asNMSCopy(stack);
+        CustomData customData = nmsStack.get(DataComponents.CUSTOM_DATA);
         if (customData == null) return null;
         return customData.copyTag();
     }
@@ -44,71 +46,72 @@ public class ItemUtil {
     public static @Nullable String getMythicType(@Nullable ItemStack stack) {
         CompoundTag tag = getCustomData(stack);
         if (tag == null || !tag.contains("PublicBukkitValues")) return null;
-        String type = tag.getCompound("PublicBukkitValues").getString("mythicmobs:type");
-        if (type.isEmpty()) return null;
-        return type;
+
+        // Optional<CompoundTag> を処理
+        return tag.getCompound("PublicBukkitValues")
+                .map(pbv -> {
+                    String type = pbv.getString("mythicmobs:type").orElse("");
+                    return type.isEmpty() ? null : type;
+                })
+                .orElse(null);
     }
 
     @Contract("null, _ -> null")
     public static @Nullable Tag getTag(@Nullable ItemStack stack, @NotNull String key) {
         CompoundTag tag = getCustomData(stack);
-        if (tag == null) return null;
-        return tag.get(key);
+        return (tag == null) ? null : tag.get(key);
     }
 
     @Contract("null, _ -> null")
     public static @Nullable String getStringTag(@Nullable ItemStack stack, @NotNull String key) {
         CompoundTag tag = getCustomData(stack);
         if (tag == null) return null;
-        return tag.getString(key);
+        return tag.getString(key).orElse(null);
     }
 
     public static int getIntTag(@Nullable ItemStack stack, @NotNull String key) {
         CompoundTag tag = getCustomData(stack);
         if (tag == null) return 0;
-        return tag.getInt(key);
+        return tag.getInt(key).orElse(0);
     }
 
     @Contract("null, _ -> null")
     public static @Nullable byte[] getByteArrayTag(@Nullable ItemStack stack, @NotNull String key) {
         CompoundTag tag = getCustomData(stack);
         if (tag == null) return null;
-        return tag.getByteArray(key);
+        return tag.getByteArray(key).orElse(null);
     }
 
     public static @NotNull ItemStack setStringTag(@Nullable ItemStack stack, @NotNull String key, @NotNull String value) {
         if (stack == null || stack.getType().isAir()) return new ItemStack(Material.AIR);
-        net.minecraft.world.item.ItemStack nms = CraftItemStack.asNMSCopy(stack);
         CompoundTag tag = getCustomData(stack);
-        if (tag == null) {
-            tag = new CompoundTag();
-        }
+        if (tag == null) tag = new CompoundTag();
         tag.putString(key, value);
-        nms.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
-        return CraftItemStack.asBukkitCopy(nms);
+        return applyCustomData(stack, tag);
     }
 
     public static @NotNull ItemStack setTag(@Nullable ItemStack stack, @Nullable String key, @NotNull Tag nbt) {
         if (stack == null || stack.getType().isAir()) return new ItemStack(Material.AIR);
-        net.minecraft.world.item.ItemStack nms = CraftItemStack.asNMSCopy(stack);
+        CompoundTag tag;
         if (key == null) {
-            if (!(nbt instanceof CompoundTag)) {
-                throw new IllegalArgumentException("key is null, but nbt is not NBTTagCompound");
-            }
-            nms.set(DataComponents.CUSTOM_DATA, CustomData.of((CompoundTag) nbt));
+            if (!(nbt instanceof CompoundTag)) throw new IllegalArgumentException("key is null, but nbt is not CompoundTag");
+            tag = (CompoundTag) nbt;
         } else {
-            CompoundTag tag = getCustomData(stack);
-            if (tag == null) {
-                tag = new CompoundTag();
-            }
+            tag = getCustomData(stack);
+            if (tag == null) tag = new CompoundTag();
             tag.put(key, nbt);
-            nms.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
         }
+        return applyCustomData(stack, tag);
+    }
+
+    private static @NotNull ItemStack applyCustomData(@NotNull ItemStack stack, @NotNull CompoundTag tag) {
+        net.minecraft.world.item.ItemStack nms = CraftItemStack.asNMSCopy(stack);
+        CustomData.set(DataComponents.CUSTOM_DATA, nms, tag);
         return CraftItemStack.asBukkitCopy(nms);
     }
 
     public static @NotNull String toString(@NotNull ItemStack stack) {
-        List<String> props = new ArrayList<>();
+        StringJoiner props = new StringJoiner("");
         props.add("[Type: " + stack.getType().name() + "]");
         props.add("[Amount: " + stack.getAmount() + "]");
         ItemMeta meta = stack.getItemMeta();
@@ -116,10 +119,11 @@ public class ItemUtil {
             if (meta.hasDisplayName()) props.add("[Name: " + meta.getDisplayName() + "]");
             if (meta.hasLore()) props.add("[Lore: " + Objects.requireNonNull(meta.getLore()).size() + " entries]");
             if (meta.hasCustomModelData()) props.add("[CustomModelData: " + meta.getCustomModelData() + "]");
-            if (getMythicType(stack) != null) props.add("[MMID: " + getMythicType(stack) + "]");
-            if (meta.hasEnchants()) meta.getEnchants().forEach((enchant, level) -> props.add("[Enchant: " + enchant.getKey() + " " + level + "]"));
+            String mmType = getMythicType(stack);
+            if (mmType != null) props.add("[MMID: " + mmType + "]");
+            if (meta.hasEnchants()) meta.getEnchants().forEach((enchant, level) -> props.add("[Enchant: " + enchant.getKey().getKey() + " " + level + "]"));
         }
-        return String.join("", props);
+        return props.toString();
     }
 
     public static @NotNull ItemStack createItemStack(@NotNull Material material, int amount, @NotNull Consumer<ItemStack> action) {
@@ -131,11 +135,11 @@ public class ItemUtil {
     public static @NotNull ItemStack createItemStack(@NotNull Material material, @NotNull String displayName, @NotNull List<String> lore) {
         return createItemStack(material, 1, item -> {
             ItemMeta meta = item.getItemMeta();
-            meta.setDisplayName(displayName);
-            if (!lore.isEmpty()) {
-                meta.setLore(lore);
+            if (meta != null) {
+                meta.setDisplayName(displayName);
+                if (!lore.isEmpty()) meta.setLore(lore);
+                item.setItemMeta(meta);
             }
-            item.setItemMeta(meta);
         });
     }
 
@@ -149,12 +153,13 @@ public class ItemUtil {
         }
     }
 
-    @SuppressWarnings("ConstantValue")
     public static boolean isEquippedInAnySlot(@NotNull Player player, @NotNull ItemStack stack) {
         PlayerInventory inventory = player.getInventory();
         for (EquipmentSlot slot : EquipmentSlot.values()) {
-            if (slot == EquipmentSlot.BODY) continue;
-            if (inventory.getItem(slot) != null && inventory.getItem(slot).equals(stack)) return true;
+            try {
+                ItemStack item = inventory.getItem(slot);
+                if (item != null && item.equals(stack)) return true;
+            } catch (Exception ignored) {}
         }
         return false;
     }
@@ -162,41 +167,50 @@ public class ItemUtil {
     public static boolean isEquippedInAnySlot(@NotNull Player player, @NotNull String mythicType) {
         PlayerInventory inventory = player.getInventory();
         for (EquipmentSlot slot : EquipmentSlot.values()) {
-            if (slot == EquipmentSlot.BODY) continue;
-            if (mythicType.equals(getMythicType(inventory.getItem(slot)))) return true;
+            try {
+                ItemStack item = inventory.getItem(slot);
+                if (item != null && mythicType.equals(getMythicType(item))) return true;
+            } catch (Exception ignored) {}
         }
         return false;
     }
 
     @Contract("null -> null")
     public static ItemStack backupTag(@Nullable ItemStack stack) {
+        if (stack == null) return null;
         CompoundTag tag = getCustomData(stack);
         if (tag == null || tag.isEmpty()) return stack;
-        if (!tag.getCompound("backup").isEmpty()) return stack;
-        // exclude some items
-        if (tag.getCompound("PublicBukkitValues").getInt("minecraft:admin_item") == 1) {
-            return stack;
-        }
+        if (tag.contains("backup")) return stack;
+
+        boolean isAdmin = tag.getCompound("PublicBukkitValues")
+                .map(pbv -> pbv.getInt("minecraft:admin_item").orElse(0) == 1)
+                .orElse(false);
+
+        if (isAdmin) return stack;
+
         return setTag(stack, "backup", tag);
     }
 
-    private static final Set<String> RESTORE_BYPASS_SET = new HashSet<>(Collections.singletonList("Damage"));
+    private static final Set<String> RESTORE_BYPASS_SET = Set.of("Damage");
 
     @Contract("null -> null")
     public static ItemStack restoreTag(@Nullable ItemStack stack) {
+        if (stack == null) return null;
         CompoundTag tag = getCustomData(stack);
-        if (tag == null) return stack;
-        CompoundTag backup = tag.getCompound("backup");
-        if (backup.isEmpty()) return stack;
-        ItemStack newStack = setTag(stack, null, backup);
-        for (String bypassTag : RESTORE_BYPASS_SET) {
-            if (containsTag(stack, bypassTag)) {
-                Tag value = getTag(stack, bypassTag);
-                assert value != null;
-                newStack = setTag(newStack, bypassTag, value);
+        if (tag == null || !tag.contains("backup")) return stack;
+
+        return tag.getCompound("backup").map(backup -> {
+            ItemStack newStack = setTag(stack, null, backup);
+            for (String bypassTag : RESTORE_BYPASS_SET) {
+                if (containsTag(stack, bypassTag)) {
+                    Tag value = getTag(stack, bypassTag);
+                    if (value != null) {
+                        newStack = setTag(newStack, bypassTag, value);
+                    }
+                }
             }
-        }
-        return newStack;
+            return newStack;
+        }).orElse(stack);
     }
 
     public static boolean containsTag(@Nullable ItemStack stack, @NotNull String key) {
@@ -207,9 +221,7 @@ public class ItemUtil {
     public static @NotNull ItemStack cloneWithNewMaterial(@NotNull ItemStack stack, @NotNull Material material) {
         ItemStack newStack = new ItemStack(material, stack.getAmount());
         ItemMeta meta = stack.getItemMeta();
-        if (meta != null) {
-            newStack.setItemMeta(meta);
-        }
+        if (meta != null) newStack.setItemMeta(meta);
         return newStack;
     }
 }
