@@ -1,5 +1,6 @@
 package com.github.mori01231.lifecore.util;
 
+import io.lumine.mythic.bukkit.MythicBukkit;
 import net.azisaba.itemstash.ItemStash;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -43,17 +44,11 @@ public class ItemUtil {
     }
 
     @Contract("null -> null")
-    public static @Nullable String getMythicType(@Nullable ItemStack stack) {
-        CompoundTag tag = getCustomData(stack);
-        if (tag == null || !tag.contains("PublicBukkitValues")) return null;
-
-        // Optional<CompoundTag> を処理
-        return tag.getCompound("PublicBukkitValues")
-                .map(pbv -> {
-                    String type = pbv.getString("mythicmobs:type").orElse("");
-                    return type.isEmpty() ? null : type;
-                })
-                .orElse(null);
+    public static String getMythicType(@Nullable ItemStack item) {
+        if (item == null || item.getType().isAir()) {
+            return null;
+        }
+        return MythicBukkit.inst().getItemManager().getMythicTypeFromItem(item);
     }
 
     @Contract("null, _ -> null")

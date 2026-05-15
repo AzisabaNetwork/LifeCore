@@ -3,7 +3,7 @@ package com.github.mori01231.lifecore.vote
 import com.charleskorn.kaml.YamlComment
 import com.github.mori01231.lifecore.LifeCore
 import com.github.mori01231.lifecore.util.ItemUtil
-import io.lumine.xikage.mythicmobs.MythicMobs
+import io.lumine.mythic.bukkit.MythicBukkit
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import net.milkbowl.vault.economy.Economy
@@ -41,7 +41,7 @@ data class MythicItemReward(
     val amount: Int = 1,
 ) : VoteReward {
     override fun execute(plugin: LifeCore, player: Player) {
-        val item = MythicMobs.inst()
+        val item = MythicBukkit.inst()
             .itemManager
             .getItemStack(id)
             ?.clone()

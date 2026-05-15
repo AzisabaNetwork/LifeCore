@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "net.azisaba"
-version = "6.18.4+1.21.11"
+version = "6.18.5+1.21.11"
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(21))
@@ -59,7 +59,6 @@ dependencies {
     implementation(kotlin("stdlib"))
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
     implementation("com.charleskorn.kaml:kaml:0.57.0")
-    //noinspection GradlePackageUpdate
     implementation("com.zaxxer:HikariCP:6.0.0")
     implementation("org.mariadb.jdbc:mariadb-java-client:3.5.0")
     implementation("org.yaml:snakeyaml:2.3")
@@ -75,7 +74,7 @@ dependencies {
         exclude("org.spigotmc", "spigot-api")
     }
     compileOnly("net.azisaba:ItemStash:1.0.0-SNAPSHOT")
-    compileOnly("io.lumine:Mythic-Dist:4.13.0")
+    compileOnly("io.lumine:Mythic-Dist:5.12.0")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7") {
         exclude("org.bukkit", "bukkit")
     }
