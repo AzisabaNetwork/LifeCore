@@ -46,8 +46,6 @@ public class ItemUtil {
     public static @Nullable String getMythicType(@Nullable ItemStack stack) {
         CompoundTag tag = getCustomData(stack);
         if (tag == null || !tag.contains("PublicBukkitValues")) return null;
-
-        // Optional<CompoundTag> を処理
         return tag.getCompound("PublicBukkitValues")
                 .map(pbv -> {
                     String type = pbv.getString("mythicmobs:type").orElse("");
