@@ -4,6 +4,7 @@ import com.github.mori01231.lifecore.data.DataLoader
 import com.github.mori01231.lifecore.util.ItemUtil
 import org.bukkit.Material
 import org.bukkit.craftbukkit.v1_15_R1.block.data.CraftBlockData
+import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
@@ -14,33 +15,49 @@ class PicksawItemListener(private val dataLoader: DataLoader) : Listener {
     companion object {
         val ALLOWED_WORLDS = listOf("art", "lifetownart")
         const val ITEM_ID = "2dd646f1-70a1-4613-92c3-431de7c0126f"
+
+        private val TIER_TAG_MAP = mapOf(
+            "minecraft:mineable/axe" to Material.DIAMOND_AXE,
+            "minecraft:mineable/pickaxe" to Material.DIAMOND_PICKAXE,
+            "minecraft:mineable/shovel" to Material.DIAMOND_SHOVEL,
+            "minecraft:mineable/hoe" to Material.DIAMOND_HOE
+        )
     }
 
     @EventHandler
     fun onPlayerInteract(e: PlayerInteractEvent) {
         if (e.hand != EquipmentSlot.HAND) return
-        if (e.action != Action.LEFT_CLICK_BLOCK) return
         val item = e.player.inventory.itemInMainHand
         if (ItemUtil.getStringTag(item, "LifeItemId") != ITEM_ID) return
+
         if (!ALLOWED_WORLDS.contains(e.player.world.name) && !e.player.hasPermission("lifecore.picksaw")) {
             e.player.health = 0.0
             return
         }
-        val minecraftName = "minecraft:" + ((e.clickedBlock ?: return).blockData as CraftBlockData).state.block.item.toString()
-        if (dataLoader.findTag("minecraft:mineable/axe")?.resolve()?.contains(minecraftName) == true) {
-            item.type = Material.DIAMOND_AXE
-            e.player.inventory.setItemInMainHand(item)
-        } else if (dataLoader.findTag("minecraft:mineable/pickaxe")?.resolve()?.contains(minecraftName) == true) {
-            item.type = Material.DIAMOND_PICKAXE
-            e.player.inventory.setItemInMainHand(item)
-        } else if (dataLoader.findTag("minecraft:mineable/shovel")?.resolve()?.contains(minecraftName) == true) {
-            item.type = Material.DIAMOND_SHOVEL
-            e.player.inventory.setItemInMainHand(item)
-        } else if (dataLoader.findTag("minecraft:mineable/hoe")?.resolve()?.contains(minecraftName) == true) {
-            item.type = Material.DIAMOND_HOE
-            e.player.inventory.setItemInMainHand(item)
-        } else if (e.clickedBlock?.type?.name?.endsWith("_WOOL") == true) {
-            item.type = Material.SHEARS
+        val offhandItem = e.player.inventory.itemInOffHand
+        val hasBlockInOffhand = offhandItem.type.isBlock && offhandItem.type != Material.AIR
+        when (e.action) {
+            Action.RIGHT_CLICK_BLOCK -> {
+                if (hasBlockInOffhand) {
+                    if (item.type != Material.DIAMOND_PICKAXE) {
+                        item.type = Material.DIAMOND_PICKAXE
+                        e.player.inventory.setItemInMainHand(item)
+                    }
+                }
+            }
+            Action.LEFT_CLICK_BLOCK -> {
+                val block = e.clickedBlock ?: return
+                val minecraftName = "minecraft:" + (block.blockData as CraftBlockData).state.block.item.toString()
+                val targetMaterial = TIER_TAG_MAP.entries.firstOrNull { (tag, _) ->
+                    dataLoader.findTag(tag)?.resolve()?.contains(minecraftName) == true
+                }?.value ?: if (block.type.name.endsWith("_WOOL")) Material.SHEARS else null
+
+                if (targetMaterial != null && item.type != targetMaterial) {
+                    item.type = targetMaterial
+                    e.player.inventory.setItemInMainHand(item)
+                }
+            }
+            else -> return
         }
     }
 }
