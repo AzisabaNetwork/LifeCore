@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "net.azisaba"
-version = "6.18.5+1.21.11"
+version = "6.18.6+1.21.11"
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(21))
@@ -63,7 +63,7 @@ dependencies {
     implementation("org.mariadb.jdbc:mariadb-java-client:3.5.0")
     implementation("org.yaml:snakeyaml:2.3")
     implementation("xyz.acrylicstyle.java-util:expression:2.0.0-SNAPSHOT")
-    implementation("net.azisaba:lifepvelevel:1.3.0")
+    compileOnly("net.azisaba:lifepvelevel:1.3.0")
     compileOnly("net.azisaba:JoinFilter:1.0.0")
     compileOnly("net.azisaba.ballotbox:receiver:1.0.1")
     compileOnly("net.azisaba.azipluginmessaging:api:4.0.3")
