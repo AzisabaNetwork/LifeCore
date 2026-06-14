@@ -85,6 +85,11 @@ commands:
     permission: lifecore.event
     usage: Syntax error! Simply type /event to teleport to LifeEvent server.
     aliases: ["lifeevent"]
+  build:
+    description: Teleport to LifeBuild server.
+    permission: lifecore.build
+    usage: Syntax error! Simply type /build to teleport to LifeBuild server.
+    aliases: ["lifebuild"]
   townserver:
     description: Teleport to life town server.
     permission: lifecore.townserver
