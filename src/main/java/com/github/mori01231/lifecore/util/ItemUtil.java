@@ -143,7 +143,7 @@ public class ItemUtil {
             Class.forName("net.azisaba.itemstash.ItemStash");
             ItemStash.getInstance().addItemToStash(uuid, item);
             return true;
-        } catch (ClassNotFoundException ignored) {
+        } catch (Throwable ignored) {
             return false;
         }
     }

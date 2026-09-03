@@ -347,13 +347,13 @@ class LifeCore : JavaPlugin() {
         try {
             Class.forName("de.Keyle.MyPet.MyPetApi")
             pm.registerEvents(CancelPetClickListener(), this)
-        } catch (e: ClassNotFoundException) {
+        } catch (e: Throwable) {
             logger.warning("MyPet not detected, skipping event listener registration")
         }
         try {
             Class.forName("com.vexsoftware.votifier.model.VotifierEvent")
             pm.registerEvents(VoteListener(this), this)
-        } catch (e: ClassNotFoundException) {
+        } catch (e: Throwable) {
             logger.warning("Votifier not detected, skipping event listener registration")
         }
         try {
@@ -362,20 +362,20 @@ class LifeCore : JavaPlugin() {
             TownSpecificListener(this)
                 .apply { startTask() }
                 .apply { pm.registerEvents(this, this@LifeCore) }
-        } catch (e: ClassNotFoundException) {
-            logger.log(Level.WARNING, "Towny not detected, skipping event listener registration", e)
+        } catch (e: Throwable) {
+            logger.warning("Towny not detected, skipping event listener registration")
         }
         try {
             Class.forName("net.azisaba.ryuzupluginchat.event.AsyncGlobalMessageEvent")
             pm.registerEvents(FilterNgWordsListener(this), this)
-        } catch (e: ClassNotFoundException) {
+        } catch (e: Throwable) {
             logger.warning("RyuZUPluginChat not detected, skipping event listener registration")
         }
         try {
             Class.forName("net.azisaba.rarity.api.RarityAPI")
             Class.forName("net.azisaba.itemstash.ItemStash")
             pm.registerEvents(DropProtectListener(this), this)
-        } catch (e: ClassNotFoundException) {
+        } catch (e: Throwable) {
             logger.warning("Rarity and/or ItemStash not detected, skipping event listener registration")
         }
     }

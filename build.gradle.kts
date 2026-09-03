@@ -3,8 +3,8 @@ import org.apache.tools.ant.filters.ReplaceTokens
 plugins {
     kotlin("jvm") version "1.9.22"
     kotlin("plugin.serialization") version "1.9.22"
-    id("com.gradleup.shadow") version "8.3.3"
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.17"
+    id("com.gradleup.shadow") version "9.6.1"
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.23"
     java
     `maven-publish`
 }
@@ -24,7 +24,7 @@ repositories {
     mavenCentral()
     maven {
         name = "papermc-repo"
-        url = uri("https://papermc.io/repo/repository/maven-public/")
+        url = uri("https://repo.papermc.io/repository/maven-public/")
     }
     maven {
         name = "sonatype"
@@ -49,13 +49,10 @@ repositories {
         name = "lumine"
         url = uri("https://mvn.lumine.io/repository/maven-public/")
     }
-    maven {
-        name = "mypet"
-        url = uri("https://repo.mypet-plugin.de/")
-    }
 }
 
 dependencies {
+    compileOnly(platform("net.kyori:adventure-bom:4.26.1"))
     implementation(kotlin("stdlib"))
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
     implementation("com.charleskorn.kaml:kaml:0.57.0")
@@ -117,6 +114,10 @@ publishing {
 tasks {
     javadoc {
         options.encoding = "UTF-8"
+        (options as? StandardJavadocDocletOptions)?.apply {
+            addStringOption("Xdoclint:none", "-quiet")
+        }
+        isFailOnError = false
     }
 
     compileJava {

@@ -112,7 +112,7 @@ public class TownyOutlawListener implements Listener {
                 return getTown(townBlock);
             }
             return null;
-        } catch (ReflectiveOperationException e) {
+        } catch (Throwable e) {
             return null;
         }
     }
