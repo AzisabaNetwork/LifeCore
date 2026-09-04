@@ -1,6 +1,9 @@
 package com.github.mori01231.lifecore.listener;
 
+import com.github.mori01231.lifecore.LifeCore;
 import com.github.mori01231.lifecore.config.DamageLogFile;
+import io.lumine.mythic.bukkit.events.MythicDamageEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -9,7 +12,47 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 
+import java.util.ArrayDeque;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.WeakHashMap;
+
 public class DamageLogListener implements Listener {
+
+    private final Map<UUID, ArrayDeque<MythicDamage>> pendingMythicDamage = new HashMap<>();
+    private final Map<EntityDamageEvent, Boolean> mythicArmorPiercing = new WeakHashMap<>();
+
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onMythicDamage(MythicDamageEvent e) {
+        UUID targetId = e.getTarget().getUniqueId();
+        MythicDamage damage = new MythicDamage(Boolean.TRUE.equals(e.getDamageMetadata().getIgnoresArmor()));
+        pendingMythicDamage.computeIfAbsent(targetId, ignored -> new ArrayDeque<>()).addLast(damage);
+
+        // MythicDamageEvent normally produces the Bukkit damage event synchronously. Remove the
+        // marker on the next tick if another plugin cancels it before that happens.
+        Bukkit.getScheduler().runTask(LifeCore.getPlugin(LifeCore.class), () -> {
+            ArrayDeque<MythicDamage> pending = pendingMythicDamage.get(targetId);
+            if (pending == null) return;
+            pending.remove(damage);
+            if (pending.isEmpty()) pendingMythicDamage.remove(targetId);
+        });
+    }
+
+    private boolean isMythicArmorPiercing(EntityDamageEvent e) {
+        Boolean cached = mythicArmorPiercing.get(e);
+        if (cached != null) return cached;
+
+        ArrayDeque<MythicDamage> pending = pendingMythicDamage.get(e.getEntity().getUniqueId());
+        MythicDamage damage = pending == null ? null : pending.pollFirst();
+        if (pending != null && pending.isEmpty()) pendingMythicDamage.remove(e.getEntity().getUniqueId());
+
+        boolean armorPiercing = damage != null && damage.ignoresArmor();
+        mythicArmorPiercing.put(e, armorPiercing);
+        return armorPiercing;
+    }
+
+    private record MythicDamage(boolean ignoresArmor) {}
 
     public void message(Player p, String type, double damage, boolean send) {
 
@@ -54,6 +97,11 @@ public class DamageLogListener implements Listener {
 
         if (!DamageLogFile.isEnabled(player.getUniqueId())) return;
 
+        if (isMythicArmorPiercing(e)) {
+            message(player, "貫通", e.getFinalDamage(), false);
+            return;
+        }
+
         if ( e.getCause() == EntityDamageEvent.DamageCause.FALL ) message(player, "落下", e.getFinalDamage(), false);
         if ( e.getCause() == EntityDamageEvent.DamageCause.FIRE ) message(player, "炎上", e.getFinalDamage(), false);
         if ( e.getCause() == EntityDamageEvent.DamageCause.LAVA ) message(player, "溶岩", e.getFinalDamage(), false);
@@ -84,6 +132,9 @@ public class DamageLogListener implements Listener {
 
             if (!DamageLogFile.isEnabled(player.getUniqueId())) return;
 
+            if (isMythicArmorPiercing(e)) {
+                message(player, "貫通", e.getFinalDamage(), false, e.getDamager());
+            } else {
             if ( e.getCause() == EntityDamageByEntityEvent.DamageCause.FALL ) message(player, "落下", e.getFinalDamage(), false);
             if ( e.getCause() == EntityDamageByEntityEvent.DamageCause.FIRE ) message(player, "炎上", e.getFinalDamage(), false);
             if ( e.getCause() == EntityDamageByEntityEvent.DamageCause.LAVA ) message(player, "溶岩", e.getFinalDamage(), false);
@@ -108,6 +159,7 @@ public class DamageLogListener implements Listener {
             if ( e.getCause() == EntityDamageByEntityEvent.DamageCause.CUSTOM ) message(player, "貫通", e.getFinalDamage(), false, e.getDamager());
             if ( e.getCause() == EntityDamageByEntityEvent.DamageCause.ENTITY_ATTACK ) message(player, "攻撃", e.getFinalDamage(), false, e.getDamager());
             if ( e.getCause() == EntityDamageByEntityEvent.DamageCause.ENTITY_SWEEP_ATTACK ) message(player, "範囲攻撃", e.getFinalDamage(), false, e.getDamager());
+            }
 
         }
         if ( (e.getDamager() instanceof Player) ) {
@@ -115,6 +167,11 @@ public class DamageLogListener implements Listener {
             Player player = (Player) e.getDamager();
 
             if (!DamageLogFile.isEnabled(player.getUniqueId())) return;
+
+            if (isMythicArmorPiercing(e)) {
+                message(player, "貫通", e.getFinalDamage(), true, e.getEntity());
+                return;
+            }
 
             if ( e.getCause() == EntityDamageByEntityEvent.DamageCause.POISON ) message(player, "毒", e.getFinalDamage(), true);
             else if ( e.getCause() == EntityDamageByEntityEvent.DamageCause.WITHER ) message(player, "衰弱", e.getFinalDamage(), true);
