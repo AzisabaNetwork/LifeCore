@@ -84,6 +84,7 @@ dependencies {
         exclude("org.spigotmc", "spigot-api")
         exclude("org.bukkit", "bukkit")
     }
+    compileOnly("net.kyori:adventure-text-serializer-ansi:5.2.0")
     paperweight.paperDevBundle("1.21.11-R0.1-SNAPSHOT")
 }
 
