@@ -26,6 +26,7 @@ public class PacketHandler extends ChannelDuplexHandler {
         this.entityPlayer = ((CraftPlayer) player).getHandle();
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof ServerboundInteractPacket packet) {

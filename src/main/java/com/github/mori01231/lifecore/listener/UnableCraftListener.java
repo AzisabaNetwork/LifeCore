@@ -1,9 +1,11 @@
 package com.github.mori01231.lifecore.listener;
 
-import com.destroystokyo.paper.event.inventory.PrepareGrindstoneEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
+import org.bukkit.event.inventory.PrepareGrindstoneEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -39,11 +41,14 @@ public class UnableCraftListener implements Listener {
         ItemMeta meta = item.getItemMeta();
 
         if ( item.getType().isAir() ) return false;
-        if ( meta == null || !meta.hasDisplayName() ) return false;
+        if ( meta == null ) return false;
+        Component displayName = meta.displayName();
+        if ( displayName == null ) return false;
         if ( meta.hasLore() ) return true;
 
+        String legacyName = LegacyComponentSerializer.legacySection().serialize(displayName);
         for ( String c: LIST ) {
-            if ( meta.getDisplayName().contains(c) ) return true;
+            if ( legacyName.contains(c) ) return true;
         }
 
         return false;

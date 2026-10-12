@@ -7,8 +7,9 @@ import com.github.mori01231.lifecore.util.runTaskTimer
 import de.Keyle.MyPet.MyPetApi
 import de.Keyle.MyPet.api.skill.skills.Backpack
 import de.Keyle.MyPet.api.skill.skills.Pickup
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Bukkit
-import org.bukkit.ChatColor
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -35,11 +36,11 @@ class TownSpecificListener(private val plugin: LifeCore) : Listener {
                 val config = TownConfig.getTownConfigAt(plugin.lifeCoreConfig, player.location) ?: return@forEach
                 if (!config.allowInvisibility && player.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
                     player.removePotionEffect(PotionEffectType.INVISIBILITY)
-                    player.sendMessage("${ChatColor.RED}この町での透明化は許可されていません。")
+                    player.sendMessage(Component.text("この町での透明化は許可されていません。", NamedTextColor.RED))
                 }
                 if (!config.allowPassenger && player.vehicle is Player) {
                     player.leaveVehicle()
-                    player.sendMessage("${ChatColor.RED}この町でプレイヤーに乗ることは許可されていません。")
+                    player.sendMessage(Component.text("この町でプレイヤーに乗ることは許可されていません。", NamedTextColor.RED))
                 }
                 if (Bukkit.getPluginManager().isPluginEnabled("MyPet")) {
                     runMyPet(config, player)
@@ -53,7 +54,7 @@ class TownSpecificListener(private val plugin: LifeCore) : Listener {
             MyPetApi.getMyPetManager().getMyPet(player)?.let { pet ->
                 val skill = pet.skills.get(Pickup::class.java)
                 if (skill.isActive && pet.skills.isActive(Backpack::class.java) && (pickupPickupField.get()[skill] as Boolean)) {
-                    player.sendMessage("${ChatColor.RED}この町でのpetpickupは許可されていません。")
+                    player.sendMessage(Component.text("この町でのpetpickupは許可されていません。", NamedTextColor.RED))
                     skill.activate() // this toggles the "pickup" status and sends a message to the player
                 }
             }
@@ -86,7 +87,7 @@ class TownSpecificListener(private val plugin: LifeCore) : Listener {
         val config = TownConfig.getTownConfigAt(plugin.lifeCoreConfig, player.location) ?: return
         if (!config.allowPassenger) {
             e.isCancelled = true
-            player.sendMessage("${ChatColor.RED}この町でプレイヤーに乗ることは許可されていません。")
+            player.sendMessage(Component.text("この町でプレイヤーに乗ることは許可されていません。", NamedTextColor.RED))
         }
     }
 
@@ -101,7 +102,7 @@ class TownSpecificListener(private val plugin: LifeCore) : Listener {
             val config = TownConfig.getTownConfigAt(plugin.lifeCoreConfig, e.player.location) ?: return
             if (!config.allowSit) {
                 e.isCancelled = true
-                e.player.sendMessage("${ChatColor.RED}この町での/sitは許可されていません。")
+                e.player.sendMessage(Component.text("この町での/sitは許可されていません。", NamedTextColor.RED))
             }
         }
     }

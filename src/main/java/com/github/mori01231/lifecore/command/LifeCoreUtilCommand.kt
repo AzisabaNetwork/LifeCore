@@ -14,7 +14,6 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.TagParser
 import net.minecraft.world.item.component.CustomData
 import org.bukkit.Bukkit
-import org.bukkit.ChatColor
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabExecutor
@@ -39,7 +38,7 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
             return true
         }
         if (!sender.hasPermission("lifecore.lifecoreutil.${handler.name}")) {
-            sender.sendMessage("${ChatColor.RED}You don't have permission to execute this command.")
+            sender.sendMessage(Component.text("You don't have permission to execute this command.", NamedTextColor.RED))
             return true
         }
         handler.execute(plugin, sender, args.copyOfRange(1, args.size))
@@ -50,9 +49,13 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
         Commands.entries.forEach { cmd ->
             if (!sender.hasPermission("lifecore.lifecoreutil.${cmd.name}"))
             if (cmd.description == null) {
-                sender.sendMessage("${ChatColor.AQUA}/lifecoreutil ${cmd.commandName}")
+                sender.sendMessage(Component.text("/lifecoreutil ${cmd.commandName}", NamedTextColor.AQUA))
             } else {
-                sender.sendMessage("${ChatColor.AQUA}/lifecoreutil ${cmd.commandName} ${ChatColor.GRAY}- ${ChatColor.GREEN}${cmd.description}")
+                sender.sendMessage(
+                    Component.text("/lifecoreutil ${cmd.commandName} ", NamedTextColor.AQUA)
+                        .append(Component.text("- ", NamedTextColor.GRAY))
+                        .append(Component.text(cmd.description, NamedTextColor.GREEN))
+                )
             }
         }
     }
@@ -84,7 +87,7 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
         Glowing("発光状態を切り替えます") {
             override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
                 if (args.isEmpty()) {
-                    player.sendMessage("${ChatColor.RED}Usage: /lifecoreutil $commandName <true|false> [player]")
+                    player.sendMessage(Component.text("Usage: /lifecoreutil $commandName <true|false> [player]", NamedTextColor.RED))
                     return
                 }
                 val glowing = args[0].toBoolean()
@@ -94,11 +97,11 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
         AddPassenger("<sender>の上に<player>を乗せます") {
             override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
                 if (args.size < 2) {
-                    player.sendMessage("${ChatColor.RED}Usage: /lifecoreutil $commandName <player> [sender]")
+                    player.sendMessage(Component.text("Usage: /lifecoreutil $commandName <player> [sender]", NamedTextColor.RED))
                     return
                 }
                 val passenger = Bukkit.getPlayerExact(args[1]) ?: run {
-                    player.sendMessage("${ChatColor.RED}Player not found: ${args[1]}")
+                    player.sendMessage(Component.text("Player not found: ${args[1]}", NamedTextColor.RED))
                     return
                 }
                 optionalPlayer(player, args, 2).addPassenger(passenger)
@@ -123,7 +126,7 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
             override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
                 val amount = args.getOrNull(0)?.toDoubleOrNull()
                 if (amount == null) {
-                    player.sendMessage("${ChatColor.RED}Usage: /lifecoreutil $commandName <amount> [player]")
+                    player.sendMessage(Component.text("Usage: /lifecoreutil $commandName <amount> [player]", NamedTextColor.RED))
                     return
                 }
                 optionalPlayer(player, args, 1).fallDistance = amount.toFloat()
@@ -147,14 +150,14 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
         SetVelocity {
             override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
                 if (args.size < 3) {
-                    player.sendMessage("${ChatColor.RED}Usage: /lifecoreutil $commandName <x> <y> <z> [player]")
+                    player.sendMessage(Component.text("Usage: /lifecoreutil $commandName <x> <y> <z> [player]", NamedTextColor.RED))
                     return
                 }
                 val x = args[0].toDoubleOrNull()
                 val y = args[1].toDoubleOrNull()
                 val z = args[2].toDoubleOrNull()
                 if (x == null || y == null || z == null) {
-                    player.sendMessage("${ChatColor.RED}Invalid number: ${args.joinToString(" ")}")
+                    player.sendMessage(Component.text("Invalid number: ${args.joinToString(" ")}", NamedTextColor.RED))
                     return
                 }
                 optionalPlayer(player, args, 3).velocity = Vector(x, y, z)
@@ -178,12 +181,12 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
         SetHealth("体力をセットします") {
             override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
                 if (args.isEmpty()) {
-                    player.sendMessage("${ChatColor.RED}Usage: /lifecoreutil $commandName <amount> [player]")
+                    player.sendMessage(Component.text("Usage: /lifecoreutil $commandName <amount> [player]", NamedTextColor.RED))
                     return
                 }
                 val amount = args[0].toDoubleOrNull()
                 if (amount == null) {
-                    player.sendMessage("${ChatColor.RED}Invalid number: ${args[0]}")
+                    player.sendMessage(Component.text("Invalid number: ${args[0]}", NamedTextColor.RED))
                     return
                 }
                 optionalPlayer(player, args, 1).health = amount
@@ -197,7 +200,7 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
         IsEquippedInAnySlot {
             override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
                 if (args.isEmpty()) {
-                    player.sendMessage("${ChatColor.RED}Usage: /lifecoreutil $commandName <mythic type> [player]")
+                    player.sendMessage(Component.text("Usage: /lifecoreutil $commandName <mythic type> [player]", NamedTextColor.RED))
                     return
                 }
                 player.sendMessage(ItemUtil.isEquippedInAnySlot(optionalPlayer(player, args, 1), args[0]).toString())
@@ -231,11 +234,11 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
         MergeTag {
             override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
                 if (args.isEmpty()) {
-                    player.sendMessage("${ChatColor.RED}Usage: /lifecoreutil $commandName <value>")
+                    player.sendMessage(Component.text("Usage: /lifecoreutil $commandName <value>", NamedTextColor.RED))
                     return
                 }
                 val item = CraftItemStack.asNMSCopy((player as Player).inventory.itemInMainHand)
-                val tag = ItemUtil.getCustomData((player as Player).inventory.itemInMainHand) ?: CompoundTag()
+                val tag = ItemUtil.getCustomData(player.inventory.itemInMainHand) ?: CompoundTag()
                 tag.merge(TagParser.parseCompoundFully(args.joinToString(" ")))
                 item.set(DataComponents.CUSTOM_DATA, CustomData.of(tag))
                 player.inventory.setItemInMainHand(CraftItemStack.asBukkitCopy(item))
@@ -279,23 +282,23 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
         ReloadBlocks {
             override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
                 plugin.customBlockManager.reloadBlocks()
-                player.sendMessage("${ChatColor.GREEN}カスタムブロックを再読み込みしました。")
+                player.sendMessage(Component.text("カスタムブロックを再読み込みしました。", NamedTextColor.GREEN))
             }
         },
         ReloadConfig("指定したプラグインのconfig.ymlをリロードさせます") {
             override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
                 if (args.isEmpty()) {
-                    player.sendMessage("${ChatColor.RED}Usage: /lifecoreutil $commandName <plugin>")
+                    player.sendMessage(Component.text("Usage: /lifecoreutil $commandName <plugin>", NamedTextColor.RED))
                     return
                 }
                 val target = args[0]
                 val targetPlugin = Bukkit.getPluginManager().getPlugin(target)
                 if (targetPlugin == null) {
-                    player.sendMessage("${ChatColor.RED}プラグインが見つかりませんでした。")
+                    player.sendMessage(Component.text("プラグインが見つかりませんでした。", NamedTextColor.RED))
                     return
                 }
                 targetPlugin.reloadConfig()
-                player.sendMessage("${ChatColor.GREEN}${target}のconfig.ymlをリロードしました。")
+                player.sendMessage(Component.text("${target}のconfig.ymlをリロードしました。", NamedTextColor.GREEN))
             }
 
             override fun suggest(plugin: LifeCore, player: Player, args: Array<String>): List<String> {
@@ -327,13 +330,12 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
             }
         },
         GetOfflineMoney("offline_moneyを取得します") {
-            @Suppress("DEPRECATION")
             override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
                 if (args.isEmpty()) {
-                    player.sendMessage("${ChatColor.RED}Usage: /lifecoreutil $commandName <player>")
+                    player.sendMessage(Component.text("Usage: /lifecoreutil $commandName <player>", NamedTextColor.RED))
                     return
                 }
-                Bukkit.getScheduler().runTaskAsynchronously(LifeCore.instance, Runnable {
+                Bukkit.getScheduler().runTaskAsynchronously(plugin, Runnable {
                     val target = Bukkit.getOfflinePlayer(args[0])
                     val result =
                         DBConnector.getPrepareStatement("SELECT * FROM `mpdb_economy` WHERE `player_uuid` = ?") { statement ->
@@ -346,11 +348,11 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
                                 }
                             }
                         }
-                    Bukkit.getScheduler().runTask(LifeCore.instance, Runnable {
+                    Bukkit.getScheduler().runTask(plugin, Runnable {
                         if (result == null) {
-                            player.sendMessage("${ChatColor.RED}プレイヤーが見つかりませんでした。")
+                            player.sendMessage(Component.text("プレイヤーが見つかりませんでした。", NamedTextColor.RED))
                         } else {
-                            player.sendMessage("${ChatColor.GREEN}${target.name}のoffline_money: $result")
+                            player.sendMessage(Component.text("${target.name}のoffline_money: $result", NamedTextColor.GREEN))
                         }
                     })
                 })
@@ -362,17 +364,16 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
             }
         },
         SetOfflineMoney("offline_moneyをセットします") {
-            @Suppress("DEPRECATION")
             override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
                 if (args.size < 2) {
-                    player.sendMessage("${ChatColor.RED}Usage: /lifecoreutil $commandName <player> <amount>")
+                    player.sendMessage(Component.text("Usage: /lifecoreutil $commandName <player> <amount>", NamedTextColor.RED))
                     return
                 }
                 val amount = args[1].toDoubleOrNull() ?: run {
-                    player.sendMessage("${ChatColor.RED}無効な数値: ${args[1]}")
+                    player.sendMessage(Component.text("無効な数値: ${args[1]}", NamedTextColor.RED))
                     return
                 }
-                Bukkit.getScheduler().runTaskAsynchronously(LifeCore.instance, Runnable {
+                Bukkit.getScheduler().runTaskAsynchronously(plugin, Runnable {
                     val target = Bukkit.getOfflinePlayer(args[0])
                     val result =
                         DBConnector.getPrepareStatement("UPDATE `mpdb_economy` SET `offline_money` = ? WHERE `player_uuid` = ?") { statement ->
@@ -380,8 +381,8 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
                             statement.setString(2, target.uniqueId.toString())
                             statement.executeUpdate()
                         }
-                    Bukkit.getScheduler().runTask(LifeCore.instance, Runnable {
-                        player.sendMessage("${ChatColor.GREEN}$result rows affected")
+                    Bukkit.getScheduler().runTask(plugin, Runnable {
+                        player.sendMessage(Component.text("$result rows affected", NamedTextColor.GREEN))
                     })
                 })
             }
@@ -392,17 +393,16 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
             }
         },
         AddOfflineMoney("offline_moneyを追加(add)します") {
-            @Suppress("DEPRECATION")
             override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
                 if (args.size < 2) {
-                    player.sendMessage("${ChatColor.RED}Usage: /lifecoreutil $commandName <player> <amount>")
+                    player.sendMessage(Component.text("Usage: /lifecoreutil $commandName <player> <amount>", NamedTextColor.RED))
                     return
                 }
                 val amount = args[1].toDoubleOrNull() ?: run {
-                    player.sendMessage("${ChatColor.RED}無効な数値: ${args[1]}")
+                    player.sendMessage(Component.text("無効な数値: ${args[1]}", NamedTextColor.RED))
                     return
                 }
-                Bukkit.getScheduler().runTaskAsynchronously(LifeCore.instance, Runnable {
+                Bukkit.getScheduler().runTaskAsynchronously(plugin, Runnable {
                     val target = Bukkit.getOfflinePlayer(args[0])
                     val result =
                         DBConnector.getPrepareStatement("UPDATE `mpdb_economy` SET `offline_money` = `offline_money` + ? WHERE `player_uuid` = ?") { statement ->
@@ -410,8 +410,8 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
                             statement.setString(2, target.uniqueId.toString())
                             statement.executeUpdate()
                         }
-                    Bukkit.getScheduler().runTask(LifeCore.instance, Runnable {
-                        player.sendMessage("${ChatColor.GREEN}$result rows affected")
+                    Bukkit.getScheduler().runTask(plugin, Runnable {
+                        player.sendMessage(Component.text("$result rows affected", NamedTextColor.GREEN))
                     })
                 })
             }
@@ -468,14 +468,14 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
                  }
                  val meta = item.itemMeta ?: return player.sendMessage(Component.text("このアイテムはメタデータがありません。", NamedTextColor.RED))
                  if (meta.hasDisplayName()) {
-                     val origName = meta.displayName
-                     meta.setDisplayName(null)
-                     meta.setDisplayName(origName)
+                     val origName = meta.displayName()
+                     meta.displayName(null)
+                     meta.displayName(origName)
                  }
                  if (meta.hasLore()) {
-                     val origLore = meta.lore
-                     meta.lore = null
-                     meta.lore = origLore
+                     val origLore = meta.lore()
+                     meta.lore(null)
+                     meta.lore(origLore)
                  }
                  item.itemMeta = meta
                  player.inventory.setItemInMainHand(item)

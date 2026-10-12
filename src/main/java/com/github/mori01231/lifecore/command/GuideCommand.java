@@ -1,7 +1,7 @@
 package com.github.mori01231.lifecore.command;
 
 import com.github.mori01231.lifecore.LifeCore;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -25,18 +25,18 @@ public class GuideCommand implements CommandExecutor {
 
                 String guide = plugin.getConfig().getString("guide");
                 getServer().dispatchCommand(getServer().getConsoleSender(), "minecraft:give " + args[0] + " " + guide);
-                sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&a&l" + args[0] +"&3にガイドブックを授与しました。" ));
+                sender.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize("&a&l" + args[0] + "&3にガイドブックを授与しました。"));
             } else {
-                sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&4権限不足です" ));
+                sender.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize("&4権限不足です"));
             }
         } else {
             if (sender instanceof Player) {
                 Player player = (Player) sender;
                 String guide = plugin.getConfig().getString("guide");
                 getServer().dispatchCommand(getServer().getConsoleSender(), "minecraft:give " + player.getName() + " " + guide);
-                sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3ガイドブックを入手しました。" ));
+                sender.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize("&3ガイドブックを入手しました。"));
             } else {
-                sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3このコマンドはコンソールから使用できません。" ));
+                sender.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize("&3このコマンドはコンソールから使用できません。"));
             }
         }
 

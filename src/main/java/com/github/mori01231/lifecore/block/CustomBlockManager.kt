@@ -4,12 +4,17 @@ import com.github.mori01231.lifecore.LifeCore
 import com.github.mori01231.lifecore.listener.CustomBlockListener
 import com.github.mori01231.lifecore.region.WorldLocation
 import com.github.mori01231.lifecore.util.AxisX
+import com.github.mori01231.lifecore.util.ItemUtil
 import com.github.mori01231.lifecore.util.LRUCache
 import kotlinx.serialization.json.Json
-import org.bukkit.ChatColor
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
+import org.bukkit.Registry
 import org.bukkit.World
 import org.bukkit.block.data.Directional
 import org.bukkit.block.data.type.Leaves
@@ -18,7 +23,6 @@ import org.bukkit.entity.Entity
 import org.bukkit.event.HandlerList
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.ShapedRecipe
-import org.bukkit.potion.PotionEffectType
 import java.io.File
 import java.util.*
 
@@ -97,9 +101,9 @@ class CustomBlockManager(val plugin: LifeCore) {
 
     fun getWrenchItem() = ItemStack(Material.STICK).apply {
         itemMeta = itemMeta?.apply {
-            setDisplayName("${ChatColor.GOLD}レンチ")
-            lore = listOf("${ChatColor.GRAY}シフト+右クリックで特殊ブロックを撤去できます。")
-            setCustomModelData(plugin.customModelDataWrench)
+            displayName(Component.text("レンチ", NamedTextColor.GOLD))
+            lore(listOf(Component.text("シフト+右クリックで特殊ブロックを撤去できます。", NamedTextColor.GRAY)))
+            ItemUtil.setCustomModelData(this, plugin.customModelDataWrench)
         }
     }
 
@@ -133,8 +137,12 @@ class CustomBlockManager(val plugin: LifeCore) {
             val lockFacing = map["lockFacing"]?.toString()?.toBoolean() == true
             val backgroundBlock = Material.valueOf(map["backgroundBlock"]?.toString()?.uppercase() ?: "BARRIER")
             val material = Material.valueOf(map["material"]?.toString()?.uppercase() ?: return plugin.logger.warning("material is required @ $blockName"))
-            val displayName = map["displayName"]?.toString()?.let { ChatColor.translateAlternateColorCodes('&', it) }
-            val lore = map["lore"]?.toString()?.let { ChatColor.translateAlternateColorCodes('&', it) }?.split("\n")
+            val displayName = map["displayName"]?.toString()?.let {
+                LegacyComponentSerializer.legacySection().serialize(LegacyComponentSerializer.legacyAmpersand().deserialize(it))
+            }
+            val lore = map["lore"]?.toString()?.let {
+                LegacyComponentSerializer.legacySection().serialize(LegacyComponentSerializer.legacyAmpersand().deserialize(it))
+            }?.split("\n")
             val destroyWithoutWrench = map["destroyWithoutWrench"]?.toString()?.toBoolean() == true
             val customModelData = map["customModelData"]?.toString()?.toIntOrNull()
             val block = if (type == "command") {
@@ -142,7 +150,8 @@ class CustomBlockManager(val plugin: LifeCore) {
                 val consoleCommands = map["consoleCommands"] as List<String>?
                 CommandCustomBlock(blockName, lockFacing, axisShift, backgroundBlock, material, displayName, lore, commands ?: emptyList(), consoleCommands ?: emptyList(), destroyWithoutWrench)
             } else if (type == "beacon") {
-                val effect = PotionEffectType.getByName(map["effect"]?.toString() ?: return plugin.logger.warning("effect is required @ $blockName"))
+                val effectName = map["effect"]?.toString() ?: return plugin.logger.warning("effect is required @ $blockName")
+                val effect = NamespacedKey.fromString(effectName.lowercase())?.let { Registry.EFFECT.get(it) }
                     ?: return plugin.logger.warning("Unknown effect: ${map["effect"]} @ $blockName")
                 val amplifier = map["amplifier"]?.toString()?.toIntOrNull() ?: 0
                 val radius = map["radius"]?.toString()?.toDouble() ?: 250.0
@@ -165,7 +174,7 @@ class CustomBlockManager(val plugin: LifeCore) {
         val z = location.blockZ + 0.5
         return location.world.getNearbyEntities(Location(location.world, x, y, z), 0.01, 0.01, 0.01)
             .filterIsInstance<ArmorStand>()
-            .firstOrNull { it.customName == "custom_block" && !it.isVisible && it.isInvulnerable && it.isSmall }
+            .firstOrNull { isCustomBlockEntity(it) }
     }
 
     private fun spawnBlock(location: Location, block: CustomBlock, axis: AxisX): ArmorStand {
@@ -189,7 +198,7 @@ class CustomBlockManager(val plugin: LifeCore) {
             it.isVisible = false
             it.isInvulnerable = true
             it.isSmall = true
-            it.customName = "custom_block"
+            it.customName(Component.text("custom_block"))
             it.isCustomNameVisible = false
             it.isSilent = true
             if (block.lockFacing) {
@@ -197,15 +206,15 @@ class CustomBlockManager(val plugin: LifeCore) {
             } else {
                 it.setRotation(((axis.yaw + block.axisShift) % 360).toFloat(), 0f)
             }
-            it.equipment?.helmet = ItemStack(block.material).apply {
+            it.equipment.helmet = ItemStack(block.material).apply {
                 itemMeta = itemMeta?.apply {
-                    setCustomModelData(block.customModelData)
-                    setDisplayName(" ")
+                    ItemUtil.setCustomModelData(this, block.customModelData)
+                    displayName(Component.text(" "))
                 }
             }
         }
     }
 
     fun isCustomBlockEntity(e: Entity?) =
-        e is ArmorStand && e.customName == "custom_block" && !e.isVisible && e.isInvulnerable && e.isSmall
+        e is ArmorStand && e.customName()?.let { PlainTextComponentSerializer.plainText().serialize(it) } == "custom_block" && !e.isVisible && e.isInvulnerable && e.isSmall
 }

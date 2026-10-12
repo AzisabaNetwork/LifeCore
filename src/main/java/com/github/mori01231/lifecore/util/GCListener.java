@@ -3,9 +3,10 @@ package com.github.mori01231.lifecore.util;
 import com.github.mori01231.lifecore.LifeCore;
 import com.github.mori01231.lifecore.command.ScheduleRestartCommand;
 import com.sun.management.GarbageCollectionNotificationInfo;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 
 import javax.management.ListenerNotFoundException;
@@ -98,12 +99,10 @@ public class GCListener implements NotificationListener {
                     try {
                         int delaySeconds = Integer.parseInt(command.substring("@schedulerestart ".length()));
                         ScheduleRestartCommand.schedule(delaySeconds);
-                        TextComponent component = new TextComponent("再起動までの時間を延長するには、このメッセージをクリックしてください。");
-                        component.setColor(ChatColor.AQUA);
-                        component.setUnderlined(true);
-                        component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/gclistenerrestartextendtimecommand"));
+                        Component component = Component.text("再起動までの時間を延長するには、このメッセージをクリックしてください。", NamedTextColor.AQUA, TextDecoration.UNDERLINED)
+                                .clickEvent(ClickEvent.runCommand("/gclistenerrestartextendtimecommand"));
                         Bukkit.broadcast(component);
-                        Bukkit.broadcastMessage("§a5人が上のメッセージをクリックすると、30分に延長されます。");
+                        Bukkit.broadcast(Component.text("5人が上のメッセージをクリックすると、30分に延長されます。", NamedTextColor.GREEN));
                     } catch (IllegalArgumentException e) {
                         plugin.getSLF4JLogger().warn("Invalid @schedulerestart: " + command, e);
                     }

@@ -3,8 +3,9 @@ package com.github.mori01231.lifecore.command;
 import com.github.mori01231.lifecore.DBConnector;
 import com.github.mori01231.lifecore.LifeCore;
 import com.github.mori01231.lifecore.TableKey;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -30,13 +31,13 @@ public class DebtCommand implements CommandExecutor {
         String target;
         if (args.length == 0) {
             if (!(sender instanceof Player)) {
-                sender.sendMessage(ChatColor.RED + "You must specify a player to check debt to.");
+                sender.sendMessage(Component.text("You must specify a player to check debt to.", NamedTextColor.RED));
                 return true;
             }
             target = ((Player) sender).getUniqueId().toString();
         } else {
             if (!sender.hasPermission("lifecore.debt.others")) {
-                sender.sendMessage(ChatColor.RED + "権限がありません。");
+                sender.sendMessage(Component.text("権限がありません。", NamedTextColor.RED));
                 return true;
             }
             target = args[0];
@@ -59,7 +60,7 @@ public class DebtCommand implements CommandExecutor {
                     );
                 });
                 if (entry == null) {
-                    Bukkit.getScheduler().runTask(plugin, () -> sender.sendMessage(ChatColor.RED + "プレイヤーが見つかりませんでした。"));
+                    Bukkit.getScheduler().runTask(plugin, () -> sender.sendMessage(Component.text("プレイヤーが見つかりませんでした。", NamedTextColor.RED)));
                     return;
                 } else {
                     money = entry.getKey();
@@ -73,12 +74,22 @@ public class DebtCommand implements CommandExecutor {
                 varDebt = 0.0;
             }
             double debt = varDebt;
-            String details = ChatColor.GRAY + "(" + DECIMAL_FORMAT.format(money) + " + " + DECIMAL_FORMAT.format(offlineMoney) + ")";
+            Component details = Component.text("(" + DECIMAL_FORMAT.format(money) + " + " + DECIMAL_FORMAT.format(offlineMoney) + ")", NamedTextColor.GRAY);
             Bukkit.getScheduler().runTask(plugin, () -> {
                 if (args.length == 0) {
-                    sender.sendMessage(ChatColor.GREEN + "現在の借金は" + ChatColor.RED + DECIMAL_FORMAT.format(debt) + ChatColor.GREEN + "円です。" + details);
+                    sender.sendMessage(
+                            Component.text("現在の借金は", NamedTextColor.GREEN)
+                                    .append(Component.text(DECIMAL_FORMAT.format(debt), NamedTextColor.RED))
+                                    .append(Component.text("円です。", NamedTextColor.GREEN))
+                                    .append(details)
+                    );
                 } else {
-                    sender.sendMessage(ChatColor.GREEN + target + "の現在の借金は" + ChatColor.RED + DECIMAL_FORMAT.format(debt) + ChatColor.GREEN + "円です。" + details);
+                    sender.sendMessage(
+                            Component.text(target + "の現在の借金は", NamedTextColor.GREEN)
+                                    .append(Component.text(DECIMAL_FORMAT.format(debt), NamedTextColor.RED))
+                                    .append(Component.text("円です。", NamedTextColor.GREEN))
+                                    .append(details)
+                    );
                 }
             });
         });

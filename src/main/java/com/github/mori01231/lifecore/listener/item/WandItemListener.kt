@@ -4,7 +4,8 @@ import com.github.mori01231.lifecore.LifeCore
 import com.github.mori01231.lifecore.region.CuboidRegion.Companion.isComplete
 import com.github.mori01231.lifecore.region.PlayerRegionManager
 import com.github.mori01231.lifecore.region.WorldLocation
-import org.bukkit.ChatColor
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
@@ -33,7 +34,11 @@ class WandItemListener(private val plugin: LifeCore) : Listener {
             plugin.playerRegionManager.put(e.player.uniqueId, pos2 = loc)
         }
         val region = plugin.playerRegionManager[e.player.uniqueId] ?: error("Region is null")
-        val suffix = if (region.isComplete()) " ${ChatColor.GRAY}(${region.size} blocks)" else ""
-        e.player.sendMessage("${ChatColor.YELLOW}$which position set to ${ChatColor.LIGHT_PURPLE}${loc.x}, ${loc.y}, ${loc.z}$suffix")
+        val suffix = if (region.isComplete()) Component.text(" (${region.size} blocks)", NamedTextColor.GRAY) else Component.empty()
+        e.player.sendMessage(
+            Component.text("$which position set to ", NamedTextColor.YELLOW)
+                .append(Component.text("${loc.x}, ${loc.y}, ${loc.z}", NamedTextColor.LIGHT_PURPLE))
+                .append(suffix)
+        )
     }
 }

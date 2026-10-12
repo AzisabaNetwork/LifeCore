@@ -5,7 +5,8 @@ import com.github.mori01231.lifecore.region.CuboidRegion.Companion.isComplete
 import com.github.mori01231.lifecore.region.CuboidRegion.Companion.isIncomplete
 import com.github.mori01231.lifecore.region.PlayerRegionManager
 import com.github.mori01231.lifecore.region.WorldLocation
-import org.bukkit.ChatColor
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -24,23 +25,30 @@ class LifeCoreConfigCommand(private val plugin: LifeCore) : PlayerTabExecutor() 
                 plugin.playerRegionManager.put(player.uniqueId, pos2 = loc)
             }
             val region = plugin.playerRegionManager[player.uniqueId] ?: error("Region is null")
-            val suffix = if (region.isComplete()) " ${ChatColor.GRAY}(${region.size} blocks)" else ""
-            player.sendMessage("${ChatColor.YELLOW}$which position set to ${ChatColor.LIGHT_PURPLE}${loc.x}, ${loc.y}, ${loc.z}$suffix")
+            val suffix = if (region.isComplete()) Component.text(" (${region.size} blocks)", NamedTextColor.GRAY) else Component.empty()
+            player.sendMessage(
+                Component.text("$which position set to ", NamedTextColor.YELLOW)
+                    .append(Component.text("${loc.x}, ${loc.y}, ${loc.z}", NamedTextColor.LIGHT_PURPLE))
+                    .append(suffix)
+            )
         } else if (args[0] == "wand") {
             player.inventory.addItem(PlayerRegionManager.wandItem)
         } else if (args[0] == "setLobby") {
             val region = plugin.playerRegionManager[player.uniqueId]
             if (region.isIncomplete()) {
-                player.sendMessage("${ChatColor.GOLD}/lifecoreconfig wand${ChatColor.RED}の斧で範囲を指定してください。")
+                player.sendMessage(
+                    Component.text("/lifecoreconfig wand", NamedTextColor.GOLD)
+                        .append(Component.text("の斧で範囲を指定してください。", NamedTextColor.RED))
+                )
                 return true
             }
             plugin.lifeCoreConfig.lobbyRegion = region
             plugin.lifeCoreConfig.save(plugin)
-            player.sendMessage("${ChatColor.GREEN}ロビーの範囲を設定しました。")
+            player.sendMessage(Component.text("ロビーの範囲を設定しました。", NamedTextColor.GREEN))
         } else if (args[0] == "removeLobby") {
             plugin.lifeCoreConfig.lobbyRegion = null
             plugin.lifeCoreConfig.save(plugin)
-            player.sendMessage("${ChatColor.GREEN}ロビーの範囲を削除しました。")
+            player.sendMessage(Component.text("ロビーの範囲を削除しました。", NamedTextColor.GREEN))
         }
         return true
     }

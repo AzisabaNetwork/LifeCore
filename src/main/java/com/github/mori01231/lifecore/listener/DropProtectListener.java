@@ -6,10 +6,11 @@ import net.azisaba.lifepvelevel.util.Util;
 import net.azisaba.rarity.api.Rarity;
 import net.azisaba.rarity.api.RarityAPI;
 import net.azisaba.rarity.api.RarityAPIProvider;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Items;
-import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.entity.CraftItem;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -64,12 +65,12 @@ public class DropProtectListener implements Listener {
             entityItem.getEntityData().set(itemStackDataWatcherObject, new net.minecraft.world.item.ItemStack(Items.AIR));
             entityItem.getEntityData().markDirty(itemStackDataWatcherObject);
 
-            e.getPlayer().sendMessage(ChatColor.RED + "このアイテムはドロップできません。");
-            e.getPlayer().sendMessage(ChatColor.AQUA + "/dropprotect" + ChatColor.GOLD + "で設定を変更できます。");
+            e.getPlayer().sendMessage(Component.text("このアイテムはドロップできません。", NamedTextColor.RED));
+            e.getPlayer().sendMessage(Component.text("/dropprotect", NamedTextColor.AQUA).append(Component.text("で設定を変更できます。", NamedTextColor.GOLD)));
             e.getPlayer().getInventory().addItem(stack).forEach((i, s) -> {
                 itemStash.addItemToStash(e.getPlayer().getUniqueId(), s);
-                e.getPlayer().sendMessage(ChatColor.RED + "インベントリがいっぱいのため、Stashに保管されました。");
-                e.getPlayer().sendMessage(ChatColor.AQUA + "/pickupstash" + ChatColor.RED + "で回収できます。");
+                e.getPlayer().sendMessage(Component.text("インベントリがいっぱいのため、Stashに保管されました。", NamedTextColor.RED));
+                e.getPlayer().sendMessage(Component.text("/pickupstash", NamedTextColor.AQUA).append(Component.text("で回収できます。", NamedTextColor.RED)));
             });
         }
     }

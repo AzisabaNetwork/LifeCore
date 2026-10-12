@@ -1,7 +1,8 @@
 package com.github.mori01231.lifecore.command;
 
 import com.github.mori01231.lifecore.config.PetClickFile;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -16,10 +17,10 @@ public class PetClickCommand extends PlayerTabExecutor {
     public boolean execute(@NotNull Player player, @NotNull String[] args) {
         if (PetClickFile.isDisabled(player.getUniqueId())) {
             PetClickFile.enable(player.getUniqueId());
-            player.sendMessage(ChatColor.GREEN + "ペットに対してShift+右クリックができるようになりました。");
+            player.sendMessage(Component.text("ペットに対してShift+右クリックができるようになりました。", NamedTextColor.GREEN));
         } else {
             PetClickFile.disable(player.getUniqueId());
-            player.sendMessage(ChatColor.GREEN + "ペットに対してShift+右クリックができなくなりました。");
+            player.sendMessage(Component.text("ペットに対してShift+右クリックができなくなりました。", NamedTextColor.GREEN));
         }
         return true;
     }

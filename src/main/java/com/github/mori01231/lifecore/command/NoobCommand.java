@@ -4,8 +4,8 @@ import net.azisaba.azipluginmessaging.api.AziPluginMessaging;
 import net.azisaba.azipluginmessaging.api.AziPluginMessagingProvider;
 import net.azisaba.azipluginmessaging.api.protocol.Protocol;
 import net.azisaba.azipluginmessaging.api.protocol.message.ProxyboundSetRankMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -31,7 +31,7 @@ public class NoobCommand implements CommandExecutor {
         Protocol.P_SET_RANK.sendPacket(
                 api.getServer().getPacketSender(),
                 new ProxyboundSetRankMessage("rank1", api.getPlayerAdapter(Player.class).get(player)));
-        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&d" + playerName + "&dさんがチュートリアルを完了しました！ ようこそ&b&lLife鯖&dへ！"));
+        Bukkit.broadcast(LegacyComponentSerializer.legacyAmpersand().deserialize("&d" + playerName + "&dさんがチュートリアルを完了しました！ ようこそ&b&lLife鯖&dへ！"));
         return true;
     }
 }

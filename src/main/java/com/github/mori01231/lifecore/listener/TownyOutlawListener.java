@@ -1,7 +1,8 @@
 package com.github.mori01231.lifecore.listener;
 
 import com.github.mori01231.lifecore.util.LazyInitValue;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -34,7 +35,7 @@ public class TownyOutlawListener implements Listener {
         }
         lastMove.put(e.getPlayer().getUniqueId(), System.currentTimeMillis());
         if (!e.getPlayer().hasPermission("lifecore.bypass-outlaw") && isInOutlawedTown(e.getPlayer(), e.getPlayer().getLocation())) {
-            e.getPlayer().sendMessage(ChatColor.RED + "出入り禁止になっている街に進入することはできません！");
+            e.getPlayer().sendMessage(Component.text("出入り禁止になっている街に進入することはできません！", NamedTextColor.RED));
             e.getPlayer().teleport(e.getPlayer().getWorld().getSpawnLocation());
         }
     }
@@ -43,7 +44,7 @@ public class TownyOutlawListener implements Listener {
     public void onTeleport(PlayerTeleportEvent e) {
         if (!e.getPlayer().hasPermission("lifecore.bypass-outlaw") && isInOutlawedTown(e.getPlayer(), e.getTo())) {
             e.setCancelled(true);
-            e.getPlayer().sendMessage(ChatColor.RED + "この場所にはテレポートできません。");
+            e.getPlayer().sendMessage(Component.text("この場所にはテレポートできません。", NamedTextColor.RED));
         }
     }
 

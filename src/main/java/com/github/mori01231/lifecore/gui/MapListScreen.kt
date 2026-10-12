@@ -4,8 +4,12 @@ import com.github.mori01231.lifecore.LifeCore
 import com.github.mori01231.lifecore.util.ItemUtil
 import com.github.mori01231.lifecore.util.MapDatabaseUtil
 import com.github.mori01231.lifecore.util.PromptSign
+import io.papermc.paper.datacomponent.DataComponentTypes
+import io.papermc.paper.datacomponent.item.TooltipDisplay
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.bukkit.Bukkit
-import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -20,7 +24,7 @@ import java.util.UUID
 import kotlin.math.min
 
 class MapListScreen(val player: Player) : InventoryHolder {
-    private val inventory = Bukkit.createInventory(this, 54, "${ChatColor.BLUE}マップリスト")
+    private val inventory = Bukkit.createInventory(this, 54, Component.text("マップリスト", NamedTextColor.BLUE))
     private val itemsInCurrentPage = mutableListOf<MapDatabaseUtil.ItemData>()
     @set:JvmName("setPage0")
     var page = 0
@@ -57,46 +61,48 @@ class MapListScreen(val player: Player) : InventoryHolder {
             inventory.setItem(i - start, createMenuItem(item))
             itemsInCurrentPage.add(item)
         }
-        inventory.setItem(45, createGenericItemStack(Material.ARROW, "${ChatColor.YELLOW}前のページ"))
-        inventory.setItem(49, ItemUtil.createItemStack(Material.NETHER_STAR, "${ChatColor.BLUE}ⓘ このページはなに？", listOf(
-            "${ChatColor.WHITE}保存したマップの一覧がここに表示されています。",
-            "${ChatColor.WHITE}それぞれのマップにカーソルを合わせると詳細が表示されます。",
-            "${ChatColor.WHITE}インベントリ内のマップでShift+クリックすると",
-            "${ChatColor.WHITE}名前を入力した後にこの画面にマップが追加されます。",
+        inventory.setItem(45, createGenericItemStack(Material.ARROW, Component.text("前のページ", NamedTextColor.YELLOW)))
+        inventory.setItem(49, ItemUtil.createItemStack(Material.NETHER_STAR, "§9ⓘ このページはなに？", listOf(
+            "§f保存したマップの一覧がここに表示されています。",
+            "§fそれぞれのマップにカーソルを合わせると詳細が表示されます。",
+            "§fインベントリ内のマップでShift+クリックすると",
+            "§f名前を入力した後にこの画面にマップが追加されます。",
         )))
-        inventory.setItem(53, createGenericItemStack(Material.ARROW, "${ChatColor.YELLOW}次のページ"))
+        inventory.setItem(53, createGenericItemStack(Material.ARROW, Component.text("次のページ", NamedTextColor.YELLOW)))
     }
 
-    fun createGenericItemStack(material: Material, name: String) =
+    fun createGenericItemStack(material: Material, name: Component) =
         ItemStack(material, 1).apply {
             val meta = itemMeta
-            meta.setDisplayName(name)
+            meta.displayName(name)
             itemMeta = meta
         }
 
+    @Suppress("UnstableApiUsage")
     fun createMenuItem(itemData: MapDatabaseUtil.ItemData) =
         ItemStack(Material.FILLED_MAP, 1).apply {
             val meta = itemMeta
-            meta.setDisplayName(itemData.name)
-            val lore = mutableListOf(
-                "${ChatColor.YELLOW}アイテム数: ${if (itemData.amount > 0) ChatColor.GREEN else ChatColor.RED}${itemData.amount}",
-                "",
-                "${ChatColor.YELLOW}✦ 左クリックで1個入手 (Shiftで64個)",
-                "${ChatColor.YELLOW}✎ 右クリックで名前を編集"
+            meta.displayName(LegacyComponentSerializer.legacySection().deserialize(itemData.name))
+            val lore = mutableListOf<Component>(
+                Component.text("アイテム数: ", NamedTextColor.YELLOW)
+                    .append(Component.text("${itemData.amount}", if (itemData.amount > 0) NamedTextColor.GREEN else NamedTextColor.RED)),
+                Component.empty(),
+                Component.text("✦ 左クリックで1個入手 (Shiftで64個)", NamedTextColor.YELLOW),
+                Component.text("✎ 右クリックで名前を編集", NamedTextColor.YELLOW)
             )
             if (itemData.amount <= 0L) {
-                lore.add("${ChatColor.YELLOW}✖ Shift+右クリックで削除")
+                lore.add(Component.text("✖ Shift+右クリックで削除", NamedTextColor.YELLOW))
             } else {
-                lore.add("${ChatColor.YELLOW}✦ Shift+右クリックですべて取り出す")
+                lore.add(Component.text("✦ Shift+右クリックですべて取り出す", NamedTextColor.YELLOW))
             }
-            meta.lore = lore
+            meta.lore(lore)
             meta.addItemFlags(ItemFlag.HIDE_DESTROYS)
             meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
             meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE)
             meta.addItemFlags(ItemFlag.HIDE_PLACED_ON)
-            meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP)
             itemMeta = meta
+            setData(DataComponentTypes.TOOLTIP_DISPLAY, TooltipDisplay.tooltipDisplay().addHiddenComponents(DataComponentTypes.MAP_ID).build())
         }
 
     fun getPreviousPage() = if (page == 0) 0 else page - 1
@@ -137,7 +143,11 @@ class MapListScreen(val player: Player) : InventoryHolder {
                 if (e.click != ClickType.SHIFT_LEFT && e.click != ClickType.SHIFT_RIGHT) return
                 ItemUtil.getByteArrayTag(currentItem, "SerializedMapData")?.let { if (it.isEmpty()) null else true } ?: run {
                     player.closeInventory()
-                    player.sendMessage("${ChatColor.RED}先に${ChatColor.AQUA}/lifecoreutil saveMapData${ChatColor.RED}でマップデータを保存してください")
+                    player.sendMessage(
+                        Component.text("先に", NamedTextColor.RED)
+                            .append(Component.text("/lifecoreutil saveMapData", NamedTextColor.AQUA))
+                            .append(Component.text("でマップデータを保存してください", NamedTextColor.RED))
+                    )
                     return
                 }
                 e.currentItem = null
@@ -166,7 +176,10 @@ class MapListScreen(val player: Player) : InventoryHolder {
                     val item = try {
                         MapDatabaseUtil.take(player, itemData.data, amount)
                     } catch (e: Exception) {
-                        player.sendMessage("${ChatColor.RED}アイテムが足りません。 ${ChatColor.DARK_GRAY}(${e.message})")
+                        player.sendMessage(
+                            Component.text("アイテムが足りません。 ", NamedTextColor.RED)
+                                .append(Component.text("(${e.message})", NamedTextColor.DARK_GRAY))
+                        )
                         return@async
                     } finally {
                         processing.remove(player.uniqueId)
@@ -180,21 +193,23 @@ class MapListScreen(val player: Player) : InventoryHolder {
             when (e.click) {
                 ClickType.LEFT -> {
                     if (player.inventory.firstEmpty() == -1) {
-                        player.sendMessage("${ChatColor.RED}インベントリがいっぱいです")
+                        player.sendMessage(Component.text("インベントリがいっぱいです", NamedTextColor.RED))
                         return
                     }
                     takeItem(1)
                 }
                 ClickType.SHIFT_LEFT -> {
                     if (player.inventory.firstEmpty() == -1) {
-                        player.sendMessage("${ChatColor.RED}インベントリがいっぱいです")
+                        player.sendMessage(Component.text("インベントリがいっぱいです", NamedTextColor.RED))
                         return
                     }
                     takeItem(min(64, itemData.amount.toInt()))
                 }
                 ClickType.RIGHT -> {
                     PromptSign.promptSign(player) { lines ->
-                        val name = ChatColor.translateAlternateColorCodes('&', lines.joinToString(""))
+                        val name = LegacyComponentSerializer.legacySection().serialize(
+                            LegacyComponentSerializer.legacyAmpersand().deserialize(lines.joinToString(""))
+                        )
                         MapDatabaseUtil.updateName(player, itemData.data, name)
                         holder.openAsync()
                     }
@@ -211,7 +226,7 @@ class MapListScreen(val player: Player) : InventoryHolder {
                             it == null || it.type == Material.AIR
                         }
                         if (emptySpace == 0) {
-                            player.sendMessage("${ChatColor.RED}インベントリがいっぱいです")
+                            player.sendMessage(Component.text("インベントリがいっぱいです", NamedTextColor.RED))
                             return
                         }
                         val amount = if (itemData.amount.toInt() < 0) {

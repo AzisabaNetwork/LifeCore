@@ -3,8 +3,10 @@ package com.github.mori01231.lifecore.gui;
 import com.github.mori01231.lifecore.LifeCore;
 import com.github.mori01231.lifecore.util.ItemUtil;
 import net.azisaba.rarity.api.RarityAPIProvider;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 
 public class TrashProtectScreen implements InventoryHolder {
-    private final Inventory inventory = Bukkit.createInventory(this, 18, "TrashProtect");
+    private final Inventory inventory = Bukkit.createInventory(this, 18, Component.text("TrashProtect"));
     private final LifeCore plugin;
     private final Player player;
 
@@ -29,102 +31,102 @@ public class TrashProtectScreen implements InventoryHolder {
     }
 
     public void reset() {
-        String noRarityLore = plugin.getTrashProtectConfig().contains(player.getUniqueId(), "no_rarity") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
+        Component noRarityLore = plugin.getTrashProtectConfig().contains(player.getUniqueId(), "no_rarity") ? Component.text("有効", NamedTextColor.GREEN) : Component.text("無効", NamedTextColor.RED);
         String commonName = RarityAPIProvider.get().getRarityById("common").getDisplayName(player);
-        String commonLore = plugin.getTrashProtectConfig().contains(player.getUniqueId(), "common") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
+        Component commonLore = plugin.getTrashProtectConfig().contains(player.getUniqueId(), "common") ? Component.text("有効", NamedTextColor.GREEN) : Component.text("無効", NamedTextColor.RED);
         String uncommonName = RarityAPIProvider.get().getRarityById("uncommon").getDisplayName(player);
-        String uncommonLore = plugin.getTrashProtectConfig().contains(player.getUniqueId(), "uncommon") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
+        Component uncommonLore = plugin.getTrashProtectConfig().contains(player.getUniqueId(), "uncommon") ? Component.text("有効", NamedTextColor.GREEN) : Component.text("無効", NamedTextColor.RED);
         String rareName = RarityAPIProvider.get().getRarityById("rare").getDisplayName(player);
-        String rareLore = plugin.getTrashProtectConfig().contains(player.getUniqueId(), "rare") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
+        Component rareLore = plugin.getTrashProtectConfig().contains(player.getUniqueId(), "rare") ? Component.text("有効", NamedTextColor.GREEN) : Component.text("無効", NamedTextColor.RED);
         String epicName = RarityAPIProvider.get().getRarityById("epic").getDisplayName(player);
-        String epicLore = plugin.getTrashProtectConfig().contains(player.getUniqueId(), "epic") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
+        Component epicLore = plugin.getTrashProtectConfig().contains(player.getUniqueId(), "epic") ? Component.text("有効", NamedTextColor.GREEN) : Component.text("無効", NamedTextColor.RED);
         String legendaryName = RarityAPIProvider.get().getRarityById("legendary").getDisplayName(player);
-        String legendaryLore = plugin.getTrashProtectConfig().contains(player.getUniqueId(), "legendary") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
+        Component legendaryLore = plugin.getTrashProtectConfig().contains(player.getUniqueId(), "legendary") ? Component.text("有効", NamedTextColor.GREEN) : Component.text("無効", NamedTextColor.RED);
         String mythicName = RarityAPIProvider.get().getRarityById("mythic").getDisplayName(player);
-        String mythicLore = plugin.getTrashProtectConfig().contains(player.getUniqueId(), "mythic") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
+        Component mythicLore = plugin.getTrashProtectConfig().contains(player.getUniqueId(), "mythic") ? Component.text("有効", NamedTextColor.GREEN) : Component.text("無効", NamedTextColor.RED);
         String specialName = RarityAPIProvider.get().getRarityById("special").getDisplayName(player);
-        String specialLore = plugin.getTrashProtectConfig().contains(player.getUniqueId(), "special") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
-        String hasPvELevelLore = plugin.getTrashProtectConfig().contains(player.getUniqueId(), "has_pve_level") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
+        Component specialLore = plugin.getTrashProtectConfig().contains(player.getUniqueId(), "special") ? Component.text("有効", NamedTextColor.GREEN) : Component.text("無効", NamedTextColor.RED);
+        Component hasPvELevelLore = plugin.getTrashProtectConfig().contains(player.getUniqueId(), "has_pve_level") ? Component.text("有効", NamedTextColor.GREEN) : Component.text("無効", NamedTextColor.RED);
         setItems(noRarityLore, commonName, commonLore, uncommonName, uncommonLore, rareName, rareLore, epicName, epicLore, legendaryName, legendaryLore, mythicName, mythicLore, specialName, specialLore, hasPvELevelLore, inventory);
     }
 
-    static void setItems(String noRarityLore, String commonName, String commonLore, String uncommonName, String uncommonLore, String rareName, String rareLore, String epicName, String epicLore, String legendaryName, String legendaryLore, String mythicName, String mythicLore, String specialName, String specialLore, String hasPvELevelLore, Inventory inventory) {
+    static void setItems(Component noRarityLore, String commonName, Component commonLore, String uncommonName, Component uncommonLore, String rareName, Component rareLore, String epicName, Component epicLore, String legendaryName, Component legendaryLore, String mythicName, Component mythicLore, String specialName, Component specialLore, Component hasPvELevelLore, Inventory inventory) {
         inventory.setItem(0, ItemUtil.createItemStack(Material.PAPER, 1, item -> {
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
-                meta.setDisplayName(ChatColor.WHITE + "レア度が付与されていないアイテム");
-                meta.setLore(Collections.singletonList(noRarityLore));
+                meta.displayName(Component.text("レア度が付与されていないアイテム", NamedTextColor.WHITE));
+                meta.lore(Collections.singletonList(noRarityLore));
                 item.setItemMeta(meta);
             }
         }));
         inventory.setItem(1, ItemUtil.createItemStack(Material.COBBLESTONE, 1, item -> {
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
-                meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', commonName));
-                meta.setLore(Collections.singletonList(commonLore));
+                meta.displayName(LegacyComponentSerializer.legacyAmpersand().deserialize(commonName));
+                meta.lore(Collections.singletonList(commonLore));
                 item.setItemMeta(meta);
             }
         }));
         inventory.setItem(2, ItemUtil.createItemStack(Material.IRON_BLOCK, 1, item -> {
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
-                meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', uncommonName));
-                meta.setLore(Collections.singletonList(uncommonLore));
+                meta.displayName(LegacyComponentSerializer.legacyAmpersand().deserialize(uncommonName));
+                meta.lore(Collections.singletonList(uncommonLore));
                 item.setItemMeta(meta);
             }
         }));
         inventory.setItem(3, ItemUtil.createItemStack(Material.GOLD_BLOCK, 1, item -> {
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
-                meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', rareName));
-                meta.setLore(Collections.singletonList(rareLore));
+                meta.displayName(LegacyComponentSerializer.legacyAmpersand().deserialize(rareName));
+                meta.lore(Collections.singletonList(rareLore));
                 item.setItemMeta(meta);
             }
         }));
         inventory.setItem(4, ItemUtil.createItemStack(Material.EMERALD_BLOCK, 1, item -> {
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
-                meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', epicName));
-                meta.setLore(Collections.singletonList(epicLore));
+                meta.displayName(LegacyComponentSerializer.legacyAmpersand().deserialize(epicName));
+                meta.lore(Collections.singletonList(epicLore));
                 item.setItemMeta(meta);
             }
         }));
         inventory.setItem(5, ItemUtil.createItemStack(Material.DIAMOND_BLOCK, 1, item -> {
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
-                meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', legendaryName));
-                meta.setLore(Collections.singletonList(legendaryLore));
+                meta.displayName(LegacyComponentSerializer.legacyAmpersand().deserialize(legendaryName));
+                meta.lore(Collections.singletonList(legendaryLore));
                 item.setItemMeta(meta);
             }
         }));
         inventory.setItem(6, ItemUtil.createItemStack(Material.ENCHANTED_GOLDEN_APPLE, 1, item -> {
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
-                meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', mythicName));
-                meta.setLore(Collections.singletonList(mythicLore));
+                meta.displayName(LegacyComponentSerializer.legacyAmpersand().deserialize(mythicName));
+                meta.lore(Collections.singletonList(mythicLore));
                 item.setItemMeta(meta);
             }
         }));
         inventory.setItem(7, ItemUtil.createItemStack(Material.NETHER_STAR, 1, item -> {
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
-                meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', specialName));
-                meta.setLore(Collections.singletonList(specialLore));
+                meta.displayName(LegacyComponentSerializer.legacyAmpersand().deserialize(specialName));
+                meta.lore(Collections.singletonList(specialLore));
                 item.setItemMeta(meta);
             }
         }));
         inventory.setItem(8, ItemUtil.createItemStack(Material.MAP, 1, item -> {
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
-                meta.setDisplayName(ChatColor.YELLOW + "PvEレベルが付与されているアイテム");
-                meta.setLore(Collections.singletonList(hasPvELevelLore));
+                meta.displayName(Component.text("PvEレベルが付与されているアイテム", NamedTextColor.YELLOW));
+                meta.lore(Collections.singletonList(hasPvELevelLore));
                 item.setItemMeta(meta);
             }
         }));
         inventory.setItem(17, ItemUtil.createItemStack(Material.BARRIER, 1, item -> {
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
-                meta.setDisplayName(ChatColor.RED + "閉じる");
+                meta.displayName(Component.text("閉じる", NamedTextColor.RED));
                 item.setItemMeta(meta);
             }
         }));

@@ -88,6 +88,7 @@ public class DamageLogListener implements Listener {
 
         p.sendMessage(prefix + entityName + damageColor + damage + " §8(" + damageType + " §7" + type + "§8)");
     }
+    @SuppressWarnings("deprecation")
     @EventHandler(priority = EventPriority.MONITOR)
     public void onDamaged(EntityDamageEvent e) {
 
@@ -123,6 +124,7 @@ public class DamageLogListener implements Listener {
         if ( e.getCause() == EntityDamageEvent.DamageCause.CUSTOM ) message(player, "貫通", e.getFinalDamage(), false);
 
     }
+    @SuppressWarnings("deprecation")
     @EventHandler(priority = EventPriority.MONITOR)
     public void onEntityDamage(EntityDamageByEntityEvent e) {
 

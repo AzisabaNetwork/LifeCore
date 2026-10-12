@@ -4,8 +4,9 @@ import com.github.mori01231.lifecore.DBConnector;
 import com.github.mori01231.lifecore.LifeCore;
 import com.github.mori01231.lifecore.TableKey;
 import com.github.mori01231.lifecore.util.NumberUtil;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -73,12 +74,15 @@ public class ServerMoneyCommand implements CommandExecutor {
                         if (name == null) {
                             name = entry.getKey().toString();
                         }
-                        senderIn.sendMessage(ChatColor.GOLD + name + ": " + ChatColor.RED + FORMATTER_COMMAS.format(entry.getValue()) + ChatColor.GREEN + "円(" + NumberUtil.toFriendlyString(entry.getValue().longValue()) + ")");
+                        senderIn.sendMessage(Component.text(name + ": ", NamedTextColor.GOLD)
+                                .append(Component.text(FORMATTER_COMMAS.format(entry.getValue()), NamedTextColor.RED))
+                                .append(Component.text("円(" + NumberUtil.toFriendlyString(entry.getValue().longValue()) + ")", NamedTextColor.GREEN)));
                     }
                 }
             };
-            String message = ChatColor.GREEN + "現在のサーバー内のお金の合計は" +
-                    ChatColor.RED + FORMATTER_COMMAS.format(sum) + ChatColor.GREEN + "円(" + NumberUtil.toFriendlyString((long) sum) + ")です。";
+            Component message = Component.text("現在のサーバー内のお金の合計は", NamedTextColor.GREEN)
+                    .append(Component.text(FORMATTER_COMMAS.format(sum), NamedTextColor.RED))
+                    .append(Component.text("円(" + NumberUtil.toFriendlyString((long) sum) + ")です。", NamedTextColor.GREEN));
             sender.sendMessage(message);
             sendDiff.accept(sender);
             if (sender instanceof RemoteConsoleCommandSender) {

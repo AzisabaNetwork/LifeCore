@@ -1,7 +1,8 @@
 package com.github.mori01231.lifecore.command;
 
 import com.github.mori01231.lifecore.LifeCore;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -29,39 +30,39 @@ public class NgWordCommand implements TabExecutor {
             return true;
         }
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.RED + "/ngword (add|remove|list)");
+            sender.sendMessage(Component.text("/ngword (add|remove|list)", NamedTextColor.RED));
             return true;
         }
         Player player = (Player) sender;
         switch (args[0]) {
             case "add":
                 if (args.length == 1) {
-                    sender.sendMessage(ChatColor.RED + "/ngword add <word>");
+                    sender.sendMessage(Component.text("/ngword add <word>", NamedTextColor.RED));
                     return true;
                 }
                 plugin.ngWordsCache.add(player.getUniqueId(), String.join(" ", Arrays.copyOfRange(args, 1, args.length)));
-                player.sendMessage(ChatColor.GREEN + "NGワードを追加しました。");
+                player.sendMessage(Component.text("NGワードを追加しました。", NamedTextColor.GREEN));
                 break;
             case "remove":
                 if (args.length == 1) {
-                    sender.sendMessage(ChatColor.RED + "/ngword remove <word>");
+                    sender.sendMessage(Component.text("/ngword remove <word>", NamedTextColor.RED));
                     return true;
                 }
                 plugin.ngWordsCache.remove(player.getUniqueId(), String.join(" ", Arrays.copyOfRange(args, 1, args.length)));
-                player.sendMessage(ChatColor.GREEN + "NGワードを削除しました。");
+                player.sendMessage(Component.text("NGワードを削除しました。", NamedTextColor.GREEN));
                 break;
             case "clear":
                 plugin.ngWordsCache.clear(player.getUniqueId());
-                player.sendMessage(ChatColor.GREEN + "NGワードを全て削除しました。");
+                player.sendMessage(Component.text("NGワードを全て削除しました。", NamedTextColor.GREEN));
                 break;
             case "list":
-                player.sendMessage(ChatColor.GREEN + "NGワード一覧:");
+                player.sendMessage(Component.text("NGワード一覧:", NamedTextColor.GREEN));
                 for (String word : plugin.ngWordsCache.get(player.getUniqueId())) {
-                    player.sendMessage(ChatColor.RED + word);
+                    player.sendMessage(Component.text(word, NamedTextColor.RED));
                 }
                 break;
             default:
-                player.sendMessage(ChatColor.RED + "/ngword (add|remove|list)");
+                player.sendMessage(Component.text("/ngword (add|remove|list)", NamedTextColor.RED));
         }
         return true;
     }

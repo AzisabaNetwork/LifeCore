@@ -7,9 +7,8 @@ import net.azisaba.azipluginmessaging.api.AziPluginMessaging;
 import net.azisaba.azipluginmessaging.api.AziPluginMessagingProvider;
 import net.azisaba.azipluginmessaging.api.protocol.Protocol;
 import net.azisaba.azipluginmessaging.api.protocol.message.ProxyboundSetRankMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.io.IOException;
@@ -72,7 +71,7 @@ public class RequestHandler implements HttpHandler {
         Protocol.P_SET_RANK.sendPacket(
                 api.getServer().getPacketSender(),
                 new ProxyboundSetRankMessage("rank1", api.getPlayerAdapter(Player.class).get(player)));
-        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&d" + playerName + "&dさんがチュートリアルを完了しました！ ようこそ&b&lLife鯖&dへ！"));
+        Bukkit.broadcast(LegacyComponentSerializer.legacyAmpersand().deserialize("&d" + playerName + "&dさんがチュートリアルを完了しました！ ようこそ&b&lLife鯖&dへ！"));
         Bukkit.getScheduler().runTask(plugin, () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "warp lifecore_onsubmit " + playerName));
         exchange.sendResponseHeaders(204, 0);
         exchange.getResponseBody().close();

@@ -7,6 +7,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import net.minecraft.core.component.DataComponents
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.world.item.component.CustomData
@@ -67,11 +68,11 @@ abstract class CustomBlock(
     open fun getItemStack(state: CustomBlockState?): ItemStack {
         val item = ItemStack(material)
         item.itemMeta = item.itemMeta?.apply {
-            setCustomModelData(this@CustomBlock.customModelData)
+            ItemUtil.setCustomModelData(this, this@CustomBlock.customModelData)
             if (this@CustomBlock.displayName != null) {
                 displayName(Component.text(this@CustomBlock.displayName))
             }
-            lore = this@CustomBlock.lore
+            lore(this@CustomBlock.lore?.map { LegacyComponentSerializer.legacySection().deserialize(it) })
         }
         val nms = CraftItemStack.asNMSCopy(item)
         val itemTag = ItemUtil.getCustomData(item) ?: CompoundTag()

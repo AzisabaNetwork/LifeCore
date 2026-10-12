@@ -1,7 +1,8 @@
 package com.github.mori01231.lifecore.command;
 
 import com.github.mori01231.lifecore.LifeCore;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -27,11 +28,11 @@ public class GCListenerRestartExtendTimeCommand implements TabExecutor {
         }
         Player player = (Player) sender;
         if (players.contains(player.getUniqueId())) {
-            sender.sendMessage(ChatColor.RED + "すでに投票済みです。");
+            sender.sendMessage(Component.text("すでに投票済みです。", NamedTextColor.RED));
             return true;
         }
         players.add(player.getUniqueId());
-        sender.sendMessage(ChatColor.GREEN + "投票しました。");
+        sender.sendMessage(Component.text("投票しました。", NamedTextColor.GREEN));
         if (sender.hasPermission("lifecore.extend-time-immediately") || players.size() == 5) {
             ScheduleRestartCommand.schedule(30 * 60);
         }

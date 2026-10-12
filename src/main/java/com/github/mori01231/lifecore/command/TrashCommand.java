@@ -1,8 +1,8 @@
 package com.github.mori01231.lifecore.command;
 
 import com.github.mori01231.lifecore.TrashInventory;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -27,7 +27,7 @@ public class TrashCommand implements CommandExecutor {
             p.openInventory(trash);
 
         } else {
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3このコマンドはコンソールから使用できません。" ));
+            sender.sendMessage(Component.text("このコマンドはコンソールから使用できません。", NamedTextColor.DARK_AQUA));
         }
 
         return true;

@@ -2,8 +2,9 @@ package com.github.mori01231.lifecore.gui;
 
 import com.github.mori01231.lifecore.LifeCore;
 import net.azisaba.rarity.api.RarityAPIProvider;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,7 +14,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.jetbrains.annotations.NotNull;
 
 public class DropProtectScreen implements InventoryHolder {
-    private final Inventory inventory = Bukkit.createInventory(this, 18, "DropProtect");
+    private final Inventory inventory = Bukkit.createInventory(this, 18, Component.text("DropProtect"));
     private final LifeCore plugin;
     private final Player player;
 
@@ -24,22 +25,22 @@ public class DropProtectScreen implements InventoryHolder {
     }
 
     public void reset() {
-        String noRarityLore = plugin.getDropProtectConfig().contains(player.getUniqueId(), "no_rarity") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
+        Component noRarityLore = plugin.getDropProtectConfig().contains(player.getUniqueId(), "no_rarity") ? Component.text("有効", NamedTextColor.GREEN) : Component.text("無効", NamedTextColor.RED);
         String commonName = RarityAPIProvider.get().getRarityById("common").getDisplayName(player);
-        String commonLore = plugin.getDropProtectConfig().contains(player.getUniqueId(), "common") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
+        Component commonLore = plugin.getDropProtectConfig().contains(player.getUniqueId(), "common") ? Component.text("有効", NamedTextColor.GREEN) : Component.text("無効", NamedTextColor.RED);
         String uncommonName = RarityAPIProvider.get().getRarityById("uncommon").getDisplayName(player);
-        String uncommonLore = plugin.getDropProtectConfig().contains(player.getUniqueId(), "uncommon") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
+        Component uncommonLore = plugin.getDropProtectConfig().contains(player.getUniqueId(), "uncommon") ? Component.text("有効", NamedTextColor.GREEN) : Component.text("無効", NamedTextColor.RED);
         String rareName = RarityAPIProvider.get().getRarityById("rare").getDisplayName(player);
-        String rareLore = plugin.getDropProtectConfig().contains(player.getUniqueId(), "rare") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
+        Component rareLore = plugin.getDropProtectConfig().contains(player.getUniqueId(), "rare") ? Component.text("有効", NamedTextColor.GREEN) : Component.text("無効", NamedTextColor.RED);
         String epicName = RarityAPIProvider.get().getRarityById("epic").getDisplayName(player);
-        String epicLore = plugin.getDropProtectConfig().contains(player.getUniqueId(), "epic") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
+        Component epicLore = plugin.getDropProtectConfig().contains(player.getUniqueId(), "epic") ? Component.text("有効", NamedTextColor.GREEN) : Component.text("無効", NamedTextColor.RED);
         String legendaryName = RarityAPIProvider.get().getRarityById("legendary").getDisplayName(player);
-        String legendaryLore = plugin.getDropProtectConfig().contains(player.getUniqueId(), "legendary") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
+        Component legendaryLore = plugin.getDropProtectConfig().contains(player.getUniqueId(), "legendary") ? Component.text("有効", NamedTextColor.GREEN) : Component.text("無効", NamedTextColor.RED);
         String mythicName = RarityAPIProvider.get().getRarityById("mythic").getDisplayName(player);
-        String mythicLore = plugin.getDropProtectConfig().contains(player.getUniqueId(), "mythic") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
+        Component mythicLore = plugin.getDropProtectConfig().contains(player.getUniqueId(), "mythic") ? Component.text("有効", NamedTextColor.GREEN) : Component.text("無効", NamedTextColor.RED);
         String specialName = RarityAPIProvider.get().getRarityById("special").getDisplayName(player);
-        String specialLore = plugin.getDropProtectConfig().contains(player.getUniqueId(), "special") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
-        String hasPvELevelLore = plugin.getDropProtectConfig().contains(player.getUniqueId(), "has_pve_level") ? ChatColor.GREEN + "有効" : ChatColor.RED + "無効";
+        Component specialLore = plugin.getDropProtectConfig().contains(player.getUniqueId(), "special") ? Component.text("有効", NamedTextColor.GREEN) : Component.text("無効", NamedTextColor.RED);
+        Component hasPvELevelLore = plugin.getDropProtectConfig().contains(player.getUniqueId(), "has_pve_level") ? Component.text("有効", NamedTextColor.GREEN) : Component.text("無効", NamedTextColor.RED);
         TrashProtectScreen.setItems(noRarityLore, commonName, commonLore, uncommonName, uncommonLore, rareName, rareLore, epicName, epicLore, legendaryName, legendaryLore, mythicName, mythicLore, specialName, specialLore, hasPvELevelLore, inventory);
     }
 

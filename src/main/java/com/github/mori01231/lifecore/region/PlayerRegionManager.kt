@@ -1,6 +1,7 @@
 package com.github.mori01231.lifecore.region
 
-import org.bukkit.ChatColor
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import java.util.UUID
@@ -9,7 +10,10 @@ class PlayerRegionManager {
     companion object {
         val wandItem = ItemStack(Material.GOLDEN_AXE).apply {
             itemMeta = itemMeta?.apply {
-                setDisplayName("${ChatColor.GOLD}範囲指定斧 ${ChatColor.DARK_GRAY}(LifeCore)")
+                displayName(
+                    Component.text("範囲指定斧 ", NamedTextColor.GOLD)
+                        .append(Component.text("(LifeCore)", NamedTextColor.DARK_GRAY))
+                )
             }
         }
     }

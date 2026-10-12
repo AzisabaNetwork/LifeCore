@@ -4,8 +4,8 @@ import com.github.mori01231.lifecore.config.DamageLogFile
 import com.github.mori01231.lifecore.config.DropNotifyFile
 import com.github.mori01231.lifecore.config.PetClickFile
 import com.github.mori01231.lifecore.util.ItemUtil
+import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
-import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -76,7 +76,7 @@ class CommandListScreen(val player: Player) : InventoryHolder {
         val maxPage = floor(commands.size / 45.0).toInt()
     }
 
-    private val inv = Bukkit.createInventory(this, 54, "コマンド一覧")
+    private val inv = Bukkit.createInventory(this, 54, Component.text("コマンド一覧"))
     private val commandsInCurrentPage = mutableListOf<CommandInfo>()
     private var page = 0
     private var filter = CommandType.All
@@ -105,24 +105,24 @@ class CommandListScreen(val player: Player) : InventoryHolder {
                 CommandInfo.State.Unknown -> Material.NETHER_STAR
             }
             val color = when (state) {
-                CommandInfo.State.Enabled -> ChatColor.GREEN
-                CommandInfo.State.Disabled -> ChatColor.RED
-                CommandInfo.State.Unknown -> ChatColor.YELLOW
+                CommandInfo.State.Enabled -> "§a"
+                CommandInfo.State.Disabled -> "§c"
+                CommandInfo.State.Unknown -> "§e"
             }
-            val lore = info.lore.map { "${ChatColor.LIGHT_PURPLE}$it" } + listOf("", "§eカテゴリ: ${info.type.label}", "§8コマンド: ${info.command}")
+            val lore = info.lore.map { "§d$it" } + listOf("", "§eカテゴリ: ${info.type.label}", "§8コマンド: ${info.command}")
             inv.setItem(index, ItemUtil.createItemStack(type, "$color${info.name}", lore))
         }
         inv.setItem(45, ItemUtil.createItemStack(Material.ARROW, "${if (page == 0) "§7" else "§a"}<< $page", listOf("§e前のページ")))
         inv.setItem(49, ItemUtil.createItemStack(Material.BARRIER, "§c閉じる", listOf()))
         val filterLore = CommandType.entries.map {
             val color = if (it == filter) {
-                ChatColor.YELLOW
+                "§e"
             } else {
-                ChatColor.GRAY
+                "§7"
             }
-            " ${ChatColor.WHITE}- $color${it.label}"
+            " §f- $color${it.label}"
         }
-        inv.setItem(50, ItemUtil.createItemStack(Material.REDSTONE_TORCH, "${ChatColor.GREEN}フィルター", filterLore))
+        inv.setItem(50, ItemUtil.createItemStack(Material.REDSTONE_TORCH, "§aフィルター", filterLore))
         inv.setItem(53, ItemUtil.createItemStack(Material.ARROW, "${if (page < maxPage) "§a" else "§7"}${page + 2} >>", listOf("§e次のページ")))
     }
 

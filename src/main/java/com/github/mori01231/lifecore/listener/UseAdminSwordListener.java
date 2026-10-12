@@ -3,6 +3,7 @@ package com.github.mori01231.lifecore.listener;
 import com.github.mori01231.lifecore.LifeCore;
 import com.github.mori01231.lifecore.util.ItemUtil;
 import com.github.mori01231.lifecore.util.WebhookUtil;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerAttemptPickupItemEvent;
@@ -33,7 +34,7 @@ public class UseAdminSwordListener implements Listener {
                     "adminSwordNotifyWebhookURL",
                     plugin.getConfig().getString("adminSwordNotifyWebhookUsername"),
                     e.getPlayer().getName() + " tried to use an item with >= 9999 generic.attack_damage\n" +
-                            "Display name: `" + e.getItem().getItemMeta().getDisplayName() + "`\n" +
+                            "Display name: `" + LegacyComponentSerializer.legacySection().serializeOr(e.getItem().getItemMeta().displayName(), "") + "`\n" +
                             "Location: " + e.getPlayer().getLocation());
         }
     }
@@ -48,7 +49,7 @@ public class UseAdminSwordListener implements Listener {
                     "adminSwordNotifyWebhookURL",
                     plugin.getConfig().getString("adminSwordNotifyWebhookUsername"),
                     e.getPlayer().getName() + " tried to drop an item with >= 9999 generic.attack_damage\n" +
-                            "Display name: `" + e.getItemDrop().getItemStack().getItemMeta().getDisplayName() + "`\n" +
+                            "Display name: `" + LegacyComponentSerializer.legacySection().serializeOr(e.getItemDrop().getItemStack().getItemMeta().displayName(), "") + "`\n" +
                             "Location: " + e.getPlayer().getLocation());
         }
     }
@@ -63,7 +64,7 @@ public class UseAdminSwordListener implements Listener {
                     "adminSwordNotifyWebhookURL",
                     plugin.getConfig().getString("adminSwordNotifyWebhookUsername"),
                     e.getPlayer().getName() + " tried to pick up an item with >= 9999 generic.attack_damage\n" +
-                            "Display name: `" + e.getItem().getItemStack().getItemMeta().getDisplayName() + "`\n" +
+                            "Display name: `" + LegacyComponentSerializer.legacySection().serializeOr(e.getItem().getItemStack().getItemMeta().displayName(), "") + "`\n" +
                             "Location: " + e.getPlayer().getLocation());
         }
     }

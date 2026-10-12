@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.net.ssl.HttpsURLConnection;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 
 public class WebhookUtil {
@@ -22,10 +22,10 @@ public class WebhookUtil {
             if (s == null || s.isEmpty()) {
                 return;
             }
-            HttpsURLConnection con = (HttpsURLConnection) new URL(s).openConnection();
+            HttpsURLConnection con = (HttpsURLConnection) URI.create(s).toURL().openConnection();
             con.setRequestMethod("POST");
             con.setRequestProperty("Content-Type", "application/json");
-            con.setRequestProperty("User-Agent", "LifeCore/" + plugin.getDescription().getVersion());
+            con.setRequestProperty("User-Agent", "LifeCore/" + plugin.getPluginMeta().getVersion());
             con.setRequestProperty("Accept", "application/json");
             con.setDoOutput(true);
             con.setConnectTimeout(5000);

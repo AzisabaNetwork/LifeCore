@@ -3,7 +3,8 @@ package com.github.mori01231.lifecore.command
 import com.github.mori01231.lifecore.LifeCore
 import com.github.mori01231.lifecore.config.TownConfig
 import com.github.mori01231.lifecore.listener.TownyOutlawListener
-import org.bukkit.ChatColor
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -12,19 +13,22 @@ class TownConfigCommand(private val plugin: LifeCore) : PlayerTabExecutor() {
     override fun execute(player: Player, args: Array<String>): Boolean {
         val town = TownyOutlawListener.getTownAt(player.location)
         if (town == null) {
-            player.sendMessage("${ChatColor.RED}町長ではないため、設定を編集できません。")
+            player.sendMessage(Component.text("町長ではないため、設定を編集できません。", NamedTextColor.RED))
             return true
         }
         val mayorName = TownyOutlawListener.getNameTownyObject(TownyOutlawListener.getMayor(town))
         if (player.name != mayorName) {
-            player.sendMessage("${ChatColor.RED}町長ではないため、設定を編集できません。")
+            player.sendMessage(Component.text("町長ではないため、設定を編集できません。", NamedTextColor.RED))
             return true
         }
         val townName = TownyOutlawListener.getNameTownyObject(town)
         val townConfig = plugin.lifeCoreConfig.townConfig.computeIfAbsent(townName) { TownConfig() }
         if (args.size < 2) {
             townConfig::class.java.fields.filter { it.name != "Companion" }.forEach { field ->
-                player.sendMessage("${ChatColor.GOLD}${field.name}${ChatColor.WHITE}: ${field.get(townConfig)}")
+                player.sendMessage(
+                    Component.text(field.name, NamedTextColor.GOLD)
+                        .append(Component.text(": ${field.get(townConfig)}", NamedTextColor.WHITE))
+                )
             }
             return true
         }
@@ -33,11 +37,16 @@ class TownConfigCommand(private val plugin: LifeCore) : PlayerTabExecutor() {
         val value = try {
             toValue(field.type, valueString)
         } catch (e: Exception) {
-            player.sendMessage("${ChatColor.RED}${e.message}")
+            player.sendMessage(Component.text("${e.message}", NamedTextColor.RED))
         }
         field.set(townConfig, value)
         plugin.lifeCoreConfig.save(plugin)
-        player.sendMessage("${ChatColor.GOLD}${args[0]}${ChatColor.GREEN}を${ChatColor.WHITE}$value${ChatColor.GREEN}に設定しました。")
+        player.sendMessage(
+            Component.text(args[0], NamedTextColor.GOLD)
+                .append(Component.text("を", NamedTextColor.GREEN))
+                .append(Component.text("$value", NamedTextColor.WHITE))
+                .append(Component.text("に設定しました。", NamedTextColor.GREEN))
+        )
         return true
     }
 

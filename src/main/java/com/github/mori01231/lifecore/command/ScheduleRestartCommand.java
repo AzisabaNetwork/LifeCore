@@ -1,8 +1,10 @@
 package com.github.mori01231.lifecore.command;
 
 import com.github.mori01231.lifecore.LifeCore;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -27,7 +29,7 @@ public class ScheduleRestartCommand implements TabExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.RED + "/schedulerestart <minutes>");
+            sender.sendMessage(Component.text("/schedulerestart <minutes>", NamedTextColor.RED));
             return true;
         }
         if (args[0].equalsIgnoreCase("gc")) {
@@ -49,7 +51,7 @@ public class ScheduleRestartCommand implements TabExecutor {
             task.cancel();
         }
         tasks.clear();
-        Bukkit.broadcastMessage("§6[§dお知らせ§6] §aこのサーバーは§d" + paramSeconds + "秒後" + "§aに再起動されます。");
+        Bukkit.broadcast(LegacyComponentSerializer.legacySection().deserialize("§6[§dお知らせ§6] §aこのサーバーは§d" + paramSeconds + "秒後" + "§aに再起動されます。"));
         ACTIONS.forEach((seconds, actions) -> {
             if (seconds <= paramSeconds) {
                 TimerTask timerTask = new TimerTask() {
@@ -80,9 +82,9 @@ public class ScheduleRestartCommand implements TabExecutor {
                 Bukkit.getScheduler().runTask(LifeCore.getPlugin(LifeCore.class), () -> {
                     if (seconds >= 60) {
                         int minutes = seconds / 60;
-                        Bukkit.broadcastMessage("§6[§dお知らせ§6] §aこのサーバーは§d" + minutes + "分後" + "§aに再起動されます。");
+                        Bukkit.broadcast(LegacyComponentSerializer.legacySection().deserialize("§6[§dお知らせ§6] §aこのサーバーは§d" + minutes + "分後" + "§aに再起動されます。"));
                     } else {
-                        Bukkit.broadcastMessage("§6[§dお知らせ§6] §aこのサーバーは§c" + seconds + "秒後" + "§aに再起動されます。");
+                        Bukkit.broadcast(LegacyComponentSerializer.legacySection().deserialize("§6[§dお知らせ§6] §aこのサーバーは§c" + seconds + "秒後" + "§aに再起動されます。"));
                     }
                 });
             }
@@ -101,7 +103,7 @@ public class ScheduleRestartCommand implements TabExecutor {
             public void execute(int seconds) {
                 Bukkit.getScheduler().runTask(LifeCore.getPlugin(LifeCore.class), () -> {
                     for (Player player : Bukkit.getOnlinePlayers()) {
-                        player.kickPlayer("Server closed");
+                        player.kick(Component.text("Server closed"));
                     }
                 });
             }

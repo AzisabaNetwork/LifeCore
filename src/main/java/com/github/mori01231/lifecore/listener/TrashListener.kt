@@ -7,8 +7,10 @@ import net.azisaba.itemstash.ItemStash
 import net.azisaba.lifepvelevel.util.Util
 import net.azisaba.rarity.api.Rarity
 import net.azisaba.rarity.api.RarityAPIProvider
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.bukkit.Bukkit
-import org.bukkit.ChatColor
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
@@ -45,8 +47,11 @@ class TrashListener(private val plugin: LifeCore) : Listener {
                         e.inventory.setItem(i, null)
                         e.whoClicked.inventory.addItem(item).forEach { (_, s) ->
                             ItemStash.getInstance().addItemToStash(e.whoClicked.uniqueId, s)
-                            e.whoClicked.sendMessage(ChatColor.RED.toString() + "インベントリがいっぱいのため、Stashに保管されました。")
-                            e.whoClicked.sendMessage(ChatColor.AQUA.toString() + "/pickupstash" + ChatColor.RED + "で回収できます。")
+                            e.whoClicked.sendMessage(Component.text("インベントリがいっぱいのため、Stashに保管されました。", NamedTextColor.RED))
+                            e.whoClicked.sendMessage(
+                                Component.text("/pickupstash", NamedTextColor.AQUA)
+                                    .append(Component.text("で回収できます。", NamedTextColor.RED))
+                            )
                         }
                     }
                 }
@@ -58,8 +63,11 @@ class TrashListener(private val plugin: LifeCore) : Listener {
                     item ?: continue
                     try {
                         if (item.amount > 0) {
+                            val displayName = item.itemMeta?.displayName()?.let {
+                                LegacyComponentSerializer.legacySection().serialize(it)
+                            } ?: ""
                             for (line in plugin.config.getStringList("Trash.Items")) {
-                                if (item.itemMeta.displayName == line) {
+                                if (displayName == line) {
                                     moneyMultiplier = plugin.config.getInt("TrashMoneyPerSpecialItem")
                                 }
                             }
@@ -72,10 +80,7 @@ class TrashListener(private val plugin: LifeCore) : Listener {
                     }
                 }
                 e.whoClicked.sendMessage(
-                    ChatColor.translateAlternateColorCodes(
-                        '&',
-                        "&3ゴミ箱に" + moneyCounter + "個のアイテムを捨てました。"
-                    )
+                    Component.text("ゴミ箱に" + moneyCounter + "個のアイテムを捨てました。", NamedTextColor.DARK_AQUA)
                 )
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "eco give ${e.whoClicked.name} $moneyCounter")
                 plugin.slF4JLogger.info("Player {} has trashed {} items:", e.whoClicked.name, moneyCounter)
@@ -103,8 +108,11 @@ class TrashListener(private val plugin: LifeCore) : Listener {
                 if (item == null || item.type.isAir || item == TrashInventory.trashItem) continue
                 e.player.inventory.addItem(item).forEach { (_, s) ->
                     ItemStash.getInstance().addItemToStash(e.player.uniqueId, s)
-                    e.player.sendMessage(ChatColor.RED.toString() + "インベントリがいっぱいのため、Stashに保管されました。")
-                    e.player.sendMessage(ChatColor.AQUA.toString() + "/pickupstash" + ChatColor.RED + "で回収できます。")
+                    e.player.sendMessage(Component.text("インベントリがいっぱいのため、Stashに保管されました。", NamedTextColor.RED))
+                    e.player.sendMessage(
+                        Component.text("/pickupstash", NamedTextColor.AQUA)
+                            .append(Component.text("で回収できます。", NamedTextColor.RED))
+                    )
                 }
             }
         }

@@ -1,8 +1,8 @@
 package com.github.mori01231.lifecore.listener;
 
-import com.github.mori01231.lifecore.LifeCore;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -58,8 +58,8 @@ public class DeathLoopListener implements Listener {
             return;
         }
         for (AttributeModifier modifier : attr.getModifiers()) {
-            if (modifier.getName().equals("lifecore.temp_health_boost_scalar") ||
-                    modifier.getName().equals("lifecore.temp_health_boost_number")) {
+            if (modifier.getKey().equals(new NamespacedKey("lifecore", "temp_health_boost_scalar")) ||
+                    modifier.getKey().equals(new NamespacedKey("lifecore", "temp_health_boost_number"))) {
                 attr.removeModifier(modifier);
             }
         }
@@ -83,7 +83,7 @@ public class DeathLoopListener implements Listener {
             if (amountNumber != 0) {
                 attr.addModifier(new AttributeModifier(new NamespacedKey("lifecore", "temp_health_boost_number"), amountNumber, AttributeModifier.Operation.ADD_NUMBER));
             }
-            entity.sendMessage(ChatColor.RED + "不可能な装備の組み合わせです。最大体力が0以下になっています。");
+            entity.sendMessage(Component.text("不可能な装備の組み合わせです。最大体力が0以下になっています。", NamedTextColor.RED));
         }
     }
 }

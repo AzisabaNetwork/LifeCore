@@ -1,7 +1,8 @@
 package com.github.mori01231.lifecore.command;
 
 import com.github.mori01231.lifecore.config.DamageLogFile;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,10 +12,10 @@ public class DamageLogCommand extends PlayerTabExecutor {
     public boolean execute(@NotNull Player player, @NotNull String[] args) {
         if (DamageLogFile.isEnabled(player.getUniqueId())) {
             DamageLogFile.disable(player.getUniqueId());
-            player.sendMessage(ChatColor.RED + "DamageLogが無効化されました");
+            player.sendMessage(Component.text("DamageLogが無効化されました", NamedTextColor.RED));
         } else {
             DamageLogFile.enable(player.getUniqueId());
-            player.sendMessage(ChatColor.GREEN + "DamageLogが有効化されました");
+            player.sendMessage(Component.text("DamageLogが有効化されました", NamedTextColor.GREEN));
         }
         return true;
     }

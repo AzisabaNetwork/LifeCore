@@ -1,8 +1,8 @@
 package com.github.mori01231.lifecore.listener;
 
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.milkbowl.vault.chat.Chat;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -27,11 +27,11 @@ public class OverrideTabCompleteListener implements Listener {
             if (last.equals("off") || sender.getName().equalsIgnoreCase(last)) {
                 return Collections.emptyList();
             }
-            last = ChatColor.translateAlternateColorCodes('&', last);
+            last = LegacyComponentSerializer.legacySection().serialize(LegacyComponentSerializer.legacyAmpersand().deserialize(last));
             String prefix = getChat().getPlayerPrefix((Player) sender);
-            prefix = ChatColor.translateAlternateColorCodes('&', prefix);
+            prefix = LegacyComponentSerializer.legacySection().serialize(LegacyComponentSerializer.legacyAmpersand().deserialize(prefix));
             String suffix = getChat().getPlayerSuffix((Player) sender);
-            suffix = ChatColor.translateAlternateColorCodes('&', suffix);
+            suffix = LegacyComponentSerializer.legacySection().serialize(LegacyComponentSerializer.legacyAmpersand().deserialize(suffix));
             return Collections.singletonList(prefix + "~" + last + suffix);
         });
     }

@@ -1,7 +1,8 @@
 package com.github.mori01231.lifecore.command;
 
 import com.github.mori01231.lifecore.LifeCore;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -24,9 +25,9 @@ public class TutorialCommand implements CommandExecutor {
             Player player = (Player) sender;
             String tutorial = plugin.getConfig().getString("tutorial-teleport");
             getServer().dispatchCommand(getServer().getConsoleSender(), "mvtp " + player.getName() + " " + tutorial);
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3任意チュートリアルにテレポートしました。" ));
+            sender.sendMessage(Component.text("任意チュートリアルにテレポートしました。", NamedTextColor.DARK_AQUA));
         } else {
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3このコマンドはコンソールから使用できません。" ));
+            sender.sendMessage(Component.text("このコマンドはコンソールから使用できません。", NamedTextColor.DARK_AQUA));
         }
 
         return true;

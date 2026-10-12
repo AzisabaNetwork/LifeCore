@@ -2,6 +2,7 @@ package com.github.mori01231.lifecore.util;
 
 import io.lumine.mythic.bukkit.MythicBukkit;
 import net.azisaba.itemstash.ItemStash;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -14,6 +15,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.components.CustomModelDataComponent;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -105,15 +107,32 @@ public class ItemUtil {
         return CraftItemStack.asBukkitCopy(nms);
     }
 
+    public static void setCustomModelData(@NotNull ItemMeta meta, @Nullable Integer data) {
+        if (data == null) {
+            meta.setCustomModelDataComponent(null);
+        } else {
+            CustomModelDataComponent component = meta.getCustomModelDataComponent();
+            component.setFloats(List.of(data.floatValue()));
+            meta.setCustomModelDataComponent(component);
+        }
+    }
+
     public static @NotNull String toString(@NotNull ItemStack stack) {
         StringJoiner props = new StringJoiner("");
         props.add("[Type: " + stack.getType().name() + "]");
         props.add("[Amount: " + stack.getAmount() + "]");
         ItemMeta meta = stack.getItemMeta();
         if (meta != null) {
-            if (meta.hasDisplayName()) props.add("[Name: " + meta.getDisplayName() + "]");
-            if (meta.hasLore()) props.add("[Lore: " + Objects.requireNonNull(meta.getLore()).size() + " entries]");
-            if (meta.hasCustomModelData()) props.add("[CustomModelData: " + meta.getCustomModelData() + "]");
+            if (meta.hasDisplayName()) {
+                props.add("[Name: " + LegacyComponentSerializer.legacySection().serialize(Objects.requireNonNull(meta.displayName())) + "]");
+            }
+            if (meta.hasLore()) props.add("[Lore: " + Objects.requireNonNull(meta.lore()).size() + " entries]");
+            if (meta.hasCustomModelDataComponent()) {
+                List<Float> floats = meta.getCustomModelDataComponent().getFloats();
+                if (!floats.isEmpty()) {
+                    props.add("[CustomModelData: " + floats.getFirst().intValue() + "]");
+                }
+            }
             String mmType = getMythicType(stack);
             if (mmType != null) props.add("[MMID: " + mmType + "]");
             if (meta.hasEnchants()) meta.getEnchants().forEach((enchant, level) -> props.add("[Enchant: " + enchant.getKey().getKey() + " " + level + "]"));
@@ -131,8 +150,10 @@ public class ItemUtil {
         return createItemStack(material, 1, item -> {
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
-                meta.setDisplayName(displayName);
-                if (!lore.isEmpty()) meta.setLore(lore);
+                meta.displayName(LegacyComponentSerializer.legacySection().deserialize(displayName));
+                if (!lore.isEmpty()) {
+                    meta.lore(lore.stream().map(LegacyComponentSerializer.legacySection()::deserialize).toList());
+                }
                 item.setItemMeta(meta);
             }
         });
@@ -214,9 +235,12 @@ public class ItemUtil {
     }
 
     public static @NotNull ItemStack cloneWithNewMaterial(@NotNull ItemStack stack, @NotNull Material material) {
-        ItemStack newStack = new ItemStack(material, stack.getAmount());
-        ItemMeta meta = stack.getItemMeta();
-        if (meta != null) newStack.setItemMeta(meta);
+        ItemStack newStack = stack.withType(material);
+        ItemMeta meta = newStack.getItemMeta();
+        if (meta != null && meta.hasTool()) {
+            meta.setTool(null);
+            newStack.setItemMeta(meta);
+        }
         return newStack;
     }
 }

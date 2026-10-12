@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "net.azisaba"
-version = "6.18.6+1.21.11"
+version = "6.18.7+1.21.11"
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(21))
@@ -49,6 +49,7 @@ repositories {
         name = "lumine"
         url = uri("https://mvn.lumine.io/repository/maven-public/")
     }
+    maven("https://maven.azisaba.net/releases")
 }
 
 dependencies {
@@ -84,6 +85,7 @@ dependencies {
         exclude("org.spigotmc", "spigot-api")
         exclude("org.bukkit", "bukkit")
     }
+    compileOnly("net.azisaba:Townia:1.1.0")
     compileOnly("net.kyori:adventure-text-serializer-ansi:5.2.0")
     paperweight.paperDevBundle("1.21.11-R0.1-SNAPSHOT")
 }
@@ -127,7 +129,7 @@ tasks {
 
     compileKotlin {
         kotlinOptions {
-            freeCompilerArgs = listOf("-opt-in=kotlin.RequiresOptIn")
+            freeCompilerArgs = listOf("-opt-in=kotlin.RequiresOptIn", "-Xskip-metadata-version-check")
         }
     }
 

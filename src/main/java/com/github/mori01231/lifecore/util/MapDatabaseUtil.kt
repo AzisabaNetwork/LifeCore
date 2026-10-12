@@ -1,15 +1,13 @@
 package com.github.mori01231.lifecore.util
 
 import com.github.mori01231.lifecore.DBConnector
-import com.github.mori01231.lifecore.LifeCore
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import net.minecraft.nbt.ByteArrayTag
 import org.bukkit.Bukkit
-import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.MapMeta
-import org.bukkit.plugin.java.JavaPlugin
 import org.mariadb.jdbc.MariaDbBlob
 import java.security.MessageDigest
 import java.util.UUID
@@ -66,7 +64,9 @@ object MapDatabaseUtil {
             return
         }
         PromptSign.promptSign(player) { lines ->
-            val name = ChatColor.translateAlternateColorCodes('&', lines.joinToString(""))
+            val name = LegacyComponentSerializer.legacySection().serialize(
+                LegacyComponentSerializer.legacyAmpersand().deserialize(lines.joinToString(""))
+            )
             save(player, item, name, callback)
         }
     }

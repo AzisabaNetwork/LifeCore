@@ -6,9 +6,10 @@ import com.github.mori01231.lifecore.util.ItemUtil
 import io.lumine.mythic.bukkit.MythicBukkit
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.Bukkit
-import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -52,8 +53,11 @@ data class MythicItemReward(
             player.inventory.addItem(item).values.apply {
                 Bukkit.getScheduler().runTaskAsynchronously(plugin, Runnable {
                     if (isNotEmpty() && all { ItemUtil.addToStashIfEnabled(player.uniqueId, it) }) {
-                        player.sendMessage("${ChatColor.RED}インベントリがいっぱいのため、Stashに入りました。")
-                        player.sendMessage("${ChatColor.AQUA}/pickupstash${ChatColor.RED}で回収できます。")
+                        player.sendMessage(Component.text("インベントリがいっぱいのため、Stashに入りました。", NamedTextColor.RED))
+                        player.sendMessage(
+                            Component.text("/pickupstash", NamedTextColor.AQUA)
+                                .append(Component.text("で回収できます。", NamedTextColor.RED))
+                        )
                     }
                 })
             }
@@ -73,8 +77,11 @@ data class ItemReward(
         player.inventory.addItem(ItemStack(id, amount)).values.apply {
             Bukkit.getScheduler().runTaskAsynchronously(plugin, Runnable {
                 if (isNotEmpty() && all { ItemUtil.addToStashIfEnabled(player.uniqueId, it) }) {
-                    player.sendMessage("${ChatColor.RED}インベントリがいっぱいのため、Stashに入りました。")
-                    player.sendMessage("${ChatColor.AQUA}/pickupstash${ChatColor.RED}で回収できます。")
+                    player.sendMessage(Component.text("インベントリがいっぱいのため、Stashに入りました。", NamedTextColor.RED))
+                    player.sendMessage(
+                        Component.text("/pickupstash", NamedTextColor.AQUA)
+                            .append(Component.text("で回収できます。", NamedTextColor.RED))
+                    )
                 }
             })
         }

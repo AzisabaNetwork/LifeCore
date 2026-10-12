@@ -1,12 +1,11 @@
 package com.github.mori01231.lifecore.command;
 
 import com.github.mori01231.lifecore.util.ItemUtil;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -19,17 +18,15 @@ public class MMIDCommand extends PlayerTabExecutor {
             target = Bukkit.getPlayerExact(args[0]);
         }
         if (target == null) {
-            player.sendMessage(ChatColor.RED + "プレイヤーが見つかりませんでした。");
+            player.sendMessage(Component.text("プレイヤーが見つかりませんでした。", NamedTextColor.RED));
             return true;
         }
         ItemStack stack = target.getInventory().getItemInMainHand();
         String id = ItemUtil.getMythicType(stack);
-        TextComponent component = new TextComponent("ID: ");
-        TextComponent clickableId = new TextComponent(id == null ? "<null>" : id);
-        clickableId.setColor(ChatColor.AQUA.asBungee());
-        clickableId.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[]{new TextComponent("クリックでコピー")}));
-        clickableId.setClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, id == null ? "null" : id));
-        component.addExtra(clickableId);
+        Component clickableId = Component.text(id == null ? "<null>" : id, NamedTextColor.AQUA)
+                .hoverEvent(HoverEvent.showText(Component.text("クリックでコピー")))
+                .clickEvent(ClickEvent.copyToClipboard(id == null ? "null" : id));
+        Component component = Component.text("ID: ").append(clickableId);
         player.sendMessage(component);
         return true;
     }

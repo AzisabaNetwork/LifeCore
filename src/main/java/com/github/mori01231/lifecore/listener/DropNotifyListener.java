@@ -2,7 +2,9 @@ package com.github.mori01231.lifecore.listener;
 
 import com.github.mori01231.lifecore.config.DropNotifyFile;
 import com.github.mori01231.lifecore.util.ItemUtil;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -18,20 +20,21 @@ public class DropNotifyListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerDropItem(PlayerDropItemEvent e) {
         if (DropNotifyFile.contains(e.getPlayer().getUniqueId())) {
-            List<String> list = new ArrayList<>();
+            List<Component> list = new ArrayList<>();
             ItemStack stack = e.getItemDrop().getItemStack();
             if (stack.hasItemMeta()) {
                 ItemMeta meta = Objects.requireNonNull(stack.getItemMeta());
-                if (meta.hasDisplayName()) {
-                    list.add(ChatColor.RESET + meta.getDisplayName());
+                Component displayName = meta.displayName();
+                if (displayName != null) {
+                    list.add(displayName);
                 }
             }
-            list.add(ChatColor.GRAY + "[Type: " + stack.getType().name() + "]");
+            list.add(Component.text("[Type: " + stack.getType().name() + "]", NamedTextColor.GRAY));
             String mmid = ItemUtil.getMythicType(stack);
             if (mmid != null) {
-                list.add(ChatColor.GRAY + "[MMID: " + mmid + "]");
+                list.add(Component.text("[MMID: " + mmid + "]", NamedTextColor.GRAY));
             }
-            e.getPlayer().sendMessage(String.join(" ", list) + ChatColor.YELLOW + "をドロップしました。");
+            e.getPlayer().sendMessage(Component.join(JoinConfiguration.spaces(), list).append(Component.text("をドロップしました。", NamedTextColor.YELLOW)));
         }
     }
 }

@@ -1,7 +1,8 @@
 package com.github.mori01231.lifecore.command;
 
 import com.github.mori01231.lifecore.LifeCore;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -33,7 +34,7 @@ public class PveCommand implements CommandExecutor {
             if(plugin.getConfig().getBoolean("use-pve-command-as-teleport")){
                 String pve = plugin.getConfig().getString("pve-teleport");
                 getServer().dispatchCommand(getServer().getConsoleSender(), "mvtp " + playerName + " " + pve);
-                sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3ダンジョンロビーにテレポートしました。" ));
+                sender.sendMessage(Component.text("ダンジョンロビーにテレポートしました。", NamedTextColor.DARK_AQUA));
 
             } else {
                 // create list of servers
@@ -61,7 +62,7 @@ public class PveCommand implements CommandExecutor {
             }
 
         } else {
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3このコマンドはコンソールから使用できません。" ));
+            sender.sendMessage(Component.text("このコマンドはコンソールから使用できません。", NamedTextColor.DARK_AQUA));
         }
 
 
