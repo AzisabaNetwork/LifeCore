@@ -1,10 +1,10 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
-    kotlin("jvm") version "1.9.22"
-    kotlin("plugin.serialization") version "1.9.22"
+    kotlin("jvm") version "2.4.21"
+    kotlin("plugin.serialization") version "2.4.21"
     id("com.gradleup.shadow") version "9.6.1"
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.23"
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.24"
     java
     `maven-publish`
 }
@@ -54,12 +54,13 @@ repositories {
 
 dependencies {
     compileOnly(platform("net.kyori:adventure-bom:4.26.1"))
+    testImplementation(platform("net.kyori:adventure-bom:4.26.1"))
     implementation(kotlin("stdlib"))
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
-    implementation("com.charleskorn.kaml:kaml:0.57.0")
-    implementation("com.zaxxer:HikariCP:6.0.0")
-    implementation("org.mariadb.jdbc:mariadb-java-client:3.5.0")
-    implementation("org.yaml:snakeyaml:2.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.12.0")
+    implementation("com.charleskorn.kaml:kaml:0.104.0")
+    implementation("com.zaxxer:HikariCP:7.1.0")
+    implementation("org.mariadb.jdbc:mariadb-java-client:4.0.0")
+    implementation("org.yaml:snakeyaml:2.7")
     implementation("xyz.acrylicstyle.java-util:expression:2.0.0-SNAPSHOT")
     compileOnly("net.azisaba:lifepvelevel:1.3.0")
     compileOnly("net.azisaba:JoinFilter:1.0.0")
@@ -85,7 +86,7 @@ dependencies {
         exclude("org.spigotmc", "spigot-api")
         exclude("org.bukkit", "bukkit")
     }
-    compileOnly("net.azisaba:Townia:1.1.0")
+    compileOnly("net.azisaba:Townia:1.1.4")
     compileOnly("net.kyori:adventure-text-serializer-ansi:5.2.0")
     paperweight.paperDevBundle("1.21.11-R0.1-SNAPSHOT")
 }
@@ -128,8 +129,8 @@ tasks {
     }
 
     compileKotlin {
-        kotlinOptions {
-            freeCompilerArgs = listOf("-opt-in=kotlin.RequiresOptIn", "-Xskip-metadata-version-check")
+        compilerOptions {
+            freeCompilerArgs.addAll("-opt-in=kotlin.RequiresOptIn", "-Xskip-metadata-version-check")
         }
     }
 

@@ -20,17 +20,6 @@ public class PlayerJoinListener implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler
-    public void onPlayerPreLoginCheckTowny(AsyncPlayerPreLoginEvent e) {
-        if (!Bukkit.getPluginManager().isPluginEnabled("Towny")) {
-            return;
-        }
-        String name = e.getName().toLowerCase();
-        if (name.startsWith("town_") || name.startsWith("nation_")) {
-            e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, Component.text("Towny is preventing you from logging in using this account name."));
-        }
-    }
-
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerPreLogin(AsyncPlayerPreLoginEvent e) {
         if (e.getLoginResult() == AsyncPlayerPreLoginEvent.Result.ALLOWED) {

@@ -2,7 +2,7 @@ package com.github.mori01231.lifecore.command
 
 import com.github.mori01231.lifecore.LifeCore
 import com.github.mori01231.lifecore.config.TownConfig
-import com.github.mori01231.lifecore.listener.TownyOutlawListener
+import com.github.mori01231.lifecore.util.TowniaUtil
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.command.Command
@@ -11,17 +11,16 @@ import org.bukkit.entity.Player
 
 class TownConfigCommand(private val plugin: LifeCore) : PlayerTabExecutor() {
     override fun execute(player: Player, args: Array<String>): Boolean {
-        val town = TownyOutlawListener.getTownAt(player.location)
+        val town = TowniaUtil.getTownAt(player.location)
         if (town == null) {
             player.sendMessage(Component.text("町長ではないため、設定を編集できません。", NamedTextColor.RED))
             return true
         }
-        val mayorName = TownyOutlawListener.getNameTownyObject(TownyOutlawListener.getMayor(town))
-        if (player.name != mayorName) {
+        if (player.uniqueId != TowniaUtil.getMayorUuid(town)) {
             player.sendMessage(Component.text("町長ではないため、設定を編集できません。", NamedTextColor.RED))
             return true
         }
-        val townName = TownyOutlawListener.getNameTownyObject(town)
+        val townName = TowniaUtil.getTownName(town) ?: return true
         val townConfig = plugin.lifeCoreConfig.townConfig.computeIfAbsent(townName) { TownConfig() }
         if (args.size < 2) {
             townConfig::class.java.fields.filter { it.name != "Companion" }.forEach { field ->

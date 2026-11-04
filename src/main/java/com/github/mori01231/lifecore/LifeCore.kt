@@ -357,13 +357,13 @@ class LifeCore : JavaPlugin() {
             logger.warning("Votifier not detected, skipping event listener registration")
         }
         try {
-            Class.forName("com.palmergames.bukkit.towny.TownyAPI")
-            pm.registerEvents(TownyOutlawListener(), this)
+            Class.forName("net.azisaba.townia.api.TowniaAPI")
+            pm.registerEvents(TowniaOutlawListener(), this)
             TownSpecificListener(this)
                 .apply { startTask() }
                 .apply { pm.registerEvents(this, this@LifeCore) }
         } catch (e: Throwable) {
-            logger.warning("Towny not detected, skipping event listener registration")
+            logger.warning("Townia not detected, skipping event listener registration")
         }
         try {
             Class.forName("net.azisaba.ryuzupluginchat.event.AsyncGlobalMessageEvent")

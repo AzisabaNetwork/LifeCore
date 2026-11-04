@@ -1,6 +1,6 @@
 package com.github.mori01231.lifecore.config
 
-import com.github.mori01231.lifecore.listener.TownyOutlawListener
+import com.github.mori01231.lifecore.util.TowniaUtil
 import kotlinx.serialization.Serializable
 import org.bukkit.Location
 
@@ -13,8 +13,8 @@ data class TownConfig(
 ) {
     companion object {
         fun getTownConfigAt(lifeCoreConfig: LifeCoreConfig, location: Location): TownConfig? {
-            val town = TownyOutlawListener.getTownAt(location) ?: return null
-            val townName = TownyOutlawListener.getNameTownyObject(town)
+            val town = TowniaUtil.getTownAt(location) ?: return null
+            val townName = TowniaUtil.getTownName(town) ?: return null
             return lifeCoreConfig.townConfig.computeIfAbsent(townName) { TownConfig() }
         }
     }
