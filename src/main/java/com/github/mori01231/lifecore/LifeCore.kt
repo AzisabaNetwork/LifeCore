@@ -271,18 +271,22 @@ class LifeCore : JavaPlugin() {
         for (i in 0..10) {
             preloadClass("com.github.mori01231.lifecore.LifeCore\$onDisable\$$i", false)
         }
-        preloadClass("com.github.mori01231.lifecore.lib.com.charleskorn.kaml.Yaml\$encodeToString\$writer\$1")
-        preloadClass("com.github.mori01231.lifecore.lib.com.charleskorn.kaml.YamlOutput")
-        preloadClass("com.github.mori01231.lifecore.lib.org.yaml.snakeyaml.Yaml")
-        preloadClass("com.github.mori01231.lifecore.lib.org.yaml.snakeyaml.nodes.CollectionNode")
-        preloadClass("com.github.mori01231.lifecore.lib.org.yaml.snakeyaml.nodes.SequenceNode")
-        preloadClass("com.github.mori01231.lifecore.lib.org.snakeyaml.engine.v2.api.DumpSettings")
-        preloadClass("com.github.mori01231.lifecore.lib.org.snakeyaml.engine.v2.api.DumpSettingsBuilder")
-        preloadClass("com.github.mori01231.lifecore.lib.org.yaml.snakeyaml.nodes.MappingNode")
-        preloadClass("com.github.mori01231.lifecore.lib.org.snakeyaml.engine.v2.serializer.NumberAnchorGenerator")
-        preloadClass("com.github.mori01231.lifecore.lib.org.snakeyaml.engine.v2.common.NonPrintableStyle")
-        preloadClass("com.github.mori01231.lifecore.lib.org.snakeyaml.engine.v2.emitter.Emitter")
-        preloadClass("com.github.mori01231.lifecore.lib.org.yaml.snakeyaml.constructor.ConstructorException")
+        // kaml / snakeyaml classes vary between library versions, so these are best-effort
+        val lib = "com.github.mori01231.lifecore.lib"
+        val kmp = "it.krzeminski.snakeyaml.engine.kmp"
+        listOf(
+            "$lib.com.charleskorn.kaml.Yaml",
+            "$lib.com.charleskorn.kaml.YamlOutput",
+            "$lib.org.yaml.snakeyaml.Yaml",
+            "$lib.org.yaml.snakeyaml.nodes.CollectionNode",
+            "$lib.org.yaml.snakeyaml.nodes.SequenceNode",
+            "$lib.org.yaml.snakeyaml.nodes.MappingNode",
+            "$lib.org.yaml.snakeyaml.constructor.ConstructorException",
+            "$kmp.api.DumpSettings",
+            "$kmp.common.NonPrintableStyle",
+            "$kmp.emitter.Emitter",
+            "$kmp.serializer.NumberAnchorGenerator",
+        ).forEach { preloadClass(it, false) }
     }
 
     private fun preloadClass(name: String, required: Boolean = true) {
