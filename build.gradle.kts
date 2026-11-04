@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "net.azisaba"
-version = "6.18.7+1.21.11"
+version = "6.18.8+1.21.11"
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(21))
@@ -145,6 +145,7 @@ tasks {
     }
 
     shadowJar {
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
         exclude("org/slf4j/**")
         relocate("org.mariadb", "com.github.mori01231.lifecore.lib.org.mariadb")
         relocate("com.zaxxer.hikari", "com.github.mori01231.lifecore.lib.com.zaxxer.hikari")
