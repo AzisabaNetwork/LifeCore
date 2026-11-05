@@ -228,7 +228,6 @@ permissions:
       lifecore.servermoney: true
       lifecore.fixtime: true
       lifecore.fixtime.bypass-cooldown: true
-      lifecore.bypass-outlaw: true
       lifecore.wand: true
       lifecore.lifecoreconfig: true
       lifecore.lobby-bypass: true
@@ -329,8 +328,6 @@ permissions:
   lifecore.fixtime:
     default: true
   lifecore.fixtime.bypass-cooldown:
-    default: false
-  lifecore.bypass-outlaw:
     default: false
   lifecore.wand:
     default: false

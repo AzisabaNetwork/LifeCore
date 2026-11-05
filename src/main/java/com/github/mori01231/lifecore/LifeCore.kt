@@ -350,7 +350,6 @@ class LifeCore : JavaPlugin() {
         }
         try {
             Class.forName("net.azisaba.townia.api.TowniaAPI")
-            pm.registerEvents(TowniaOutlawListener(), this)
             TownSpecificListener(this)
                 .apply { startTask() }
                 .apply { pm.registerEvents(this, this@LifeCore) }
