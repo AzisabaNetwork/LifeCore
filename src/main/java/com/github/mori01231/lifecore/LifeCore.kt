@@ -188,29 +188,17 @@ class LifeCore : JavaPlugin() {
         }, 100, 100)
 
         // check for maps
+        // (item frames are handled on EntitiesLoadEvent by MapPrepareListener)
         Bukkit.getScheduler().runTaskTimer(this, Runnable {
-            Bukkit.getOnlinePlayers().forEach player@ { player ->
-                player.inventory.contents.forEachIndexed { index, item ->
-                    if (item != null) {
-                        MapUtil.checkMapView(item)?.let { player.inventory.setItem(index, it) }
-                        MapUtil.initializeMapRenderer(player, item)
-                    }
-                }
-            }
-            if (Bukkit.getOnlinePlayers().isEmpty()) return@Runnable
-            if (config.getBoolean("disable-item-frame-map-update", false)) return@Runnable
-            Bukkit.getWorlds().forEach world@ { world ->
-                world.getEntitiesByClass(ItemFrame::class.java).forEach { itemFrame ->
-                    Bukkit.getScheduler().runTaskAsynchronously(this, Runnable {
-                        val item = itemFrame.item
-                        Bukkit.getOnlinePlayers().forEach { player ->
-                            MapUtil.checkMapView(itemFrame.item)?.let { itemFrame.setItem(it, false) }
-                        MapUtil.initializeMapRenderer(player, item)
-                        }
-                    })
-                }
-            }
+            Bukkit.getOnlinePlayers().forEach { MapUtil.prepareInventory(it) }
         }, 200, 200)
+
+        // item frames that were loaded before this plugin was enabled
+        if (!config.getBoolean("disable-item-frame-map-update", false)) {
+            Bukkit.getWorlds().forEach { world ->
+                world.getEntitiesByClass(ItemFrame::class.java).forEach { MapUtil.prepareItemFrame(it) }
+            }
+        }
 
         Bukkit.getScheduler().runTaskTimer(this, Runnable {
             customBlockManager.getLoadedStates().forEach { (location, state) ->
@@ -338,7 +326,7 @@ class LifeCore : JavaPlugin() {
         pm.registerEvents(PicksawItemListener(dataLoader), this)
         pm.registerEvents(BlockListener, this)
         pm.registerEvents(MapListScreen.EventListener, this)
-        pm.registerEvents(PlayerQuitListener, this)
+        pm.registerEvents(MapPrepareListener(this), this)
 
         // Items
         pm.registerEvents(OreOnlyItemListener(), this)

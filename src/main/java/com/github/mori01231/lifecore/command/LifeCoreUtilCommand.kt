@@ -424,7 +424,7 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
         SaveMapData("地図をサーバー移動可能な形に変換します") {
             override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
                 val meta = (player as Player).inventory.itemInMainHand.itemMeta as? MapMeta? ?: return player.sendMessage("地図を手に持って再度実行してください")
-                val mapView = meta.mapView ?: return player.sendMessage("mapView is null")
+                val mapView = (if (meta.hasMapView()) meta.mapView else null) ?: return player.sendMessage("mapView is null")
                 if (mapView.renderers.getOrNull(0) !is CraftMapRenderer) return player.sendMessage("すでに変換済みのようです")
                 if (mapView is CraftMapView) mapView.render(player as CraftPlayer)
                 val canvas =
@@ -444,14 +444,14 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
                 MapUtil.checkMapView((player as Player).inventory.itemInMainHand)?.let {
                     player.inventory.setItemInMainHand(it)
                 }
-                MapUtil.initializeMapRenderer(player, player.inventory.itemInMainHand)
+                MapUtil.prepareMapRenderer(player.inventory.itemInMainHand)
             }
         },
         ResetMapId("地図IDをリセットします") {
             override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
                 player as Player
                 val meta = player.inventory.itemInMainHand.itemMeta as? MapMeta? ?: return player.sendMessage("this is not a map")
-                val mapView = meta.mapView ?: return player.sendMessage("mapView is null")
+                val mapView = (if (meta.hasMapView()) meta.mapView else null) ?: return player.sendMessage("mapView is null")
                 if (mapView.renderers.isEmpty() || mapView.renderers.filterIsInstance<CraftMapRenderer>().isNotEmpty()) {
                     return player.sendMessage("renderers[0] is an instance of CraftMapRenderer or is null")
                 }
