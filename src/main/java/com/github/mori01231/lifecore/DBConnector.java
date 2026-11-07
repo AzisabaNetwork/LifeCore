@@ -46,6 +46,15 @@ public class DBConnector {
                     "  `hash` VARCHAR(256) NOT NULL," +
                     "  PRIMARY KEY (`owner`, `hash`)" +
                     ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS `online_rewards` (" +
+                    "  `reward_id` VARCHAR(64) NOT NULL," +
+                    "  `slot` BIGINT NOT NULL," +
+                    "  `uuid` VARCHAR(36) NOT NULL," +
+                    "  `server` VARCHAR(64) NOT NULL," +
+                    "  `given_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
+                    "  PRIMARY KEY (`reward_id`, `slot`, `uuid`)," +
+                    "  KEY `given_at` (`given_at`)" +
+                    ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
         });
     }
 

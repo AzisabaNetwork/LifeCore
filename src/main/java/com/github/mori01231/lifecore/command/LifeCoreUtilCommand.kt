@@ -84,6 +84,41 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
                     .invoke(plugin.server as CraftServer)
             }
         },
+        OnlineReward("オンライン報酬の設定を再読み込み(reload)、または今の区間の報酬を未受取のプレイヤーに付与(give <id>)します") {
+            override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
+                val manager = plugin.onlineRewardManager
+                when (args.getOrNull(0)?.lowercase()) {
+                    "reload" -> {
+                        try {
+                            manager.reload()
+                            player.sendMessage(Component.text("Reloaded online rewards (enabled: ${manager.config.enabled})", NamedTextColor.GREEN))
+                        } catch (e: Exception) {
+                            player.sendMessage(Component.text("Failed to reload: ${e.message}", NamedTextColor.RED))
+                            plugin.logger.log(java.util.logging.Level.SEVERE, "Failed to reload online rewards", e)
+                        }
+                    }
+                    "give" -> {
+                        val id = args.getOrNull(1) ?: ""
+                        val reward = manager.config.rewards[id]
+                        if (reward == null) {
+                            player.sendMessage(Component.text("Unknown reward: $id", NamedTextColor.RED))
+                            return
+                        }
+                        manager.distribute(id, reward, reward.currentSlot())
+                        player.sendMessage(Component.text("Giving online reward $id", NamedTextColor.GREEN))
+                    }
+                    else -> player.sendMessage(Component.text("Usage: /lifecoreutil $commandName <reload|give <id>>", NamedTextColor.RED))
+                }
+            }
+
+            override fun suggest(plugin: LifeCore, player: Player, args: Array<String>): List<String> {
+                if (args.size == 1) return listOf("reload", "give").filter { it.startsWith(args[0], ignoreCase = true) }
+                if (args.size == 2 && args[0].equals("give", ignoreCase = true)) {
+                    return plugin.onlineRewardManager.config.rewards.keys.filter { it.startsWith(args[1], ignoreCase = true) }
+                }
+                return super.suggest(plugin, player, args)
+            }
+        },
         Glowing("発光状態を切り替えます") {
             override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
                 if (args.isEmpty()) {

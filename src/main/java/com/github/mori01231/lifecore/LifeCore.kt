@@ -12,6 +12,7 @@ import com.github.mori01231.lifecore.listener.*
 import com.github.mori01231.lifecore.listener.item.*
 import com.github.mori01231.lifecore.network.PacketHandler
 import com.github.mori01231.lifecore.region.PlayerRegionManager
+import com.github.mori01231.lifecore.reward.OnlineRewardManager
 import com.github.mori01231.lifecore.util.*
 import com.github.mori01231.lifecore.util.YAML.yaml
 import com.sun.net.httpserver.HttpServer
@@ -47,6 +48,7 @@ class LifeCore : JavaPlugin() {
     lateinit var trashProtectConfig: TrashProtectConfig
         private set
     val customBlockManager = CustomBlockManager(this)
+    val onlineRewardManager = OnlineRewardManager(this)
     var customModelDataWrench = 0
     var customModelDataBlank = 0
     var customModelDataBlankShapeDownLeft = 0
@@ -168,6 +170,11 @@ class LifeCore : JavaPlugin() {
             logger.severe("Failed to connect to database.")
             e.printStackTrace()
         }
+        try {
+            onlineRewardManager.reload()
+        } catch (e: Exception) {
+            logger.log(Level.SEVERE, "Failed to load ${OnlineRewardManager.FILE_NAME}", e)
+        }
 
         // register channel handler
         for (player in Bukkit.getOnlinePlayers()) {
@@ -229,6 +236,7 @@ class LifeCore : JavaPlugin() {
 
     override fun onDisable() {
         // Plugin shutdown logic
+        runCatching { onlineRewardManager.stop() }
         runCatching { VotesFile.save(this) }
         runCatching { PetClickFile.save(this) }
         runCatching { DamageLogFile.save(this) }
