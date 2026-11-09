@@ -155,6 +155,10 @@ commands:
     permission: lifecore.trashprotect
     usage: "/trashprotect"
     aliases: ['gomiprotect']
+  protect:
+    description: "protect the held kind of item from being dropped or trashed"
+    permission: lifecore.protect
+    usage: "/protect"
   damagelog:
     description: "view damage log"
     permission: lifecore.damagelog
@@ -194,6 +198,9 @@ commands:
   maplist:
     permission: lifecore.maplist
     aliases: ["maps"]
+  worldcreate:
+    permission: lifecore.worldcreate
+    aliases: ["wc"]
 
 permissions:
   lifecore.*:
@@ -223,6 +230,7 @@ permissions:
       lifecore.debugvote: true
       lifecore.petclick: true
       lifecore.dropprotect: true
+      lifecore.protect: true
       lifecore.ngword: true
       lifecore.respawn: true
       lifecore.servermoney: true
@@ -237,6 +245,8 @@ permissions:
       lifecore.lifecoreutil: true
       lifecore.extend-time-immediately: true
       lifecore.commandlist: true
+      lifecore.maplist: true
+      lifecore.worldcreate: true
   lifecore.wiki:
     description: Allows you to show the wiki URL.
     default: true
@@ -319,6 +329,8 @@ permissions:
     default: true
   lifecore.trashprotect:
     default: true
+  lifecore.protect:
+    default: true
   lifecore.damagelog:
     default: true
   lifecore.respawn:
@@ -347,3 +359,7 @@ permissions:
     default: false
   lifecore.commandlist:
     default: true
+  lifecore.maplist:
+    default: true
+  lifecore.worldcreate:
+    default: false

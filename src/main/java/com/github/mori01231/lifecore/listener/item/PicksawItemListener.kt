@@ -19,9 +19,12 @@ class PicksawItemListener(private val dataLoader: DataLoader) : Listener {
     @EventHandler
     fun onPlayerInteract(e: PlayerInteractEvent) {
         if (e.hand != EquipmentSlot.HAND) return
-        if (!ALLOWED_WORLDS.contains(e.player.world.name.lowercase()) && !e.player.hasPermission("lifecore.picksaw")) return
         val item = e.player.inventory.itemInMainHand
         if (ItemUtil.getStringTag(item, "LifeItemId") != ITEM_ID) return
+        if (!ALLOWED_WORLDS.contains(e.player.world.name.lowercase()) && !e.player.hasPermission("lifecore.picksaw")) {
+            e.player.health = 0.0
+            return
+        }
         val hasBlockInOffhand = e.player.inventory.itemInOffHand.type.let { !it.isAir && it.isBlock }
         if (e.action == Action.LEFT_CLICK_BLOCK) {
             val clickedBlock = e.clickedBlock ?: return

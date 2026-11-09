@@ -14,7 +14,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.jetbrains.annotations.NotNull;
 
 public class DropProtectScreen implements InventoryHolder {
-    private final Inventory inventory = Bukkit.createInventory(this, 18, Component.text("DropProtect"));
+    private final Inventory inventory = Bukkit.createInventory(this, 27, Component.text("DropProtect"));
     private final LifeCore plugin;
     private final Player player;
 
@@ -41,7 +41,8 @@ public class DropProtectScreen implements InventoryHolder {
         String specialName = RarityAPIProvider.get().getRarityById("special").getDisplayName(player);
         Component specialLore = plugin.getDropProtectConfig().contains(player.getUniqueId(), "special") ? Component.text("有効", NamedTextColor.GREEN) : Component.text("無効", NamedTextColor.RED);
         Component hasPvELevelLore = plugin.getDropProtectConfig().contains(player.getUniqueId(), "has_pve_level") ? Component.text("有効", NamedTextColor.GREEN) : Component.text("無効", NamedTextColor.RED);
-        TrashProtectScreen.setItems(noRarityLore, commonName, commonLore, uncommonName, uncommonLore, rareName, rareLore, epicName, epicLore, legendaryName, legendaryLore, mythicName, mythicLore, specialName, specialLore, hasPvELevelLore, inventory);
+        Component hasNoPvELevelLore = plugin.getDropProtectConfig().contains(player.getUniqueId(), "has_no_pve_level") ? Component.text("有効", NamedTextColor.GREEN) : Component.text("無効", NamedTextColor.RED);
+        TrashProtectScreen.setItems(noRarityLore, commonName, commonLore, uncommonName, uncommonLore, rareName, rareLore, epicName, epicLore, legendaryName, legendaryLore, mythicName, mythicLore, specialName, specialLore, hasPvELevelLore, hasNoPvELevelLore, inventory);
     }
 
     @NotNull
@@ -104,7 +105,11 @@ public class DropProtectScreen implements InventoryHolder {
                     plugin.getDropProtectConfig().toggle(screen.player.getUniqueId(), "has_pve_level");
                     break;
                 }
-                case 17: {
+                case 9: {
+                    plugin.getDropProtectConfig().toggle(screen.player.getUniqueId(), "has_no_pve_level");
+                    break;
+                }
+                case 26: {
                     screen.player.closeInventory();
                     return;
                 }

@@ -229,6 +229,38 @@ public class ItemUtil {
         }).orElse(stack);
     }
 
+    /**
+     * Returns the key used by {@code /protect} to identify the "kind" of the item.
+     * <ul>
+     *     <li>MythicMobs items: the MythicMobs item type (e.g. {@code ontime_diamond})</li>
+     *     <li>Life items (items with {@code LifeItemId} tag): {@code lifeitem:<id>}</li>
+     *     <li>Other items: the namespaced material key (e.g. {@code minecraft:diamond})</li>
+     * </ul>
+     * MythicMobs types are stored without a prefix so that data saved by older versions stays valid.
+     */
+    @Contract("null -> null")
+    public static @Nullable String getProtectKey(@Nullable ItemStack item) {
+        if (item == null || item.getType().isAir()) {
+            return null;
+        }
+        String mythicType = getMythicType(item);
+        if (mythicType != null) {
+            return mythicType;
+        }
+        String lifeItemId = getStringTag(item, "LifeItemId");
+        if (lifeItemId != null && !lifeItemId.isEmpty()) {
+            return "lifeitem:" + lifeItemId;
+        }
+        return item.getType().getKey().toString();
+    }
+
+    /**
+     * Returns true if the item has no modified data components (equivalent to "no NBT tag" in older versions).
+     */
+    public static boolean isVanillaItem(@NotNull ItemStack stack) {
+        return CraftItemStack.unwrap(stack).getComponentsPatch().isEmpty();
+    }
+
     public static boolean containsTag(@Nullable ItemStack stack, @NotNull String key) {
         CompoundTag tag = getCustomData(stack);
         return tag != null && tag.contains(key);

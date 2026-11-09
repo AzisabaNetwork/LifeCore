@@ -34,7 +34,7 @@ public class GCListenerRestartExtendTimeCommand implements TabExecutor {
         players.add(player.getUniqueId());
         sender.sendMessage(Component.text("投票しました。", NamedTextColor.GREEN));
         if (sender.hasPermission("lifecore.extend-time-immediately") || players.size() == 5) {
-            ScheduleRestartCommand.schedule(30 * 60);
+            ScheduleRestartCommand.schedule(15 * 60);
         }
         return true;
     }

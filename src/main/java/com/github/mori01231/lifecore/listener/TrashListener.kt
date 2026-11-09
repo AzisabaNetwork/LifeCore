@@ -28,9 +28,33 @@ class TrashListener(private val plugin: LifeCore) : Listener {
                 e.inventory.setItem(53, null)
                 for (i in 0..<e.inventory.size) {
                     val item = e.inventory.getItem(i) ?: continue
+
+                    // Check /protect first
+                    val protectKey = ItemUtil.getProtectKey(item)
+                    if (protectKey != null && plugin.mythicItemProtectConfig.contains(e.whoClicked.uniqueId, protectKey)) {
+                        e.inventory.setItem(i, null)
+                        e.whoClicked.inventory.addItem(item).forEach { (_, s) ->
+                            ItemStash.getInstance().addItemToStash(e.whoClicked.uniqueId, s)
+                            e.whoClicked.sendMessage(Component.text("インベントリがいっぱいのため、Stashに保管されました。", NamedTextColor.RED))
+                            e.whoClicked.sendMessage(
+                                Component.text("/pickupstash", NamedTextColor.AQUA)
+                                    .append(Component.text("で回収できます。", NamedTextColor.RED))
+                            )
+                        }
+                        e.whoClicked.sendMessage(Component.text("アイテム \"$protectKey\" は保護されています。", NamedTextColor.YELLOW))
+                        e.whoClicked.sendMessage(
+                            Component.text("/protect", NamedTextColor.AQUA)
+                                .append(Component.text("で保護設定を変更できます。", NamedTextColor.GOLD))
+                        )
+                        continue
+                    }
+
                     val rarity: Rarity? = RarityAPIProvider.get().getRarityByItemStack(item)
+                    val requiredLevel = Util.getRequiredLevel(item)
                     val shouldCancel =
-                        if (plugin.trashProtectConfig.contains(e.whoClicked.uniqueId, "has_pve_level") && Util.getRequiredLevel(item) > 0) {
+                        if (plugin.trashProtectConfig.contains(e.whoClicked.uniqueId, "has_pve_level") && requiredLevel > 0) {
+                            true
+                        } else if (plugin.trashProtectConfig.contains(e.whoClicked.uniqueId, "has_no_pve_level") && requiredLevel == 0L && !ItemUtil.isVanillaItem(item)) {
                             true
                         } else {
                             if (rarity == null) {

@@ -47,6 +47,8 @@ class LifeCore : JavaPlugin() {
         private set
     lateinit var trashProtectConfig: TrashProtectConfig
         private set
+    lateinit var mythicItemProtectConfig: MythicItemProtectConfig
+        private set
     val customBlockManager = CustomBlockManager(this)
     val onlineRewardManager = OnlineRewardManager(this)
     var customModelDataWrench = 0
@@ -87,10 +89,18 @@ class LifeCore : JavaPlugin() {
             }
             trashProtectConfig = yaml.decodeFromString(it.readText())
         }
+        dataFolder.resolve("mythic-item-protect.yml").let {
+            if (!it.exists()) {
+                it.writeText(yaml.encodeToString(MythicItemProtectConfig()))
+            }
+            mythicItemProtectConfig = yaml.decodeFromString(it.readText())
+        }
 
         // save every 5 minutes
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, 20 * 60 * 5, 20 * 60 * 5) {
             dataFolder.resolve("drop-protect.yml").writeText(dropProtectConfig.encode())
+            dataFolder.resolve("trash-protect.yml").writeText(trashProtectConfig.encode())
+            dataFolder.resolve("mythic-item-protect.yml").writeText(mythicItemProtectConfig.encode())
         }
 
         // save every 10 seconds
@@ -147,6 +157,7 @@ class LifeCore : JavaPlugin() {
         registerCommand("dropnotify", DropNotifyCommand())
         registerCommand("dropprotect", DropProtectCommand(this))
         registerCommand("trashprotect", TrashProtectCommand(this))
+        registerCommand("protect", ProtectCommand(this))
         registerCommand("damagelog", DamageLogCommand())
         registerCommand("servermoney", ServerMoneyCommand(this))
         registerCommand("fixtime", FixTimeCommand)
@@ -157,6 +168,7 @@ class LifeCore : JavaPlugin() {
         registerCommand("lifecoreutil", LifeCoreUtilCommand(this))
         registerCommand("commandlist", CommandListCommand)
         registerCommand("maplist", MapListCommand)
+        registerCommand("worldcreate", WorldCreateCommand(this))
         registerCommand("respawn") { _, _, _, args ->
             args.getOrNull(0)?.let { Bukkit.getPlayerExact(it)?.spigot()?.respawn() }
             true
@@ -242,6 +254,8 @@ class LifeCore : JavaPlugin() {
         runCatching { DamageLogFile.save(this) }
         runCatching { DropNotifyFile.save(this) }
         runCatching { dataFolder.resolve("drop-protect.yml").writeText(dropProtectConfig.encode()) }
+        runCatching { dataFolder.resolve("trash-protect.yml").writeText(trashProtectConfig.encode()) }
+        runCatching { dataFolder.resolve("mythic-item-protect.yml").writeText(mythicItemProtectConfig.encode()) }
         runCatching { DBConnector.close() }
         runCatching { executorService.shutdownNow() }
         runCatching { httpServer?.stop(1) }
@@ -321,6 +335,7 @@ class LifeCore : JavaPlugin() {
         pm.registerEvents(WandItemListener(this), this)
         pm.registerEvents(EscapeLobbyListener(this), this)
         pm.registerEvents(PreventOpenMerchantMenuListener(), this)
+        pm.registerEvents(PreventStorageBoxSellListener(this), this)
         pm.registerEvents(CancelMythicItemPlaceListener(), this)
         pm.registerEvents(GameModeChangeLoggerListener(this), this)
         pm.registerEvents(FixMythicItemListener, this)
@@ -335,6 +350,7 @@ class LifeCore : JavaPlugin() {
         pm.registerEvents(BlockListener, this)
         pm.registerEvents(MapListScreen.EventListener, this)
         pm.registerEvents(MapPrepareListener(this), this)
+        pm.registerEvents(WorkaroundLuckPerms, this)
 
         // Items
         pm.registerEvents(OreOnlyItemListener(), this)

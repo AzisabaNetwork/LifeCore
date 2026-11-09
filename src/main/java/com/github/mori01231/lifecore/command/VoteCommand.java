@@ -17,7 +17,7 @@ public class VoteCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         sender.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize("&bJMS: &f" + plugin.getConfig().getString("vote-url-jms")));
-        sender.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize("&aMonocraft: &f" + plugin.getConfig().getString("vote-url-monocraft")));
+        sender.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize("&aMinePortal: &f" + plugin.getConfig().getString("vote-url-mineportal")));
 
         return true;
     }

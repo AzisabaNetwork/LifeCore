@@ -1,6 +1,7 @@
 package com.github.mori01231.lifecore.listener;
 
 import com.github.mori01231.lifecore.LifeCore;
+import com.github.mori01231.lifecore.util.ItemUtil;
 import net.azisaba.itemstash.ItemStash;
 import net.azisaba.lifepvelevel.util.Util;
 import net.azisaba.rarity.api.Rarity;
@@ -17,6 +18,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
 
@@ -29,12 +31,23 @@ public class DropProtectListener implements Listener {
         this.plugin = plugin;
     }
 
-    @SuppressWarnings("unchecked")
     @EventHandler(ignoreCancelled = true)
     public void onDrop(PlayerDropItemEvent e) {
-        Rarity rarity = rarityAPI.getRarityByItemStack(e.getItemDrop().getItemStack());
+        ItemStack itemStack = e.getItemDrop().getItemStack();
+
+        // Check /protect first
+        String protectKey = ItemUtil.getProtectKey(itemStack);
+        if (protectKey != null && plugin.getMythicItemProtectConfig().contains(e.getPlayer().getUniqueId(), protectKey)) {
+            cancelDrop(e, itemStack, "/protect によるアイテム保護 (" + protectKey + ")");
+            return;
+        }
+
+        Rarity rarity = rarityAPI.getRarityByItemStack(itemStack);
         boolean shouldCancel;
-        if (plugin.getDropProtectConfig().contains(e.getPlayer().getUniqueId(), "has_pve_level") && Util.getRequiredLevel(e.getItemDrop().getItemStack()) > 0) {
+        long requiredLevel = Util.getRequiredLevel(itemStack);
+        if (plugin.getDropProtectConfig().contains(e.getPlayer().getUniqueId(), "has_pve_level") && requiredLevel > 0) {
+            shouldCancel = true;
+        } else if (plugin.getDropProtectConfig().contains(e.getPlayer().getUniqueId(), "has_no_pve_level") && requiredLevel == 0 && !ItemUtil.isVanillaItem(itemStack)) {
             shouldCancel = true;
         } else {
             if (rarity == null) {
@@ -48,30 +61,39 @@ public class DropProtectListener implements Listener {
             }
         }
         if (shouldCancel) {
-            ItemStack stack = e.getItemDrop().getItemStack();
-            e.setCancelled(true);
-
-            // set item to air via reflection and data watcher
-            e.getItemDrop().remove();
-            ItemEntity entityItem = (ItemEntity) ((CraftItem) e.getItemDrop()).getHandle();
-            EntityDataAccessor<net.minecraft.world.item.ItemStack> itemStackDataWatcherObject;
-            try {
-                Field f = ItemEntity.class.getDeclaredField("DATA_ITEM");
-                f.setAccessible(true);
-                itemStackDataWatcherObject = (EntityDataAccessor<net.minecraft.world.item.ItemStack>) f.get(null);
-            } catch (ReflectiveOperationException ex) {
-                return;
-            }
-            entityItem.getEntityData().set(itemStackDataWatcherObject, new net.minecraft.world.item.ItemStack(Items.AIR));
-            entityItem.getEntityData().markDirty(itemStackDataWatcherObject);
-
-            e.getPlayer().sendMessage(Component.text("このアイテムはドロップできません。", NamedTextColor.RED));
-            e.getPlayer().sendMessage(Component.text("/dropprotect", NamedTextColor.AQUA).append(Component.text("で設定を変更できます。", NamedTextColor.GOLD)));
-            e.getPlayer().getInventory().addItem(stack).forEach((i, s) -> {
-                itemStash.addItemToStash(e.getPlayer().getUniqueId(), s);
-                e.getPlayer().sendMessage(Component.text("インベントリがいっぱいのため、Stashに保管されました。", NamedTextColor.RED));
-                e.getPlayer().sendMessage(Component.text("/pickupstash", NamedTextColor.AQUA).append(Component.text("で回収できます。", NamedTextColor.RED)));
-            });
+            cancelDrop(e, itemStack, null);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void cancelDrop(@NotNull PlayerDropItemEvent e, @NotNull ItemStack stack, @Nullable String reason) {
+        e.setCancelled(true);
+
+        // set item to air via reflection and data watcher
+        e.getItemDrop().remove();
+        ItemEntity entityItem = (ItemEntity) ((CraftItem) e.getItemDrop()).getHandle();
+        EntityDataAccessor<net.minecraft.world.item.ItemStack> itemStackDataWatcherObject;
+        try {
+            Field f = ItemEntity.class.getDeclaredField("DATA_ITEM");
+            f.setAccessible(true);
+            itemStackDataWatcherObject = (EntityDataAccessor<net.minecraft.world.item.ItemStack>) f.get(null);
+        } catch (ReflectiveOperationException ex) {
+            return;
+        }
+        entityItem.getEntityData().set(itemStackDataWatcherObject, new net.minecraft.world.item.ItemStack(Items.AIR));
+        entityItem.getEntityData().markDirty(itemStackDataWatcherObject);
+
+        e.getPlayer().sendMessage(Component.text("このアイテムはドロップできません。", NamedTextColor.RED));
+        if (reason != null) {
+            e.getPlayer().sendMessage(Component.text("理由: " + reason, NamedTextColor.YELLOW));
+            e.getPlayer().sendMessage(Component.text("/protect", NamedTextColor.AQUA).append(Component.text("でアイテムの保護設定を変更できます。", NamedTextColor.GOLD)));
+        } else {
+            e.getPlayer().sendMessage(Component.text("/dropprotect", NamedTextColor.AQUA).append(Component.text("で設定を変更できます。", NamedTextColor.GOLD)));
+        }
+        e.getPlayer().getInventory().addItem(stack).forEach((i, s) -> {
+            itemStash.addItemToStash(e.getPlayer().getUniqueId(), s);
+            e.getPlayer().sendMessage(Component.text("インベントリがいっぱいのため、Stashに保管されました。", NamedTextColor.RED));
+            e.getPlayer().sendMessage(Component.text("/pickupstash", NamedTextColor.AQUA).append(Component.text("で回収できます。", NamedTextColor.RED)));
+        });
     }
 }

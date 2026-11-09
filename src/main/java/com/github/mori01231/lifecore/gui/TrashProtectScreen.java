@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 
 public class TrashProtectScreen implements InventoryHolder {
-    private final Inventory inventory = Bukkit.createInventory(this, 18, Component.text("TrashProtect"));
+    private final Inventory inventory = Bukkit.createInventory(this, 27, Component.text("TrashProtect"));
     private final LifeCore plugin;
     private final Player player;
 
@@ -47,10 +47,11 @@ public class TrashProtectScreen implements InventoryHolder {
         String specialName = RarityAPIProvider.get().getRarityById("special").getDisplayName(player);
         Component specialLore = plugin.getTrashProtectConfig().contains(player.getUniqueId(), "special") ? Component.text("有効", NamedTextColor.GREEN) : Component.text("無効", NamedTextColor.RED);
         Component hasPvELevelLore = plugin.getTrashProtectConfig().contains(player.getUniqueId(), "has_pve_level") ? Component.text("有効", NamedTextColor.GREEN) : Component.text("無効", NamedTextColor.RED);
-        setItems(noRarityLore, commonName, commonLore, uncommonName, uncommonLore, rareName, rareLore, epicName, epicLore, legendaryName, legendaryLore, mythicName, mythicLore, specialName, specialLore, hasPvELevelLore, inventory);
+        Component hasNoPvELevelLore = plugin.getTrashProtectConfig().contains(player.getUniqueId(), "has_no_pve_level") ? Component.text("有効", NamedTextColor.GREEN) : Component.text("無効", NamedTextColor.RED);
+        setItems(noRarityLore, commonName, commonLore, uncommonName, uncommonLore, rareName, rareLore, epicName, epicLore, legendaryName, legendaryLore, mythicName, mythicLore, specialName, specialLore, hasPvELevelLore, hasNoPvELevelLore, inventory);
     }
 
-    static void setItems(Component noRarityLore, String commonName, Component commonLore, String uncommonName, Component uncommonLore, String rareName, Component rareLore, String epicName, Component epicLore, String legendaryName, Component legendaryLore, String mythicName, Component mythicLore, String specialName, Component specialLore, Component hasPvELevelLore, Inventory inventory) {
+    static void setItems(Component noRarityLore, String commonName, Component commonLore, String uncommonName, Component uncommonLore, String rareName, Component rareLore, String epicName, Component epicLore, String legendaryName, Component legendaryLore, String mythicName, Component mythicLore, String specialName, Component specialLore, Component hasPvELevelLore, Component hasNoPvELevelLore, Inventory inventory) {
         inventory.setItem(0, ItemUtil.createItemStack(Material.PAPER, 1, item -> {
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
@@ -123,7 +124,15 @@ public class TrashProtectScreen implements InventoryHolder {
                 item.setItemMeta(meta);
             }
         }));
-        inventory.setItem(17, ItemUtil.createItemStack(Material.BARRIER, 1, item -> {
+        inventory.setItem(9, ItemUtil.createItemStack(Material.FILLED_MAP, 1, item -> {
+            ItemMeta meta = item.getItemMeta();
+            if (meta != null) {
+                meta.displayName(Component.text("PvEレベルが付与されていないアイテム", NamedTextColor.GRAY));
+                meta.lore(Collections.singletonList(hasNoPvELevelLore));
+                item.setItemMeta(meta);
+            }
+        }));
+        inventory.setItem(26, ItemUtil.createItemStack(Material.BARRIER, 1, item -> {
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
                 meta.displayName(Component.text("閉じる", NamedTextColor.RED));
@@ -192,7 +201,11 @@ public class TrashProtectScreen implements InventoryHolder {
                     plugin.getTrashProtectConfig().toggle(screen.player.getUniqueId(), "has_pve_level");
                     break;
                 }
-                case 17: {
+                case 9: {
+                    plugin.getTrashProtectConfig().toggle(screen.player.getUniqueId(), "has_no_pve_level");
+                    break;
+                }
+                case 26: {
                     screen.player.closeInventory();
                     return;
                 }

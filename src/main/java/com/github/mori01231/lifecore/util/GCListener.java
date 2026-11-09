@@ -102,7 +102,7 @@ public class GCListener implements NotificationListener {
                         Component component = Component.text("再起動までの時間を延長するには、このメッセージをクリックしてください。", NamedTextColor.AQUA, TextDecoration.UNDERLINED)
                                 .clickEvent(ClickEvent.runCommand("/gclistenerrestartextendtimecommand"));
                         Bukkit.broadcast(component);
-                        Bukkit.broadcast(Component.text("5人が上のメッセージをクリックすると、30分に延長されます。", NamedTextColor.GREEN));
+                        Bukkit.broadcast(Component.text("5人が上のメッセージをクリックすると、15分に延長されます。", NamedTextColor.GREEN));
                     } catch (IllegalArgumentException e) {
                         plugin.getSLF4JLogger().warn("Invalid @schedulerestart: " + command, e);
                     }
