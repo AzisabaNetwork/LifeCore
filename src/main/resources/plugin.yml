@@ -16,7 +16,7 @@ softdepend:
   - ItemStash
   - JoinFilter
   - LifePvELevel
-api-version: 1.13
+api-version: '@apiVersion@'
 
 commands:
   wiki:

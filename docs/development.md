@@ -2,7 +2,7 @@
 
 ## 必要なもの
 
-- JDK 21
+- JDK 21(`gradle.properties` の `javaVersion`。ツールチェーンは自動で取得されます)
 - Gradle(Wrapper を同梱しているので `./gradlew` で動きます)
 
 ## ビルド
@@ -11,7 +11,30 @@
 ./gradlew build
 ```
 
-成果物は `build/libs/` に出力されます。Paper の開発用バンドル(paperweight-userdev)を使っているため、初回のビルドには時間がかかります。
+成果物は `build/libs/LifeCore-<バージョン>.jar` です(`-plain.jar` は依存ライブラリを含まないので、サーバーには入れないでください)。Paper の開発用バンドル(paperweight-userdev)を使っているため、初回のビルドには時間がかかります。
+
+jar は Mojang マッピングのまま出力されます(reobf はしません)。Paper は 1.20.5 以降 Mojang マッピングで動いており、26.x 以降は難読化自体がなくなるためです。
+
+## バージョンと依存関係
+
+| ファイル | 内容 |
+|---|---|
+| `gradle.properties` | 対象の Minecraft バージョン(`minecraftVersion`)、Paper の開発用バンドル(`paperDevBundle`)、Java のバージョン(`javaVersion`)、プラグインのバージョン(`pluginVersion`) |
+| `gradle/libs.versions.toml` | 依存ライブラリ・プラグインのバージョン(Version Catalog) |
+
+- 成果物のバージョンは `<pluginVersion>+<minecraftVersion>`、`plugin.yml` の `api-version` は `minecraftVersion` から自動で入ります。
+- `net.azisaba` 系のプラグインは [maven.azisaba.net](https://maven.azisaba.net/releases/net/azisaba/) から取得します。更新するときは `libs.versions.toml` のバージョンを書き換えてください。
+- `adventure` のバージョンは、対象の Paper に同梱されている Adventure と合わせてください(開発用バンドルがバージョン指定なしの Adventure モジュールに依存しているため、BOM が必要です)。
+
+### Minecraft 26.x に移行するとき
+
+1. `gradle.properties` を書き換える
+   - `minecraftVersion` を `26.x` に
+   - `paperDevBundle` を [PaperMC のリポジトリ](https://repo.papermc.io/repository/maven-public/io/papermc/paper/dev-bundle/maven-metadata.xml) にある `26.x.build.<番号>-stable` に
+   - `javaVersion` を Paper が要求するバージョン(26.x は Java 25)に
+2. `libs.versions.toml` の `adventure` を Paper 26.x に同梱のバージョンに合わせ、`net.azisaba` 系プラグインも 26.x 対応版に更新する
+3. ビルドして、NMS(`net.minecraft.*`)を使っている箇所のコンパイルエラーを直す
+   - NMS を使っているファイルは `grep -rl "import net.minecraft" src` で確認できます(`util/ItemUtil.kt`、`network/PacketHandler.kt`、`listener/DropProtectListener.kt`、`util/PromptSign.kt`、`map/` など)
 
 ## ブランチ
 

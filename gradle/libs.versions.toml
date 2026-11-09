@@ -1,0 +1,64 @@
+# Dependency versions.
+# Minecraft / Paper / Java versions live in gradle.properties so that switching the target
+# (e.g. 1.21.11 -> 26.x) only touches that file.
+
+[versions]
+kotlin = "2.4.21"
+shadow = "9.6.1"
+paperweight = "2.0.0-beta.24"
+# Must match the Adventure version bundled with the target Paper version
+adventure = "4.26.1"
+
+kotlinx-serialization = "1.12.0"
+kaml = "0.104.0"
+hikaricp = "7.1.0"
+mariadb = "4.0.0"
+snakeyaml = "2.7"
+acrylicstyle-expression = "2.0.0-SNAPSHOT"
+
+# net.azisaba plugins (https://maven.azisaba.net/releases)
+lifepvelevel = "2.0.2+1.21.11"
+joinfilter = "1.0.1"
+ballotbox = "1.0.1"
+azipluginmessaging = "4.3.0"
+ryuzupluginchat = "5.1.2"
+rarity = "2.1.1"
+itemstash = "3.0.1+1.21.11"
+townia = "1.1.7"
+
+# third-party plugins
+mythic = "5.14.0"
+vault = "1.7"
+mypet = "5c8ceeac6a"
+autorank = "4.5.1"
+statz = "v1.5.5"
+
+[libraries]
+adventure-bom = { module = "net.kyori:adventure-bom", version.ref = "adventure" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+kaml = { module = "com.charleskorn.kaml:kaml", version.ref = "kaml" }
+hikaricp = { module = "com.zaxxer:HikariCP", version.ref = "hikaricp" }
+mariadb = { module = "org.mariadb.jdbc:mariadb-java-client", version.ref = "mariadb" }
+snakeyaml = { module = "org.yaml:snakeyaml", version.ref = "snakeyaml" }
+acrylicstyle-expression = { module = "xyz.acrylicstyle.java-util:expression", version.ref = "acrylicstyle-expression" }
+
+lifepvelevel = { module = "net.azisaba:lifepvelevel", version.ref = "lifepvelevel" }
+joinfilter = { module = "net.azisaba:JoinFilter", version.ref = "joinfilter" }
+ballotbox-receiver = { module = "net.azisaba.ballotbox:receiver", version.ref = "ballotbox" }
+azipluginmessaging-api = { module = "net.azisaba.azipluginmessaging:api", version.ref = "azipluginmessaging" }
+ryuzupluginchat = { module = "net.azisaba:RyuZUPluginChat", version.ref = "ryuzupluginchat" }
+rarity-api = { module = "net.azisaba.rarity:api", version.ref = "rarity" }
+itemstash = { module = "net.azisaba:ItemStash", version.ref = "itemstash" }
+townia = { module = "net.azisaba:Townia", version.ref = "townia" }
+
+mythic-dist = { module = "io.lumine:Mythic-Dist", version.ref = "mythic" }
+vault-api = { module = "com.github.MilkBowl:VaultAPI", version.ref = "vault" }
+mypet-api = { module = "com.github.MyPetORG.MyPet:mypet-api", version.ref = "mypet" }
+autorank = { module = "com.github.Staartvin:Autorank-2", version.ref = "autorank" }
+statz = { module = "com.github.Staartvin:Statz", version.ref = "statz" }
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
+paperweight-userdev = { id = "io.papermc.paperweight.userdev", version.ref = "paperweight" }

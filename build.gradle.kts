@@ -1,97 +1,103 @@
 import org.apache.tools.ant.filters.ReplaceTokens
+import io.papermc.paperweight.userdev.ReobfArtifactConfiguration
 
 plugins {
-    kotlin("jvm") version "2.4.21"
-    kotlin("plugin.serialization") version "2.4.21"
-    id("com.gradleup.shadow") version "9.6.1"
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.24"
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.shadow)
+    alias(libs.plugins.paperweight.userdev)
     java
     `maven-publish`
 }
 
+val minecraftVersion: String by project
+val paperDevBundle: String by project
+val javaVersion: String by project
+val pluginVersion: String by project
+
 group = "net.azisaba"
-version = "6.19.1+1.21.11"
+version = "$pluginVersion+$minecraftVersion"
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+    toolchain.languageVersion.set(JavaLanguageVersion.of(javaVersion.toInt()))
 
     withJavadocJar()
     withSourcesJar()
 }
 
+kotlin {
+    jvmToolchain(javaVersion.toInt())
+}
+
 repositories {
     mavenLocal()
     mavenCentral()
-    maven {
-        name = "papermc-repo"
-        url = uri("https://repo.papermc.io/repository/maven-public/")
+    maven("https://repo.papermc.io/repository/maven-public/") {
+        name = "papermc"
     }
-    maven {
-        name = "sonatype"
-        url = uri("https://oss.sonatype.org/content/groups/public/")
+    // net.azisaba plugins
+    maven("https://maven.azisaba.net/releases") {
+        name = "azisaba"
+        mavenContent { includeGroupAndSubgroups("net.azisaba") }
     }
-    maven {
-        name = "jitpack"
-        url = uri("https://jitpack.io")
+    // xyz.acrylicstyle and other legacy artifacts
+    maven("https://repo.azisaba.net/repository/maven-public/") {
+        name = "azisabaLegacy"
     }
-    maven {
-        name = "azisaba-repo"
-        url = uri("https://repo.azisaba.net/repository/maven-public/")
-    }
-    if (properties["azisabaNmsUsername"] != null && properties["azisabaNmsPassword"] != null) {
-        maven {
-            name = "azisabaNms"
-            credentials(PasswordCredentials::class)
-            url = uri("https://repo.azisaba.net/repository/nms/")
-        }
-    }
-    maven {
+    maven("https://mvn.lumine.io/repository/maven-public/") {
         name = "lumine"
-        url = uri("https://mvn.lumine.io/repository/maven-public/")
+        mavenContent { includeGroup("io.lumine") }
     }
-    maven("https://maven.azisaba.net/releases")
+    maven("https://jitpack.io") {
+        name = "jitpack"
+        mavenContent { includeGroupAndSubgroups("com.github") }
+    }
 }
 
 dependencies {
-    compileOnly(platform("net.kyori:adventure-bom:4.26.1"))
-    testImplementation(platform("net.kyori:adventure-bom:4.26.1"))
+    paperweight.paperDevBundle(paperDevBundle)
+    compileOnly(platform(libs.adventure.bom))
+
     implementation(kotlin("stdlib"))
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.12.0")
-    implementation("com.charleskorn.kaml:kaml:0.104.0")
-    implementation("com.zaxxer:HikariCP:7.1.0")
-    implementation("org.mariadb.jdbc:mariadb-java-client:4.0.0")
-    implementation("org.yaml:snakeyaml:2.7")
-    implementation("xyz.acrylicstyle.java-util:expression:2.0.0-SNAPSHOT")
-    compileOnly("net.azisaba:lifepvelevel:1.3.0")
-    compileOnly("net.azisaba:JoinFilter:1.0.0")
-    compileOnly("net.azisaba.ballotbox:receiver:1.0.1")
-    compileOnly("net.azisaba.azipluginmessaging:api:4.0.3")
-    compileOnly("net.azisaba:RyuZUPluginChat:4.2.0") {
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.kaml)
+    implementation(libs.hikaricp)
+    implementation(libs.mariadb)
+    implementation(libs.snakeyaml)
+    implementation(libs.acrylicstyle.expression)
+
+    // net.azisaba plugins
+    compileOnly(libs.lifepvelevel)
+    compileOnly(libs.joinfilter)
+    compileOnly(libs.ballotbox.receiver)
+    compileOnly(libs.azipluginmessaging.api)
+    compileOnly(libs.ryuzupluginchat) {
         exclude("co.aikar", "taskchain-core")
     }
-    compileOnly("net.azisaba.rarity:api:1.0.1-SNAPSHOT") {
+    compileOnly(libs.rarity.api) {
         exclude("org.spigotmc", "spigot-api")
     }
-    compileOnly("net.azisaba:ItemStash:1.0.0-SNAPSHOT")
-    compileOnly("io.lumine:Mythic-Dist:5.12.0")
-    compileOnly("com.github.MilkBowl:VaultAPI:1.7") {
+    compileOnly(libs.itemstash)
+    compileOnly(libs.townia)
+
+    // third-party plugins
+    compileOnly(libs.mythic.dist)
+    compileOnly(libs.vault.api) {
         exclude("org.bukkit", "bukkit")
     }
-    compileOnly("com.github.MyPetORG.MyPet:mypet-api:5c8ceeac6a")
-    compileOnly("de.keyle:knbt:0.0.5")
-    compileOnly("com.github.Staartvin:Autorank-2:4.5.1")
-    compileOnly("com.github.Staartvin:Statz:v1.5.5") {
+    compileOnly(libs.mypet.api)
+    compileOnly(libs.autorank)
+    compileOnly(libs.statz) {
         exclude("nl.lolmewn.stats", "Stats")
         exclude("me.staartvin", "PluginLibrary")
         exclude("org.spigotmc", "spigot-api")
         exclude("org.bukkit", "bukkit")
     }
-    compileOnly("net.azisaba:Townia:1.1.4")
-    compileOnly("net.kyori:adventure-text-serializer-ansi:5.2.0")
-    paperweight.paperDevBundle("1.21.11-R0.1-SNAPSHOT")
 }
 
-paperweight.reobfArtifactConfiguration.set(io.papermc.paperweight.userdev.ReobfArtifactConfiguration.REOBF_PRODUCTION)
+// Paper runs Mojang-mapped since 1.20.5 and Minecraft 26.x is no longer obfuscated,
+// so the plugin is shipped Mojang-mapped (no reobfuscation step).
+paperweight.reobfArtifactConfiguration.set(ReobfArtifactConfiguration.MOJANG_PRODUCTION)
 
 publishing {
     repositories {
@@ -110,7 +116,7 @@ publishing {
     publications {
         create<MavenPublication>("mavenJava") {
             from(components["java"])
-            artifact(tasks.reobfJar)
+            artifact(tasks.shadowJar)
         }
     }
 }
@@ -139,12 +145,16 @@ tasks {
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
 
         from(sourceSets.main.get().resources.srcDirs) {
-            filter(ReplaceTokens::class, mapOf("tokens" to mapOf("version" to project.version.toString())))
+            filter(
+                ReplaceTokens::class,
+                mapOf("tokens" to mapOf("version" to project.version.toString(), "apiVersion" to minecraftVersion)),
+            )
             filteringCharset = "UTF-8"
         }
     }
 
     shadowJar {
+        archiveClassifier.set("")
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
         exclude("org/slf4j/**")
         relocate("org.mariadb", "com.github.mori01231.lifecore.lib.org.mariadb")
@@ -156,5 +166,13 @@ tasks {
         relocate("org.snakeyaml", "com.github.mori01231.lifecore.lib.org.snakeyaml")
         relocate("org.intellij", "com.github.mori01231.lifecore.lib.org.intellij")
         relocate("xyz.acrylicstyle.util", "com.github.mori01231.lifecore.lib.xyz.acrylicstyle.util")
+    }
+
+    jar {
+        archiveClassifier.set("plain")
+    }
+
+    assemble {
+        dependsOn(shadowJar)
     }
 }
