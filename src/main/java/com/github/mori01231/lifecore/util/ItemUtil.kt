@@ -19,6 +19,7 @@ import java.util.UUID
 object ItemUtil {
     private val RESTORE_BYPASS_SET = setOf("Damage")
 
+    @JvmStatic
     fun isProbablyAdminSword(stack: ItemStack?): Boolean {
         if (stack == null || stack.type.isAir || !stack.hasItemMeta()) return false
         val meta = stack.itemMeta ?: return false
@@ -27,11 +28,13 @@ object ItemUtil {
         return modifiers.any { it.amount >= 9999 }
     }
 
+    @JvmStatic
     fun getCustomData(stack: ItemStack?): CompoundTag? {
         if (stack == null || stack.type.isAir) return null
         return CraftItemStack.asNMSCopy(stack).get(DataComponents.CUSTOM_DATA)?.copyTag()
     }
 
+    @JvmStatic
     fun getMythicType(item: ItemStack?): String? {
         if (item == null || item.type.isAir) {
             return null
@@ -39,14 +42,19 @@ object ItemUtil {
         return MythicBukkit.inst().itemManager.getMythicTypeFromItem(item)
     }
 
+    @JvmStatic
     fun getTag(stack: ItemStack?, key: String): Tag? = getCustomData(stack)?.get(key)
 
+    @JvmStatic
     fun getStringTag(stack: ItemStack?, key: String): String? = getCustomData(stack)?.getString(key)?.orElse(null)
 
+    @JvmStatic
     fun getIntTag(stack: ItemStack?, key: String): Int = getCustomData(stack)?.getInt(key)?.orElse(0) ?: 0
 
+    @JvmStatic
     fun getByteArrayTag(stack: ItemStack?, key: String): ByteArray? = getCustomData(stack)?.getByteArray(key)?.orElse(null)
 
+    @JvmStatic
     fun setStringTag(stack: ItemStack?, key: String, value: String): ItemStack {
         if (stack == null || stack.type.isAir) return ItemStack(Material.AIR)
         val tag = getCustomData(stack) ?: CompoundTag()
@@ -54,6 +62,7 @@ object ItemUtil {
         return applyCustomData(stack, tag)
     }
 
+    @JvmStatic
     fun setTag(stack: ItemStack?, key: String?, nbt: Tag): ItemStack {
         if (stack == null || stack.type.isAir) return ItemStack(Material.AIR)
         val tag = if (key == null) {
@@ -71,6 +80,7 @@ object ItemUtil {
         return CraftItemStack.asBukkitCopy(nms)
     }
 
+    @JvmStatic
     fun setCustomModelData(meta: ItemMeta, data: Int?) {
         if (data == null) {
             meta.setCustomModelDataComponent(null)
@@ -81,6 +91,7 @@ object ItemUtil {
         }
     }
 
+    @JvmStatic
     fun toString(stack: ItemStack): String {
         val props = StringBuilder()
         props.append("[Type: ${stack.type.name}]")
@@ -104,9 +115,11 @@ object ItemUtil {
         return props.toString()
     }
 
+    @JvmStatic
     fun createItemStack(material: Material, amount: Int, action: (ItemStack) -> Unit): ItemStack =
         ItemStack(material, amount).also(action)
 
+    @JvmStatic
     fun createItemStack(material: Material, displayName: String, lore: List<String>): ItemStack =
         createItemStack(material, 1) { item ->
             val meta = item.itemMeta ?: return@createItemStack
@@ -118,6 +131,7 @@ object ItemUtil {
             item.itemMeta = meta
         }
 
+    @JvmStatic
     fun addToStashIfEnabled(uuid: UUID, item: ItemStack): Boolean =
         try {
             Class.forName("net.azisaba.itemstash.ItemStash")
@@ -127,9 +141,11 @@ object ItemUtil {
             false
         }
 
+    @JvmStatic
     fun isEquippedInAnySlot(player: Player, stack: ItemStack): Boolean =
         anyEquippedItem(player) { it == stack }
 
+    @JvmStatic
     fun isEquippedInAnySlot(player: Player, mythicType: String): Boolean =
         anyEquippedItem(player) { mythicType == getMythicType(it) }
 
@@ -145,6 +161,7 @@ object ItemUtil {
         }
     }
 
+    @JvmStatic
     fun backupTag(stack: ItemStack?): ItemStack? {
         if (stack == null) return null
         val tag = getCustomData(stack)
@@ -157,6 +174,7 @@ object ItemUtil {
         return setTag(stack, "backup", tag)
     }
 
+    @JvmStatic
     fun restoreTag(stack: ItemStack?): ItemStack? {
         if (stack == null) return null
         val tag = getCustomData(stack)
@@ -179,6 +197,7 @@ object ItemUtil {
      *
      * MythicMobs types are stored without a prefix so that data saved by older versions stays valid.
      */
+    @JvmStatic
     fun getProtectKey(item: ItemStack?): String? {
         if (item == null || item.type.isAir) {
             return null
@@ -194,10 +213,13 @@ object ItemUtil {
     /**
      * Returns true if the item has no modified data components (equivalent to "no NBT tag" in older versions).
      */
+    @JvmStatic
     fun isVanillaItem(stack: ItemStack): Boolean = CraftItemStack.unwrap(stack).componentsPatch.isEmpty
 
+    @JvmStatic
     fun containsTag(stack: ItemStack?, key: String): Boolean = getCustomData(stack)?.contains(key) == true
 
+    @JvmStatic
     fun cloneWithNewMaterial(stack: ItemStack, material: Material): ItemStack {
         val newStack = stack.withType(material)
         val meta = newStack.itemMeta
