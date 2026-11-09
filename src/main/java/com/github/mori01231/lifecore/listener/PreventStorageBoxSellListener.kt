@@ -1,6 +1,5 @@
 package com.github.mori01231.lifecore.listener
 
-import com.github.mori01231.lifecore.LifeCore
 import com.github.mori01231.lifecore.util.ItemUtil
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -13,8 +12,7 @@ import org.bukkit.event.inventory.InventoryDragEvent
 import org.bukkit.inventory.InventoryView
 import org.bukkit.inventory.ItemStack
 
-@Suppress("unused")
-class PreventStorageBoxSellListener(private val plugin: LifeCore) : Listener {
+class PreventStorageBoxSellListener : Listener {
     @EventHandler
     fun onInventoryClick(event: InventoryClickEvent) {
         // Check if the inventory title contains "Menu" and "Sell"

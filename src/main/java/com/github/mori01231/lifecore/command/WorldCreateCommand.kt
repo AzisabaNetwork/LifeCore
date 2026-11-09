@@ -112,8 +112,7 @@ class WorldCreateCommand(private val plugin: LifeCore) : TabExecutor {
             w.setGameRule(GameRules.IMMEDIATE_RESPAWN, true)
             w.setGameRule(GameRules.KEEP_INVENTORY, true)
             w.setGameRule(GameRules.RESPAWN_RADIUS, 0)
-            @Suppress("DEPRECATION")
-            w.pvp = false
+            w.setGameRule(GameRules.PVP, false)
             w.difficulty = difficulty
             w.worldBorder.setCenter(0.0, 0.0)
         }

@@ -127,9 +127,9 @@ class TrashListener(private val plugin: LifeCore) : Listener {
     fun onInventoryClose(e: InventoryCloseEvent) {
         if (e.inventory.holder is TrashInventory) {
             val inv = e.inventory
-            for (item in inv.contents) {
-                @Suppress("SENSELESS_COMPARISON")
-                if (item == null || item.type.isAir || item == TrashInventory.trashItem) continue
+            for (slot in 0..<inv.size) {
+                val item = inv.getItem(slot) ?: continue
+                if (item.type.isAir || item == TrashInventory.trashItem) continue
                 e.player.inventory.addItem(item).forEach { (_, s) ->
                     ItemStash.getInstance().addItemToStash(e.player.uniqueId, s)
                     e.player.sendMessage(Component.text("インベントリがいっぱいのため、Stashに保管されました。", NamedTextColor.RED))

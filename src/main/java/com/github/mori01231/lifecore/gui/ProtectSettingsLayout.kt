@@ -49,7 +49,7 @@ internal object ProtectSettingsLayout {
         setIcon(0, Material.PAPER, Component.text("レア度が付与されていないアイテム", NamedTextColor.WHITE), status("no_rarity"))
         val rarityAPI = RarityAPIProvider.get()
         RARITY_ICONS.forEachIndexed { index, (id, material) ->
-            val displayName = rarityAPI.getRarityById(id)?.getDisplayName(player) ?: id
+            val displayName = rarityAPI.getRarityById(id).getDisplayName(player)
             setIcon(index + 1, material, LegacyComponentSerializer.legacyAmpersand().deserialize(displayName), status(id))
         }
         setIcon(8, Material.MAP, Component.text("PvEレベルが付与されているアイテム", NamedTextColor.YELLOW), status("has_pve_level"))

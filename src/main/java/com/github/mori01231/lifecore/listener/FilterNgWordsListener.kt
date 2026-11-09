@@ -25,7 +25,6 @@ class FilterNgWordsListener(private val plugin: LifeCore) : Listener {
             val filtered = NGWordsCache.filter(plugin.ngWordsCache.get(player.uniqueId), format)
             if (format != filtered) {
                 toRemove.add(player)
-                @Suppress("DEPRECATION")
                 player.sendMessage(filtered)
             }
         }

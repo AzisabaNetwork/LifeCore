@@ -6,21 +6,12 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent
 import org.bukkit.event.player.PlayerJoinEvent
-import org.bukkit.event.player.PlayerLoginEvent
 
-@Suppress("DEPRECATION")
 class CancelJoinAfterStartupListener : Listener {
     @EventHandler
     fun onAsyncPlayerPreLogin(e: AsyncPlayerPreLoginEvent) {
         if (Bukkit.getCurrentTick() < TICKS) {
             e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST, MESSAGE)
-        }
-    }
-
-    @EventHandler
-    fun onPlayerLogin(e: PlayerLoginEvent) {
-        if (Bukkit.getCurrentTick() < TICKS) {
-            e.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, MESSAGE)
         }
     }
 

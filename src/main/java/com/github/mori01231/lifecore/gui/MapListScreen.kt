@@ -221,9 +221,8 @@ class MapListScreen(val player: Player) : InventoryHolder {
                             holder.resetAsync()
                         }
                     } else {
-                        val emptySpace = player.inventory.contents.count {
-                            @Suppress("SENSELESS_COMPARISON")
-                            it == null || it.type == Material.AIR
+                        val emptySpace = (0..<player.inventory.size).count {
+                            player.inventory.getItem(it)?.type?.isAir ?: true
                         }
                         if (emptySpace == 0) {
                             player.sendMessage(Component.text("インベントリがいっぱいです", NamedTextColor.RED))

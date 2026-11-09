@@ -35,7 +35,7 @@ class VoteListener(private val plugin: LifeCore) : Listener {
     companion object {
         private val lock = Any()
 
-        fun processVotePacket(plugin: LifeCore, username: String, serviceName: String) = synchronized(lock) {
+        fun processVotePacket(plugin: LifeCore, username: String, serviceName: String): Unit = synchronized(lock) {
             val player = Bukkit.getPlayerExact(username)
             Bukkit.broadcast(
                 Component.text("[", NamedTextColor.GOLD)

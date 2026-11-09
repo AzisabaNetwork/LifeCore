@@ -10,10 +10,10 @@ plugins {
     `maven-publish`
 }
 
-val minecraftVersion: String by project
-val paperDevBundle: String by project
-val javaVersion: String by project
-val pluginVersion: String by project
+val minecraftVersion = providers.gradleProperty("minecraftVersion").get()
+val paperDevBundle = providers.gradleProperty("paperDevBundle").get()
+val javaVersion = providers.gradleProperty("javaVersion").get()
+val pluginVersion = providers.gradleProperty("pluginVersion").get()
 
 group = "net.azisaba"
 version = "$pluginVersion+$minecraftVersion"

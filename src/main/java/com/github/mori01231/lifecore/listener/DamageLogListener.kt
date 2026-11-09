@@ -54,7 +54,6 @@ class DamageLogListener : Listener {
         val entityName = if (entity == null) "" else "§f" + entity.name + " "
         val damageType = if (send) "§a与" else "§c受"
         val damageColor = if (send) "§a" else "§c"
-        @Suppress("DEPRECATION")
         p.sendMessage("$prefix$entityName$damageColor$damage §8($damageType §7$type§8)")
     }
 
@@ -96,7 +95,6 @@ class DamageLogListener : Listener {
         }
     }
 
-    @Suppress("DEPRECATION")
     companion object {
         /** Damage received from anything (EntityDamageEvent) */
         private val RECEIVED_TYPES = mapOf(
@@ -111,7 +109,6 @@ class DamageLogListener : Listener {
             DamageCause.THORNS to "茨の鎧",
             DamageCause.STARVATION to "餓死",
             DamageCause.FIRE_TICK to "延焼",
-            DamageCause.DRAGON_BREATH to "ドラゴンの息",
             DamageCause.HOT_FLOOR to "マグマブロック",
             DamageCause.DROWNING to "窒息",
             DamageCause.ENTITY_EXPLOSION to "爆発",
@@ -137,7 +134,6 @@ class DamageLogListener : Listener {
             DamageCause.THORNS to ("茨の鎧" to true),
             DamageCause.STARVATION to ("餓死" to false),
             DamageCause.FIRE_TICK to ("延焼" to false),
-            DamageCause.DRAGON_BREATH to ("ドラゴンの息" to false),
             DamageCause.HOT_FLOOR to ("マグマブロック" to false),
             DamageCause.DROWNING to ("窒息" to false),
             DamageCause.ENTITY_EXPLOSION to ("爆発" to false),
@@ -158,7 +154,6 @@ class DamageLogListener : Listener {
             DamageCause.SUICIDE to ("自害" to false),
             DamageCause.THORNS to ("茨の鎧" to false),
             DamageCause.FIRE_TICK to ("延焼" to false),
-            DamageCause.DRAGON_BREATH to ("ドラゴンの息" to false),
             DamageCause.ENTITY_EXPLOSION to ("爆発" to false),
             DamageCause.CONTACT to ("棘" to false),
             DamageCause.BLOCK_EXPLOSION to ("爆発" to false),
