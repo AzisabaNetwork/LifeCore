@@ -12,7 +12,7 @@ import java.util.UUID
 object FixTimeCommand : PlayerTabExecutor() {
     private val cooldown = mutableMapOf<UUID, Long>()
 
-    override fun execute(player: Player, args: Array<out String>): Boolean {
+    override fun execute(player: Player, args: Array<String>): Boolean {
         cooldown[player.uniqueId]?.let { expiresAt ->
             if (expiresAt > System.currentTimeMillis() && !player.hasPermission("lifecore.fixtime.bypass-cooldown")) {
                 player.sendMessage(Component.text("このコマンドは1時間に1回のみ実行できます。", NamedTextColor.RED))

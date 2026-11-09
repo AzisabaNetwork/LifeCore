@@ -12,7 +12,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
 class LifeCoreConfigCommand(private val plugin: LifeCore) : PlayerTabExecutor() {
-    override fun execute(player: Player, args: Array<out String>): Boolean {
+    override fun execute(player: Player, args: Array<String>): Boolean {
         if (args.isEmpty()) {
             return true
         }

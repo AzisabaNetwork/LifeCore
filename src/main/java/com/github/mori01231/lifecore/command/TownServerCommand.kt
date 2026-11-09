@@ -8,7 +8,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
 class TownServerCommand(private val plugin: LifeCore) : TransferCommand(plugin, "lifetown") {
-    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
+    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<String>): Boolean {
         val player = sender as? Player ?: return false
         if (plugin.config.getBoolean("enable-backup-item-tag", true)) {
             val inventorySize = player.inventory.size

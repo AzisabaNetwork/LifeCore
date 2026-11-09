@@ -28,7 +28,7 @@ Minecraft のバージョンごとにブランチを分けています。
 
 ## ソースの構成
 
-`src/main/java/com/github/mori01231/lifecore/` 以下(Java と Kotlin が混在しています)。
+`src/main/java/com/github/mori01231/lifecore/` 以下。すべて Kotlin で書かれています(新しいコードも Kotlin で書いてください)。
 
 | パッケージ | 内容 |
 |---|---|
