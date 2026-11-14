@@ -3,6 +3,7 @@ package com.github.mori01231.lifecore.gui
 import com.github.mori01231.lifecore.config.DamageLogFile
 import com.github.mori01231.lifecore.config.DropNotifyFile
 import com.github.mori01231.lifecore.config.PetClickFile
+import com.github.mori01231.lifecore.inventorysorter.InventorySorterSettings
 import com.github.mori01231.lifecore.util.ItemUtil
 import net.azisaba.lifepvelevel.sql.DBConnector
 import net.kyori.adventure.text.Component
@@ -34,7 +35,13 @@ class CommandListScreen(val player: Player) : InventoryHolder {
             CommandInfo(CommandType.Toggle, "建築可否", listOf("建築をできるようにするかどうかを設定します。誤クリック防止などに..."), "/togglebuild"),
             CommandInfo(CommandType.Toggle, "CoreProtectログ表示", listOf("オンにすると、ブロックなどをクリックすると", "ログが表示されるようになります。"), "/co i"),
             CommandInfo(CommandType.Toggle, "CoreProtectExtensionログ表示", listOf("オンにすると、チェストなどを右クリックすると", "ログが表示されるようになります。"), "/cpe i"),
-            CommandInfo(CommandType.Toggle, "アイテム自動整理", listOf("アイテム自動整理機能をトグルできます。", "オンの状態でインベントリやチェストを開いた状態で、", "枠外をダブルクリックすると", "アイテムを自動で整理できます。"), "/is"),
+            CommandInfo(CommandType.Toggle, "アイテム自動整理", listOf("アイテム自動整理機能をトグルできます。", "オンの状態でインベントリやチェストを開いた状態で、", "枠外をダブルクリックすると", "アイテムを自動で整理できます。"), "/is") {
+                if (InventorySorterSettings.isEnabled(Bukkit.getPluginManager().getPlugin("LifeCore")!!, it)) {
+                    CommandInfo.State.Enabled
+                } else {
+                    CommandInfo.State.Disabled
+                }
+            },
             CommandInfo(CommandType.Toggle, "Stash通知", listOf("アイテムがStashに入ったことを知らせる", "メッセージを表示するかの切り替えができます。"), "/stashnotify"),
             CommandInfo(CommandType.Toggle, "Stash無条件追加", listOf("インベントリが埋まってなくても", "ドロップアイテムが常にStashに入るようにします"), "/mlstash"),
             CommandInfo(CommandType.Toggle, "ダメージログ", listOf("受けた・与えたダメージの表示可否を切り替えられます。"), "/damagelog") {

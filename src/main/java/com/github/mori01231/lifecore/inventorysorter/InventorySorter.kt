@@ -37,10 +37,9 @@ class InventorySorterListener(private val plugin: Plugin) : Listener {
             top.type == InventoryType.BARREL
         if (!isTopSortable && bottom.type != InventoryType.PLAYER) return
 
-        val enabled = player.persistentDataContainer.get(sortKey(), PersistentDataType.BYTE)
-        if (enabled == null || enabled.toInt() == 0) return
+        if (!InventorySorterSettings.isEnabled(plugin, player)) return
 
-        if (bottom.storageContents.any { it != null && it.type.maxStackSize >= it.amount }) return
+        if (bottom.storageContents.any { it != null && it.amount > it.maxStackSize }) return
 
         val now = System.currentTimeMillis()
         val last = clicked[player.uniqueId]
@@ -61,8 +60,6 @@ class InventorySorterListener(private val plugin: Plugin) : Listener {
         }
     }
 
-    private fun sortKey() = NamespacedKey(plugin, "sort")
-
     private fun sort(inventory: Inventory, start: Int, end: Int): Boolean {
         val items = inventory.storageContents
             .drop(start)
@@ -75,7 +72,7 @@ class InventorySorterListener(private val plugin: Plugin) : Listener {
         }
         val sorted = optimized.sortedWith(
             compareBy(
-                { if (it.type.maxStackSize == 1) 0 else 1 },
+                { if (it.maxStackSize == 1) 0 else 1 },
                 { if (it.hasDisplayName()) 0 else 1 },
                 { it.type.name },
                 { it.customModelData() },
@@ -97,7 +94,8 @@ class InventorySorterListener(private val plugin: Plugin) : Listener {
         }
         val result = ArrayList<ItemStack>()
         for ((key, total) in totals) {
-            val max = key.type.maxStackSize
+            // max_stack_size コンポーネントを考慮するため ItemStack 側の上限を使う
+            val max = key.maxStackSize
             var done = 0
             while (done < total) {
                 val stack = key.clone()
@@ -133,15 +131,35 @@ class InventorySorterCommand(private val plugin: Plugin) : org.bukkit.command.Co
         args: Array<out String>,
     ): Boolean {
         if (sender !is Player) return false
-        val key = NamespacedKey(plugin, "sort")
-        val current = sender.persistentDataContainer.get(key, PersistentDataType.BYTE)
-        if (current == null || current.toInt() == 0) {
-            sender.persistentDataContainer.set(key, PersistentDataType.BYTE, 1.toByte())
-            sender.sendMessage("${ChatColor.GREEN}ソートを有効にしました")
-        } else {
-            sender.persistentDataContainer.set(key, PersistentDataType.BYTE, 0.toByte())
+        if (InventorySorterSettings.isEnabled(plugin, sender)) {
+            InventorySorterSettings.setEnabled(plugin, sender, false)
             sender.sendMessage("${ChatColor.RED}ソートを無効にしました")
+        } else {
+            InventorySorterSettings.setEnabled(plugin, sender, true)
+            sender.sendMessage("${ChatColor.GREEN}ソートを有効にしました")
         }
         return true
+    }
+}
+
+object InventorySorterSettings {
+    private val LEGACY_KEY = NamespacedKey("inventorysorter", "sort")
+
+    private fun key(plugin: Plugin) = NamespacedKey(plugin, "sort")
+
+    fun isEnabled(plugin: Plugin, player: Player): Boolean {
+        val pdc = player.persistentDataContainer
+        val key = key(plugin)
+        val value = pdc.get(key, PersistentDataType.BYTE)
+            ?: pdc.get(LEGACY_KEY, PersistentDataType.BYTE)?.also {
+                pdc.set(key, PersistentDataType.BYTE, it)
+                pdc.remove(LEGACY_KEY)
+            }
+        return value != null && value.toInt() != 0
+    }
+
+    fun setEnabled(plugin: Plugin, player: Player, enabled: Boolean) {
+        player.persistentDataContainer.set(key(plugin), PersistentDataType.BYTE, (if (enabled) 1 else 0).toByte())
+        player.persistentDataContainer.remove(LEGACY_KEY)
     }
 }
