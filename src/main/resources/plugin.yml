@@ -171,6 +171,11 @@ commands:
     description: Look up information for held item.
     permission: lifecore.iteminfo
     usage: "/iteminfo"
+  itemcompare:
+    description: Compare data components of main hand and off hand items.
+    permission: lifecore.itemcompare
+    aliases: [ itemdiff ]
+    usage: "/itemcompare"
   inventorysorter:
     description: インベントリ整理の有効、無効を切り替えます
     usage: /inventorysorter
@@ -384,6 +389,9 @@ permissions:
     default: false
   lifecore.iteminfo:
     description: Allows you to look up information for held item.
+    default: false
+  lifecore.itemcompare:
+    description: Allows you to compare data components of main hand and off hand items.
     default: false
   lifecore.givedice:
     description: Allows you to give the KotlinDice item.

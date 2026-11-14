@@ -24,11 +24,11 @@ class FirstJoinEvent(val joinEvent: PlayerJoinEvent) : Event() {
         }
 
     companion object {
-        private val handlers = HandlerList()
+        private val handlerList = HandlerList()
 
         @JvmStatic
-        fun getHandlerList(): HandlerList = handlers
+        fun getHandlerList(): HandlerList = handlerList
     }
 
-    override fun getHandlers(): HandlerList = handlers
+    override fun getHandlers(): HandlerList = handlerList
 }

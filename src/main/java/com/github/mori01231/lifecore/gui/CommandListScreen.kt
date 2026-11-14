@@ -4,6 +4,7 @@ import com.github.mori01231.lifecore.config.DamageLogFile
 import com.github.mori01231.lifecore.config.DropNotifyFile
 import com.github.mori01231.lifecore.config.PetClickFile
 import com.github.mori01231.lifecore.util.ItemUtil
+import net.azisaba.lifepvelevel.sql.DBConnector
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -58,6 +59,13 @@ class CommandListScreen(val player: Player) : InventoryHolder {
                     CommandInfo.State.Enabled
                 } else {
                     CommandInfo.State.Disabled
+                }
+            },
+            CommandInfo(CommandType.Toggle, "PvEレベル表示", listOf("アイテムに表示される", "必要PvEレベルの表示を切り替えます。"), "/pvelevel toggleItemLevel") {
+                if (DBConnector.isHideItemLevel(it.uniqueId)) {
+                    CommandInfo.State.Disabled
+                } else {
+                    CommandInfo.State.Enabled
                 }
             },
             CommandInfo(CommandType.Toggle, "ゲーミングランク表示切替", listOf(), "/gamingsara", true),

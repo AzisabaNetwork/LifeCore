@@ -17,7 +17,7 @@ snakeyaml = "2.7"
 acrylicstyle-expression = "2.0.0-SNAPSHOT"
 
 # net.azisaba plugins (https://maven.azisaba.net/releases)
-lifepvelevel = "2.0.2+1.21.11"
+lifepvelevel = "2.1.0+1.21.11"
 joinfilter = "1.0.1"
 ballotbox = "1.0.1"
 azipluginmessaging = "4.3.0"

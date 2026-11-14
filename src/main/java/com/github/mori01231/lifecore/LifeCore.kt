@@ -181,6 +181,7 @@ class LifeCore : JavaPlugin() {
         registerCommand("worldcreate", WorldCreateCommand(this))
         // 旧 LifeResource / KotlinDice / ItemInfoGetter / InventorySorter / AntiDrop / FirstJoinPlus の統合コマンド
         registerCommand("iteminfo", ItemInfoCommand())
+        registerCommand("itemcompare", ItemCompareCommand())
         registerCommand("inventorysorter", InventorySorterCommand(this))
         registerCommand("givedice", KotlinDiceCommand(kotlinDice))
         registerCommand("antidrop", AntiDropCommand(this))
