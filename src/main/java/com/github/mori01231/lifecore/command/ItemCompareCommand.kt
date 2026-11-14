@@ -59,7 +59,11 @@ class ItemCompareCommand : PlayerTabExecutor() {
         var identical = 0
         for (type in BuiltInRegistries.DATA_COMPONENT_TYPE) {
             @Suppress("UNCHECKED_CAST")
-            val codec = type.codec() as Codec<Any>
+            val codec = type.codec() as? Codec<Any>
+            if (codec == null) {
+                // streamCodec のみを持つコンポーネント (MapID など) は NBT にシリアライズできないためスキップ
+                continue
+            }
             val mainResult = encode(codec, nmsMain.get(type))
             val offResult = encode(codec, nmsOff.get(type))
             if (mainResult.value == null && mainResult.error == null && offResult.value == null && offResult.error == null) {
