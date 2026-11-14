@@ -49,6 +49,10 @@
 | `/dropnotify` | | アイテムをドロップしたときの通知を切り替える | `lifecore.dropnotify` | 全員 |
 | `/petclick` | `/migikuristopman` | ペットをスニーク右クリックできないようにする(切り替え) | `lifecore.petclick` | 全員 |
 | `/mmid [player]` | `/mythictype` | 手に持ったアイテムの MythicMobs ID を表示する | `lifecore.mmid` | OP |
+| `/iteminfo` | | 手に持ったアイテムの詳細情報を表示する(旧 ItemInfoGetter) | `lifecore.iteminfo` | OP |
+| `/inventorysorter` | `/is` | インベントリ整理(範囲外ダブルクリックでのソート)の有効/無効を切り替える(旧 InventorySorter) | なし | 全員 |
+| `/givedice` | | 抽選ダイス(旧 KotlinDice)のアイテムを入手する | `lifecore.givedice` | OP |
+| `/antidrop [add\|remove\|list] [world]` | | ドロップ禁止ワールドを管理する(旧 AntiDrop) | `lifecore.antidrop` | OP |
 
 ## その他(プレイヤー向け)
 
@@ -73,6 +77,15 @@
 | `/killnonadmin` | 管理者用の剣を持っている管理者以外のプレイヤーをキルする | `lifecore.killnonadmin` | OP |
 | `/debugvote <player> [service]` | 投票処理をテストする | `lifecore.debugvote` | OP |
 | `/noob` | 初参加メッセージを流す | `lifecore.noob` | OP |
+| `/firstjoinplus [reload\|setspawn\|debug]` (`/fjp`) | 初参加時の処理(旧 FirstJoinPlus)を管理する | `firstjoinplus.reload` / `firstjoinplus.setspawn` / `firstjoinplus.debug` | OP |
+
+### `/firstjoinplus`
+
+- `reload`: `firstjoin.yml` を再読み込みする
+- `setspawn`: 初参加時のスポーン地点を現在位置に設定する
+- `debug`: 自分を「初参加プレイヤー状態」にする(テスト用)
+
+設定は `firstjoin.yml` に記述します。旧 FirstJoinPlus の `plugins/FirstJoinPlus/config.yml` が存在する場合は自動的に引き継ぎます。
 
 ### `/worldcreate`
 

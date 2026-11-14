@@ -1,17 +1,25 @@
 package com.github.mori01231.lifecore
 
+import com.github.mori01231.lifecore.antidrop.AntiDropCommand
+import com.github.mori01231.lifecore.antidrop.AntiDropListener
 import com.github.mori01231.lifecore.block.CustomBlockManager
 import com.github.mori01231.lifecore.command.*
 import com.github.mori01231.lifecore.config.*
 import com.github.mori01231.lifecore.data.DataLoader
+import com.github.mori01231.lifecore.dice.KotlinDiceCommand
+import com.github.mori01231.lifecore.dice.KotlinDiceItemListener
+import com.github.mori01231.lifecore.firstjoinplus.FirstJoinPlusIntegration
 import com.github.mori01231.lifecore.gui.CommandListScreen
 import com.github.mori01231.lifecore.gui.DropProtectScreen
 import com.github.mori01231.lifecore.gui.MapListScreen
 import com.github.mori01231.lifecore.gui.TrashProtectScreen
+import com.github.mori01231.lifecore.inventorysorter.InventorySorterCommand
+import com.github.mori01231.lifecore.inventorysorter.InventorySorterListener
 import com.github.mori01231.lifecore.listener.*
 import com.github.mori01231.lifecore.listener.item.*
 import com.github.mori01231.lifecore.network.PacketHandler
 import com.github.mori01231.lifecore.region.PlayerRegionManager
+import com.github.mori01231.lifecore.resource.LifeResourceItemListener
 import com.github.mori01231.lifecore.reward.OnlineRewardManager
 import com.github.mori01231.lifecore.util.*
 import com.github.mori01231.lifecore.util.YAML.yaml
@@ -51,6 +59,8 @@ class LifeCore : JavaPlugin() {
         private set
     val customBlockManager = CustomBlockManager(this)
     val onlineRewardManager = OnlineRewardManager(this)
+    val kotlinDice = KotlinDiceItemListener(this)
+    val firstJoinPlus = FirstJoinPlusIntegration(this)
     var customModelDataWrench = 0
     var customModelDataBlank = 0
     var customModelDataBlankShapeDownLeft = 0
@@ -169,6 +179,12 @@ class LifeCore : JavaPlugin() {
         registerCommand("commandlist", CommandListCommand)
         registerCommand("maplist", MapListCommand)
         registerCommand("worldcreate", WorldCreateCommand(this))
+        // 旧 LifeResource / KotlinDice / ItemInfoGetter / InventorySorter / AntiDrop / FirstJoinPlus の統合コマンド
+        registerCommand("iteminfo", ItemInfoCommand())
+        registerCommand("inventorysorter", InventorySorterCommand(this))
+        registerCommand("givedice", KotlinDiceCommand(kotlinDice))
+        registerCommand("antidrop", AntiDropCommand(this))
+        firstJoinPlus.register()
         registerCommand("respawn") { _, _, _, args ->
             args.getOrNull(0)?.let { Bukkit.getPlayerExact(it)?.spigot()?.respawn() }
             true
@@ -351,6 +367,13 @@ class LifeCore : JavaPlugin() {
         pm.registerEvents(MapListScreen.EventListener, this)
         pm.registerEvents(MapPrepareListener(this), this)
         pm.registerEvents(WorkaroundLuckPerms, this)
+
+        // 旧 LifeResource / KotlinDice / InventorySorter / AntiDrop / MountingPhantomCanceler の統合リスナー
+        pm.registerEvents(LifeResourceItemListener(), this)
+        pm.registerEvents(kotlinDice, this)
+        pm.registerEvents(InventorySorterListener(this), this)
+        pm.registerEvents(AntiDropListener(this), this)
+        pm.registerEvents(MountingPhantomCancelListener(), this)
 
         // Items
         pm.registerEvents(OreOnlyItemListener(), this)

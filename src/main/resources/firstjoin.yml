@@ -1,0 +1,80 @@
+# FirstJoinPlus Configuration -- Configuration Help: http://dev.bukkit.org/bukkit-plugins/firstjoinplus/ #
+settings:
+  allow-automatic-updating: false
+  every-join-is-first-join: false
+on-first-join:
+  delay-everything-below-by: 20
+  first-join-message:
+    enabled: false
+    message: '&d%player_nameが初参加しました！'
+  fun-stuff:
+    play-sound:
+      enabled: true
+      sound-name: entity_player_levelup
+      listen-permission: firstjoinplus.notify
+    smoke-effect:
+      enabled: true
+    launch-firework:
+      enabled: false
+  first-join-kit:
+    enabled: true
+    items:
+    - bread:32
+  give-written-books:
+    enabled: false
+    book-files:
+    - rules.txt
+  give-experience:
+    enabled: false
+    level-amount: 0
+  modify-damage:
+    disable-pvp:
+      enabled: false
+      expire-after: 10
+    god-mode:
+      enabled: false
+      expire-after: 10
+  run-commands:
+    enabled: true
+    commands:
+    - guide
+  run-console-commands:
+    enabled: true
+    commands:
+    - mm i give %player_name menu 1
+    - minecraft:give %player_name written_book{pages:['["",{"text":"Life\\u9bd6\\u306e\\u57fa\\u672c\\u306b\\u3064\\u3044\\u3066\\n"},{"text":"---------------","bold":true},{"text":"\\n\\n\\u9bd6\\u306b\\u30ed\\u30b0\\u30a4\\u30f3\\u3057\\u305f\\u3089\\n\\u307e\\u305a\\u306f","color":"reset"},{"text":"\\u753a","bold":true,"underlined":true},{"text":"\\u306b\\u6240\\u5c5e","color":"reset","underlined":true},{"text":"\\u3057\\u307e\\u3057\\u3087\\u3046\\n\\n","color":"reset"},{"text":"\\u203b\\u30b3\\u30de\\u30f3\\u30c9\\u306a\\u3069\\u306f","bold":true,"underlined":true,"color":"red"},{"text":"\\n
+      ","color":"reset"},{"text":"/help town\\u3067","bold":true,"underlined":true,"color":"red"},{"text":"\\n
+      ","color":"reset"},{"text":"\\u78ba\\u8a8d\\u3057\\u307e\\u3057\\u3087\\u3046","bold":true,"underlined":true,"color":"red"}]','["",{"text":"\\u753a\\u306b\\u5165\\u308c\\u3066\\u3082\\u3089\\u3063\\u305f\\u3089\\n\\u6b21\\u306f"},{"text":"\\u8cc7\\u6e90\\u30ef\\u30fc\\u30eb\\u30c9","bold":true,"color":"gold"},{"text":"\\n\\u306b\\u884c\\u3063\\u3066","color":"reset"},{"text":"\\u8cc7\\u6e90","underlined":true},{"text":"\\u3092\\u96c6\\u3081\\u307e\\u3057\\u3087\\u3046","color":"reset","underlined":true},{"text":"\\n\\n","color":"reset"},{"text":"\\u62e0\\u70b9\\u306e\\u5efa\\u7bc9\\u306b\\u5fc5\\u8981\\u306a\\n\\u8cc7\\u6e90\\u304c\\u305d\\u308d\\u3044,\\u753a\\u306b\\u6240\\u5c5e\\n\\u51fa\\u6765\\u305f\\u3089\\u62e0\\u70b9\\u3092\\n\\u5efa\\u3066\\u307e\\u3057\\u3087\\u3046","underlined":true}]','["",{"text":"\\u3053\\u3053\\u307e\\u3067\\u304f\\u308c\\u3070\\u3042\\u306a\\u305f\\u306f\\n\\u7acb\\u6d3e\\u306aLife\\u9bd6\\u6c11\\u3067\\u3059!","bold":true,"underlined":true},{"text":"\\n\\n\\u3053\\u308c\\u4ee5\\u964d\\u306f\\n","color":"reset"},{"text":"\\u521d\\u7d1a\\u30c0\\u30f3\\u30b8\\u30e7\\u30f3\\u306b\\u6311\\u3080,\\n\\u30e9\\u30f3\\u30af2\\u3092\\u76ee\\u6307\\u3059,\\n\\u304a\\u91d1\\u3092\\u96c6\\u3081\\u308b,\\n\\u62e0\\u70b9\\u3068\\u753a\\u3092\\u767a\\u5c55\\u3055\\u305b\\u308b\\u306a\\u3069","underlined":true}]','["",{"text":"\\u81ea\\u5206\\u304c\\n\\u3084\\u308a\\u305f\\u3044\\u3053\\u3068","bold":true,"underlined":true},{"text":"\\u3092\\u3084\\u308a\\u307e\\u3057\\u3087\\u3046","color":"reset","underlined":true},{"text":"\\n\\n\\u308f\\u304b\\u3089\\u306a\\u3044\\u3053\\u3068\\u304c\\u3042\\u308c\\u3070\\n","color":"reset"},{"text":"Wiki","bold":true,"color":"blue","clickEvent":{"action":"open_url","value":"https://azisabaofficial.playing.wiki/"}},{"text":"\\u3092\\u898b\\u307e\\u3057\\u3087\\u3046\\n\\n","color":"reset"},{"text":"\\u305d\\u308c\\u3067\\u306fLife\\u9bd6\\u3067\\u306e\\u751f\\u6d3b\\n\\u3092\\u697d\\u3057\\u3093\\u3067\\u304f\\u3060\\u3055\\u3044\\uff01","underlined":true}]'],title:"Life鯖に来たらやること",author:"Life鯖"}
+  apply-potion-effects:
+    enabled: false
+    effects:
+    - SPEED:1:15
+  send-messages:
+    enabled: true
+    messages:
+    - '&b&lLife鯖へようこそ！&3まずは正面の階段を上った先にある看板をクリックし、ルール確認チュートリアルをクリアしてください'
+    - '&3ルール確認チュートリアルの後に任意チュートリアルにも行くといいぞ！'
+    - '&3あとから任意チュートリアルをまた見たくなったら&a/tutorial'
+    - '&3チュートリアルをクリアしたら&a/help basics'
+    - '&a/help&3コマンドでほかにもLife鯖のいろいろがわかるぞ。'
+    - '&3Life鯖Wikiページ：&f&lhttps://azisabaofficial.playing.wiki/d/Life%c0%b8%b3%e8%bb%aa'
+  reset-state:
+    enabled: false
+  teleport:
+    enabled: true
+    x: 0
+    y: 23
+    z: 0
+    pitch: 0.0
+    yaw: 0.0
+    world: tutorial
+other-messages:
+  join-message:
+    enabled: false
+    message: '&e%player_name joined the game.'
+  quit-message:
+    enabled: false
+    message: '&e%player_name left the game.'
+  kick-message:
+    enabled: false
+    message: '%none'

@@ -167,6 +167,25 @@ commands:
     description: "respawn specified player"
     permission: lifecore.respawn
     usage: "/respawn"
+  iteminfo:
+    description: Look up information for held item.
+    permission: lifecore.iteminfo
+    usage: "/iteminfo"
+  inventorysorter:
+    description: インベントリ整理の有効、無効を切り替えます
+    usage: /inventorysorter
+    aliases: [ is ]
+  givedice:
+    description: Gives the KotlinDice item
+    permission: lifecore.givedice
+  antidrop:
+    description: Manage worlds where dropping items is disabled
+    permission: lifecore.antidrop
+    usage: "/antidrop [add|remove|list] [world]"
+  firstjoinplus:
+    description: FirstJoinPlus command(s).
+    aliases: [ fjp ]
+    usage: "/firstjoinplus [reload|setspawn|debug]"
   servermoney:
     description: "show server money"
     permission: lifecore.servermoney
@@ -363,3 +382,24 @@ permissions:
     default: true
   lifecore.worldcreate:
     default: false
+  lifecore.iteminfo:
+    description: Allows you to look up information for held item.
+    default: false
+  lifecore.givedice:
+    description: Allows you to give the KotlinDice item.
+    default: false
+  lifecore.antidrop:
+    description: Allows you to manage worlds where dropping items is disabled.
+    default: false
+  lifecore.antidrop.bypass:
+    description: Allows you to drop items in worlds where dropping is disabled.
+    default: false
+  firstjoinplus.notify:
+    description: Permission to hear the first join sound.
+    default: false
+  firstjoinplus.reload:
+    description: Permission to use the /firstjoinplus reload command.
+  firstjoinplus.setspawn:
+    description: Permission to use the /firstjoinplus setspawn command.
+  firstjoinplus.debug:
+    description: Permission to use the /firstjoinplus debug command.
