@@ -16,6 +16,7 @@ softdepend:
   - ItemStash
   - JoinFilter
   - LifePvELevel
+  - Essentials
 api-version: '@apiVersion@'
 
 commands:
@@ -411,3 +412,11 @@ permissions:
     description: Permission to use the /firstjoinplus setspawn command.
   firstjoinplus.debug:
     description: Permission to use the /firstjoinplus debug command.
+  lifecore.afk.bypass:
+    description: Bypasses the automatic AFK server transfer.
+    default: false
+  # Legacy AfkSender permission. Kept for compatibility during migration;
+  # remove this after stable operation.
+  afksender.bypass:
+    description: "Deprecated: use lifecore.afk.bypass instead."
+    default: false

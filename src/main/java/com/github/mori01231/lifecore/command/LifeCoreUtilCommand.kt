@@ -341,6 +341,47 @@ class LifeCoreUtilCommand(val plugin: LifeCore) : TabExecutor {
                 return super.suggest(plugin, player, args)
             }
         },
+        Afk("AFKサーバー転送(AfkSender)の設定を表示(info)、または再読み込み(reload)します") {
+            override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
+                when (args.getOrNull(0)?.lowercase()) {
+                    "info" -> {
+                        val listener = plugin.afkSenderListener
+                        if (listener == null) {
+                            player.sendMessage(Component.text("AfkSender is inactive (Essentials is not detected).", NamedTextColor.RED))
+                            return
+                        }
+                        player.sendMessage(Component.text("AFK sender status:", NamedTextColor.AQUA))
+                        player.sendMessage(
+                            Component.text("  server-names: ", NamedTextColor.GRAY)
+                                .append(Component.text(listener.serverNames.joinToString(", "), NamedTextColor.WHITE)),
+                        )
+                        player.sendMessage(
+                            Component.text("  cancel-afk-on-rotate: ", NamedTextColor.GRAY)
+                                .append(Component.text(listener.cancelAfkOnRotate.toString(), NamedTextColor.WHITE)),
+                        )
+                    }
+                    "reload" -> {
+                        val listener = plugin.reloadAfkSender()
+                        if (listener == null) {
+                            player.sendMessage(Component.text("AfkSender is inactive (Essentials is not detected); no listener to update.", NamedTextColor.RED))
+                            return
+                        }
+                        player.sendMessage(
+                            Component.text(
+                                "Reloaded AFK sender config (server-names: ${listener.serverNames.joinToString(", ")}, cancel-afk-on-rotate: ${listener.cancelAfkOnRotate})",
+                                NamedTextColor.GREEN,
+                            ),
+                        )
+                    }
+                    else -> player.sendMessage(Component.text("Usage: /lifecoreutil $commandName <info|reload>", NamedTextColor.RED))
+                }
+            }
+
+            override fun suggest(plugin: LifeCore, player: Player, args: Array<String>): List<String> {
+                if (args.size == 1) return listOf("info", "reload").filter { it.startsWith(args[0], ignoreCase = true) }
+                return super.suggest(plugin, player, args)
+            }
+        },
         ClearPlot("イマサラタウンのplotを消し飛ばします") {
             override fun execute(plugin: LifeCore, player: CommandSender, args: Array<String>) {
                 val minX = (player as Player).chunk.x * 16

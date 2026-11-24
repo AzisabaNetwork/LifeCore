@@ -2,6 +2,15 @@
 
 lp-server-name: life
 
+# AfkSender (EssentialsX integration): players that enter the AFK state are sent
+# to the server(s) below. A list can be used to try multiple servers in order.
+afk:
+  server-names:
+    - lifeafk
+  # Treat a yaw (rotation) change as activity to prevent water-flow AFK abuse.
+  # This only works if cancelAfkOnMove is set to false in the EssentialsX config.
+  cancel-afk-on-rotate: true
+
 # enable backup of item tag when executing /townserver, and restore when joining.
 enable-backup-item-tag: true
 
