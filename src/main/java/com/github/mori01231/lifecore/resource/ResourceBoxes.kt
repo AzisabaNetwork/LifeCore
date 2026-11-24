@@ -127,7 +127,7 @@ object UnknownOpenBox {
 object YUnknownOpenBox {
     fun get(player: Player) {
         when (Random.nextInt(49) + 1) {
-            in 1..11 -> ResourceCommandUtil.sendMlgCommand(player, "sigencustomticket", 1)
+            in 1..11 -> ResourceCommandUtil.sendMlgCommand(player, "sigencustomticketA", 1)
             in 12..22 -> ResourceCommandUtil.sendMlgCommand(player, "sigencustomticketB", 1)
             in 23..33 -> ResourceCommandUtil.sendMlgCommand(player, "sigencustomticketC", 1)
             in 34..44 -> ResourceCommandUtil.sendMlgCommand(player, "sigencustomticketD", 1)
