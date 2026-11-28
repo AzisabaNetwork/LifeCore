@@ -35,6 +35,10 @@ repositories {
     maven("https://repo.papermc.io/repository/maven-public/") {
         name = "papermc"
     }
+    maven("https://repo.essentialsx.net/releases/") {
+        name = "essentialsx"
+        mavenContent { includeGroupAndSubgroups("net.essentialsx") }
+    }
     // net.azisaba plugins
     maven("https://maven.azisaba.net/releases") {
         name = "azisaba"
@@ -92,6 +96,9 @@ dependencies {
         exclude("me.staartvin", "PluginLibrary")
         exclude("org.spigotmc", "spigot-api")
         exclude("org.bukkit", "bukkit")
+    }
+    compileOnly(libs.essentialsx) {
+        isTransitive = false
     }
 }
 

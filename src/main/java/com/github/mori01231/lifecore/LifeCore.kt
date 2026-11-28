@@ -1,5 +1,6 @@
 package com.github.mori01231.lifecore
 
+import com.github.mori01231.lifecore.afksender.AfkSenderListener
 import com.github.mori01231.lifecore.antidrop.AntiDropCommand
 import com.github.mori01231.lifecore.antidrop.AntiDropListener
 import com.github.mori01231.lifecore.block.CustomBlockManager
@@ -28,6 +29,7 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandExecutor
+import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.ItemFrame
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
@@ -56,6 +58,8 @@ class LifeCore : JavaPlugin() {
     lateinit var trashProtectConfig: TrashProtectConfig
         private set
     lateinit var mythicItemProtectConfig: MythicItemProtectConfig
+        private set
+    var afkSenderListener: AfkSenderListener? = null
         private set
     val customBlockManager = CustomBlockManager(this)
     val onlineRewardManager = OnlineRewardManager(this)
@@ -191,6 +195,7 @@ class LifeCore : JavaPlugin() {
             true
         }
         saveDefaultConfig()
+        runCatching { migrateAfkSenderConfig() }
         server.messenger.registerOutgoingPluginChannel(this, "BungeeCord")
         registerEvents()
         try {
@@ -417,10 +422,68 @@ class LifeCore : JavaPlugin() {
         } catch (e: Throwable) {
             logger.warning("Rarity and/or ItemStash not detected, skipping event listener registration")
         }
+        try {
+            Class.forName("com.earth2me.essentials.Essentials")
+            val afkServerNames = config.getStringList("afk.server-names").ifEmpty { listOf("lifeafk") }
+            val cancelAfkOnRotate = config.getBoolean("afk.cancel-afk-on-rotate", true)
+            val listener = AfkSenderListener(this, afkServerNames, cancelAfkOnRotate)
+            afkSenderListener = listener
+            pm.registerEvents(listener, this)
+        } catch (e: Throwable) {
+            logger.warning("Essentials not detected, skipping AfkSender listener registration")
+        }
     }
 
     fun getDatabaseConfig(): DatabaseConfig {
         return databaseConfig.nonNull("databaseConfig is null")
+    }
+
+    /**
+     * Reloads the main config.yml and updates the active AfkSender listener with the
+     * current `afk` section values. Returns the updated listener, or null if the
+     * listener is not active (Essentials not detected).
+     */
+    fun reloadAfkSender(): AfkSenderListener? {
+        val listener = afkSenderListener ?: return null
+        reloadConfig()
+        listener.update(
+            config.getStringList("afk.server-names").ifEmpty { listOf("lifeafk") },
+            config.getBoolean("afk.cancel-afk-on-rotate", true),
+        )
+        return listener
+    }
+
+    /**
+     * Migrates the standalone AfkSender plugin's config.yml into LifeCore's config.yml
+     * under the `afk` section. Runs once: the legacy file is renamed after a successful
+     * migration so it is not migrated again.
+     */
+    private fun migrateAfkSenderConfig() {
+        val legacyFile = File(dataFolder.parentFile, "AfkSender" + File.separator + "config.yml")
+        if (!legacyFile.exists()) return
+
+        val legacy = YamlConfiguration.loadConfiguration(legacyFile)
+        if (legacy.getKeys(false).isEmpty()) {
+            logger.warning("Found AfkSender config.yml but it appears empty or unreadable; skipping migration")
+            return
+        }
+        val serverNames = if (legacy.isList("server-name")) {
+            legacy.getStringList("server-name")
+        } else {
+            legacy.getString("server-name")?.let { listOf(it) } ?: emptyList()
+        }
+        val cancelAfkOnRotate = legacy.getBoolean("cancel-afk-on-rotate", true)
+
+        config.set("afk.server-names", serverNames)
+        config.set("afk.cancel-afk-on-rotate", cancelAfkOnRotate)
+        saveConfig()
+
+        val migratedFile = File(legacyFile.parentFile, "config.yml.migrated")
+        if (legacyFile.renameTo(migratedFile)) {
+            logger.info("Migrated AfkSender config into LifeCore config.yml (afk.server-names=$serverNames, afk.cancel-afk-on-rotate=$cancelAfkOnRotate)")
+        } else {
+            logger.warning("Migrated AfkSender config into LifeCore config.yml, but failed to rename the legacy file; it will be migrated again on next startup")
+        }
     }
 
     companion object {

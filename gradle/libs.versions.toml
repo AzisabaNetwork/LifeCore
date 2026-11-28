@@ -32,6 +32,7 @@ vault = "1.7"
 mypet = "5c8ceeac6a"
 autorank = "4.5.1"
 statz = "v1.5.5"
+essentialsx = "2.21.2"
 
 [libraries]
 adventure-bom = { module = "net.kyori:adventure-bom", version.ref = "adventure" }
@@ -56,6 +57,7 @@ vault-api = { module = "com.github.MilkBowl:VaultAPI", version.ref = "vault" }
 mypet-api = { module = "com.github.MyPetORG.MyPet:mypet-api", version.ref = "mypet" }
 autorank = { module = "com.github.Staartvin:Autorank-2", version.ref = "autorank" }
 statz = { module = "com.github.Staartvin:Statz", version.ref = "statz" }
+essentialsx = { module = "net.essentialsx:EssentialsX", version.ref = "essentialsx" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
